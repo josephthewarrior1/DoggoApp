@@ -13,7 +13,7 @@ class IntroActivity : AppCompatActivity() {
         val btnLetsGo = findViewById<Button>(R.id.btnLetsGo)
         btnLetsGo.setOnClickListener {
             // ⬇️ Ubah MainActivity jadi SignUpActivity
-            val intent = Intent(this, SignUpActivity::class.java)
+            val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
             finish() // Supaya ga bisa balik ke intro
         }

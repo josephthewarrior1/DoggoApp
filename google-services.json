@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "465309675699",
+    "firebase_url": "https://doggoapp-d4a68-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "doggoapp-d4a68",
+    "storage_bucket": "doggoapp-d4a68.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465309675699:android:12d83acae869c51beb40c6",
+        "android_client_info": {
+          "package_name": "com.example.doggo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsrUl2UutKuqXUyOGN1G10aWpbCJMX5GE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

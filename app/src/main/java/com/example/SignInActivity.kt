@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.doggo.Home.HomeActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class SignInActivity : AppCompatActivity() {
@@ -37,7 +38,7 @@ class SignInActivity : AppCompatActivity() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, MainActivity::class.java))
+                        startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     } else {
                         Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()

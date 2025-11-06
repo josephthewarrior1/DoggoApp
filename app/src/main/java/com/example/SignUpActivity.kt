@@ -1,4 +1,5 @@
 package com.example.doggo
+import com.example.doggo.Home.HomeActivity
 
 import android.content.Intent
 import android.os.Bundle
@@ -45,7 +46,7 @@ class SignUpActivity : AppCompatActivity() {
 
                         userRef.setValue(userMap).addOnCompleteListener {
                             Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this, MainActivity::class.java))
+                            startActivity(Intent(this, HomeActivity::class.java))
                             finish()
                         }
                     } else {

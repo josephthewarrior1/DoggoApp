@@ -2,13 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/nav_dogs"
-        android:title="My Dogs"
-        android:icon="@android:drawable/ic_menu_gallery" />
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Home"
+        android:enabled="true" />
 
     <item
-        android:id="@+id/nav_profile"
+        android:id="@+id/nav_profiles"
+        android:icon="@drawable/ic_profiles"
+        android:title="Profiles"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/nav_my_profile"
+        android:icon="@drawable/ic_my_profile"
         android:title="My Profile"
-        android:icon="@android:drawable/ic_menu_myplaces" />
+        android:enabled="true" />
 
 </menu>

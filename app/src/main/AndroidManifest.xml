@@ -7,16 +7,11 @@
         android:label="Doggo"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/Theme.Material3.Light.NoActionBar">
 
-        <!-- Tambahin ini -->
-        <activity android:name=".SignUpActivity" />
-
-        <activity android:name=".MainActivity" />
-
-        <activity android:name=".SignInActivity" />
-
-        <activity android:name=".IntroActivity"
+        <!-- Intro Activity (Launcher) -->
+        <activity
+            android:name="com.example.doggo.IntroActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +19,30 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Home.HomeActivity" />
+        <!-- Auth Activities -->
+        <activity
+            android:name="com.example.doggo.SignInActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.doggo.SignUpActivity"
+            android:exported="false" />
+
+        <!-- Main Activity -->
+        <activity
+            android:name="com.example.doggo.MainActivity"
+            android:exported="false" />
+
+        <!-- Home Activities -->
+        <activity
+            android:name="com.example.doggo.Home.HomeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.doggo.Home.AddDogProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

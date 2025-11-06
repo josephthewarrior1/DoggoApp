@@ -1,34 +1,99 @@
 package com.example.doggo.Home
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.example.doggo.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.doggo.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityHomeBinding
+    private var hasDogProfiles = false // TODO: This will be checked from database later
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        setupUI()
+        checkProfilesAndUpdateUI()
+    }
 
-        // Load default fragment
-        loadFragment(DogProfilesFragment())
+    override fun onResume() {
+        super.onResume()
+        // Refresh UI when returning from AddDogProfileActivity
+        checkProfilesAndUpdateUI()
+    }
 
-        bottomNavigation.setOnItemSelectedListener { item ->
+    private fun setupUI() {
+        // Swipe to Continue button click
+        binding.btnSwipeToContinue.setOnClickListener {
+            navigateToAddDogProfile()
+        }
+
+        // Bottom Navigation
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_dogs -> loadFragment(DogProfilesFragment())
-                R.id.nav_profile -> loadFragment(MyProfileFragment())
+                R.id.nav_home -> {
+                    // Already on home
+                    true
+                }
+                R.id.nav_profiles -> {
+                    // Navigate to profiles fragment
+                    // TODO: Implement navigation
+                    true
+                }
+                R.id.nav_my_profile -> {
+                    // Navigate to my profile fragment
+                    // TODO: Implement navigation
+                    true
+                }
+                else -> false
             }
-            true
+        }
+
+        // Search button
+        binding.btnSearch.setOnClickListener {
+            // TODO: Implement search functionality
+        }
+
+        // Menu button
+        binding.btnMenu.setOnClickListener {
+            // TODO: Implement menu functionality
         }
     }
 
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .commit()
+    private fun checkProfilesAndUpdateUI() {
+        // TODO: Check if user has dog profiles from database
+        // For now, we're using the hasDogProfiles variable
+
+        if (hasDogProfiles) {
+            showProfilesContent()
+        } else {
+            showEmptyState()
+        }
+    }
+
+    private fun showEmptyState() {
+        binding.emptyStateLayout.visibility = View.VISIBLE
+        binding.fragmentContainer.visibility = View.GONE
+    }
+
+    private fun showProfilesContent() {
+        binding.emptyStateLayout.visibility = View.GONE
+        binding.fragmentContainer.visibility = View.VISIBLE
+
+        // TODO: Load DogProfilesFragment
+        // Example:
+        // supportFragmentManager.beginTransaction()
+        //     .replace(R.id.fragmentContainer, DogProfilesFragment())
+        //     .commit()
+    }
+
+    private fun navigateToAddDogProfile() {
+        val intent = Intent(this, AddDogProfileActivity::class.java)
+        startActivity(intent)
     }
 }

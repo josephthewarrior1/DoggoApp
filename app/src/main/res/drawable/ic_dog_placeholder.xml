@@ -1,0 +1,80 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#E5E7EB"
+        android:pathData="M60,60m-60,0a60,60 0,1 1,120 0a60,60 0,1 1,-120 0"/>
+
+    <!-- Dog Head -->
+    <path
+        android:fillColor="#9CA3AF"
+        android:pathData="M60,45c-8,0 -14,6 -14,14c0,8 6,14 14,14c8,0 14,-6 14,-14C74,51 68,45 60,45z"/>
+
+    <!-- Left Ear -->
+    <path
+        android:fillColor="#9CA3AF"
+        android:pathData="M46,40c-3,0 -5,2 -5,5l0,10c0,3 2,5 5,5c3,0 5,-2 5,-5l0,-10C51,42 49,40 46,40z"/>
+
+    <!-- Right Ear -->
+    <path
+        android:fillColor="#9CA3AF"
+        android:pathData="M74,40c-3,0 -5,2 -5,5l0,10c0,3 2,5 5,5c3,0 5,-2 5,-5l0,-10C79,42 77,40 74,40z"/>
+
+    <!-- Left Eye -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,55c0,2 1.5,3.5 3.5,3.5S61,57 61,55s-1.5,-3.5 -3.5,-3.5S54,53 54,55z"/>
+    <path
+        android:fillColor="#2D2D2D"
+        android:pathData="M56,55c0,1 0.8,2 1.8,2s1.8,-1 1.8,-2s-0.8,-2 -1.8,-2S56,54 56,55z"/>
+
+    <!-- Right Eye -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M59,55c0,2 1.5,3.5 3.5,3.5S66,57 66,55s-1.5,-3.5 -3.5,-3.5S59,53 59,55z"/>
+    <path
+        android:fillColor="#2D2D2D"
+        android:pathData="M61,55c0,1 0.8,2 1.8,2s1.8,-1 1.8,-2s-0.8,-2 -1.8,-2S61,54 61,55z"/>
+
+    <!-- Nose -->
+    <path
+        android:fillColor="#2D2D2D"
+        android:pathData="M60,62c-2,0 -3.5,1 -3.5,2.5c0,1.5 1.5,2.5 3.5,2.5s3.5,-1 3.5,-2.5C63.5,63 62,62 60,62z"/>
+
+    <!-- Mouth -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#2D2D2D"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M60,65 Q55,68 52,66"/>
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#2D2D2D"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M60,65 Q65,68 68,66"/>
+
+    <!-- Body -->
+    <path
+        android:fillColor="#9CA3AF"
+        android:pathData="M60,73c-10,0 -18,5 -18,12l0,8c0,2 1,3 3,3l30,0c2,0 3,-1 3,-3l0,-8C78,78 70,73 60,73z"/>
+
+    <!-- Camera Icon Background Circle -->
+    <path
+        android:fillColor="#6366F1"
+        android:pathData="M85,73c-6.627,0 -12,5.373 -12,12c0,6.627 5.373,12 12,12c6.627,0 12,-5.373 12,-12C97,78.373 91.627,73 85,73z"/>
+
+    <!-- Camera Icon -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M85,79c-3.3,0 -6,2.7 -6,6s2.7,6 6,6s6,-2.7 6,-6S88.3,79 85,79zM85,89c-2.2,0 -4,-1.8 -4,-4s1.8,-4 4,-4s4,1.8 4,4S87.2,89 85,89z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M87,82l-1,-1.5c-0.2,-0.3 -0.5,-0.5 -0.9,-0.5h-0.2c-0.4,0 -0.7,0.2 -0.9,0.5L83,82h-1c-0.6,0 -1,0.4 -1,1v5c0,0.6 0.4,1 1,1h6c0.6,0 1,-0.4 1,-1v-5c0,-0.6 -0.4,-1 -1,-1H87z"/>
+
+</vector>

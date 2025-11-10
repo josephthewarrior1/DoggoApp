@@ -4,19 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.doggo.R
 import com.example.doggo.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
-    private var hasDogProfiles = false // TODO: This will be checked from database later
+    private lateinit var dogProfileAdapter: DogProfileAdapter
+    private val dogProfiles = mutableListOf<DogProfile>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupRecyclerView()
         setupUI()
         checkProfilesAndUpdateUI()
     }
@@ -24,12 +27,30 @@ class HomeActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         // Refresh UI when returning from AddDogProfileActivity
+        // TODO: Load profiles from database
         checkProfilesAndUpdateUI()
     }
 
+    private fun setupRecyclerView() {
+        dogProfileAdapter = DogProfileAdapter(dogProfiles) { dogProfile ->
+            // Handle profile click - navigate to profile details
+            // TODO: Implement profile details view
+        }
+
+        binding.rvDogProfiles.apply {
+            layoutManager = LinearLayoutManager(this@HomeActivity)
+            adapter = dogProfileAdapter
+        }
+    }
+
     private fun setupUI() {
-        // Swipe to Continue button click
-        binding.btnSwipeToContinue.setOnClickListener {
+        // Add Profile button (empty state)
+        binding.btnAddProfile.setOnClickListener {
+            navigateToAddDogProfile()
+        }
+
+        // Add More button (when profiles exist)
+        binding.btnAddMore.setOnClickListener {
             navigateToAddDogProfile()
         }
 
@@ -66,34 +87,49 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun checkProfilesAndUpdateUI() {
-        // TODO: Check if user has dog profiles from database
-        // For now, we're using the hasDogProfiles variable
+        // TODO: Load profiles from database
+        // For now, we'll check if the list is empty
+        loadTemporaryProfiles() // Temporary - will be replaced with database call
 
-        if (hasDogProfiles) {
-            showProfilesContent()
-        } else {
+        if (dogProfiles.isEmpty()) {
             showEmptyState()
+        } else {
+            showProfilesContent()
         }
+    }
+
+    private fun loadTemporaryProfiles() {
+        // TODO: Replace this with actual database loading
+        // Load from ProfileManager
+        dogProfiles.clear()
+        dogProfiles.addAll(ProfileManager.getAllProfiles())
     }
 
     private fun showEmptyState() {
         binding.emptyStateLayout.visibility = View.VISIBLE
-        binding.fragmentContainer.visibility = View.GONE
+        binding.profilesContentLayout.visibility = View.GONE
     }
 
     private fun showProfilesContent() {
         binding.emptyStateLayout.visibility = View.GONE
-        binding.fragmentContainer.visibility = View.VISIBLE
+        binding.profilesContentLayout.visibility = View.VISIBLE
 
-        // TODO: Load DogProfilesFragment
-        // Example:
-        // supportFragmentManager.beginTransaction()
-        //     .replace(R.id.fragmentContainer, DogProfilesFragment())
-        //     .commit()
+        // Update profile count
+        binding.tvProfileCount.text = dogProfiles.size.toString()
+
+        // Update adapter
+        dogProfileAdapter.updateProfiles(dogProfiles)
     }
 
     private fun navigateToAddDogProfile() {
         val intent = Intent(this, AddDogProfileActivity::class.java)
         startActivity(intent)
+    }
+
+    // Temporary method to add a profile (for testing)
+    // TODO: Remove this and use database
+    fun addDogProfileTemp(profile: DogProfile) {
+        dogProfiles.add(profile)
+        checkProfilesAndUpdateUI()
     }
 }

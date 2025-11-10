@@ -85,11 +85,24 @@ class AddDogProfileActivity : AppCompatActivity() {
         val gender = if (binding.rbMale.isChecked) "Male" else "Female"
         val additionalInfo = binding.etAdditionalInfo.text.toString()
 
+        // Create DogProfile object
+        val dogProfile = DogProfile(
+            id = System.currentTimeMillis().toString(), // Temporary ID
+            name = name,
+            breed = breed,
+            age = age,
+            gender = gender,
+            weight = weight,
+            additionalInfo = additionalInfo
+        )
+
         // TODO: Save to database
-        // For now, just show success message and close activity
+        // For now, save to ProfileManager for temporary access
+        ProfileManager.addProfile(dogProfile)
+
         Toast.makeText(
             this,
-            "Profile saved! Name: $name, Breed: $breed",
+            "Profile saved! $name added successfully",
             Toast.LENGTH_SHORT
         ).show()
 

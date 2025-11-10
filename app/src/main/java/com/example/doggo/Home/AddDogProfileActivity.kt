@@ -1,10 +1,17 @@
 package com.example.doggo.Home
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.doggo.R
 import com.example.doggo.databinding.ActivityAddDogProfileBinding
+import com.example.doggo.network.RetrofitClient
+import com.example.doggo.network.AddDogRequest
+import com.example.doggo.network.ApiResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AddDogProfileActivity : AppCompatActivity() {
 
@@ -85,15 +92,66 @@ class AddDogProfileActivity : AppCompatActivity() {
         val gender = if (binding.rbMale.isChecked) "Male" else "Female"
         val additionalInfo = binding.etAdditionalInfo.text.toString()
 
-        // TODO: Save to database
-        // For now, just show success message and close activity
-        Toast.makeText(
-            this,
-            "Profile saved! Name: $name, Breed: $breed",
-            Toast.LENGTH_SHORT
-        ).show()
+        // Get ownerId from SharedPreferences
+        val sharedPref = getSharedPreferences("doggo_pref", MODE_PRIVATE)
+        val ownerId = sharedPref.getInt("user_id", 0)
 
-        // Return to previous screen
-        finish()
+        if (ownerId == 0) {
+            Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Show loading
+        Toast.makeText(this, "Saving dog profile...", Toast.LENGTH_SHORT).show()
+
+        // Create request object
+        val addDogRequest = AddDogRequest(
+            name = name,
+            breed = breed,
+            age = age,
+            birthDate = "", // You can add birth date field later
+            photo = "", // You can add photo URL later
+            ownerId = ownerId
+        )
+
+        // Send to backend
+        RetrofitClient.instance.addDog(addDogRequest).enqueue(object : Callback<ApiResponse> {
+            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    if (apiResponse?.success == true) {
+                        Toast.makeText(
+                            this@AddDogProfileActivity,
+                            "Dog profile saved successfully!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        // Set result and finish
+                        setResult(RESULT_OK)
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this@AddDogProfileActivity,
+                            apiResponse?.error ?: "Failed to save dog profile",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Toast.makeText(
+                        this@AddDogProfileActivity,
+                        "Failed to save: ${response.message()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                Toast.makeText(
+                    this@AddDogProfileActivity,
+                    "Network error: ${t.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
 }

@@ -2,6 +2,7 @@ package com.example.doggo
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -37,7 +38,6 @@ class SignInActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Logging in...", Toast.LENGTH_SHORT).show()
 
-            // ✅ PAKAI BACKEND NODE.JS, BUKAN LANGSUNG FIREBASE
             val signInRequest = SignInRequest(email, password)
 
             RetrofitClient.instance.signIn(signInRequest).enqueue(object : Callback<ApiResponse> {
@@ -45,25 +45,54 @@ class SignInActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val apiResponse = response.body()
                         if (apiResponse?.success == true) {
-                            Toast.makeText(this@SignInActivity, "Welcome back! User #${apiResponse.userId}", Toast.LENGTH_SHORT).show()
 
-                            // Simpan data user jika perlu
-                            // val sharedPref = getSharedPreferences("doggo_pref", MODE_PRIVATE)
-                            // sharedPref.edit().putInt("user_id", apiResponse.userId ?: 0).apply()
-                            // sharedPref.edit().putString("user_token", apiResponse.token).apply()
+                            // ✅ PENTING: SIMPAN TOKEN KE SHAREDPREFERENCES
+                            val sharedPref = getSharedPreferences("doggo_pref", MODE_PRIVATE)
+                            sharedPref.edit().apply {
+                                putString("user_token", apiResponse.token)
+                                putInt("user_id", apiResponse.userId ?: 0)
+                                putString("user_uid", apiResponse.uid)
+                                apply() // ✅ WAJIB PANGGIL apply() atau commit()
+                            }
+
+                            Log.d("SignIn", "✅ Token saved: ${apiResponse.token}")
+                            Log.d("SignIn", "✅ User ID: ${apiResponse.userId}")
+
+                            // Verifikasi token tersimpan
+                            val savedToken = sharedPref.getString("user_token", null)
+                            Log.d("SignIn", "🔍 Verify token: ${if (savedToken != null) "EXISTS" else "NULL"}")
+
+                            Toast.makeText(
+                                this@SignInActivity,
+                                "Welcome back! User #${apiResponse.userId}",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
                             startActivity(Intent(this@SignInActivity, HomeActivity::class.java))
                             finish()
                         } else {
-                            Toast.makeText(this@SignInActivity, apiResponse?.error ?: "Login failed", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@SignInActivity,
+                                apiResponse?.error ?: "Login failed",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } else {
-                        Toast.makeText(this@SignInActivity, "Login failed: ${response.message()}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@SignInActivity,
+                            "Login failed: ${response.message()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
                 override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                    Toast.makeText(this@SignInActivity, "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("SignIn", "❌ Network error: ${t.message}", t)
+                    Toast.makeText(
+                        this@SignInActivity,
+                        "Network error: ${t.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }

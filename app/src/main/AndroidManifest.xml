@@ -1,7 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.doggo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".DoggoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Doggo"
@@ -11,7 +15,7 @@
 
         <!-- Intro Activity (Launcher) -->
         <activity
-            android:name="com.example.doggo.IntroActivity"
+            android:name=".IntroActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,25 +25,25 @@
 
         <!-- Auth Activities -->
         <activity
-            android:name="com.example.doggo.SignInActivity"
+            android:name=".SignInActivity"
             android:exported="false" />
 
         <activity
-            android:name="com.example.doggo.SignUpActivity"
+            android:name=".SignUpActivity"
             android:exported="false" />
 
         <!-- Main Activity -->
         <activity
-            android:name="com.example.doggo.MainActivity"
+            android:name=".MainActivity"
             android:exported="false" />
 
         <!-- Home Activities -->
         <activity
-            android:name="com.example.doggo.Home.HomeActivity"
+            android:name=".Home.HomeActivity"
             android:exported="false" />
 
         <activity
-            android:name="com.example.doggo.Home.AddDogProfileActivity"
+            android:name=".Home.AddDogProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 

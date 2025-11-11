@@ -18,8 +18,8 @@ data class AddDogRequest(
     val breed: String = "",
     val age: Int = 0,
     val birthDate: String = "",
-    val photo: String = "",
-    val ownerId: Int
+    val photo: String = ""
+    // TANPA ownerId - karena diambil dari token
 )
 
 data class ApiResponse(
@@ -29,7 +29,7 @@ data class ApiResponse(
     val userId: Int? = null,
     val userDbId: Int? = null,
     val uid: String? = null,
-    val dogId: Int? = null,  // Added for dog responses
+    val dogId: Int? = null,
     val error: String? = null
 )
 
@@ -62,6 +62,6 @@ interface ApiService {
     @POST("api/dogs")
     fun addDog(@Body request: AddDogRequest): Call<ApiResponse>
 
-    @GET("api/dogs/{ownerId}")
-    fun getDogsByOwner(@Path("ownerId") ownerId: Int): Call<DogsResponse>
+    @GET("api/my-dogs")
+    fun getMyDogs(): Call<DogsResponse>
 }

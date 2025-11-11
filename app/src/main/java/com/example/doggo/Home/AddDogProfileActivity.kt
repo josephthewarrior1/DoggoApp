@@ -92,26 +92,15 @@ class AddDogProfileActivity : AppCompatActivity() {
         val gender = if (binding.rbMale.isChecked) "Male" else "Female"
         val additionalInfo = binding.etAdditionalInfo.text.toString()
 
-        // Get ownerId from SharedPreferences
-        val sharedPref = getSharedPreferences("doggo_pref", MODE_PRIVATE)
-        val ownerId = sharedPref.getInt("user_id", 0)
-
-        if (ownerId == 0) {
-            Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         // Show loading
         Toast.makeText(this, "Saving dog profile...", Toast.LENGTH_SHORT).show()
 
-        // Create request object
+        // ✅ PAKAI REQUEST TANPA ownerId
         val addDogRequest = AddDogRequest(
             name = name,
             breed = breed,
-            age = age,
-            birthDate = "", // You can add birth date field later
-            photo = "", // You can add photo URL later
-            ownerId = ownerId
+            age = age
+            // birthDate dan photo bisa dikosongin dulu
         )
 
         // Send to backend
@@ -126,7 +115,6 @@ class AddDogProfileActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        // Set result and finish
                         setResult(RESULT_OK)
                         finish()
                     } else {

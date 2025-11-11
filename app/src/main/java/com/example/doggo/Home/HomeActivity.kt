@@ -28,8 +28,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // Swipe to Continue button click
-        binding.btnSwipeToContinue.setOnClickListener {
+        // Add Pet button click
+        binding.btnAddPet.setOnClickListener {
             navigateToAddDogProfile()
         }
 

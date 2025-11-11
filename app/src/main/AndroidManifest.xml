@@ -47,6 +47,10 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.example.doggo.Home.DogProfileDetailActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

@@ -19,7 +19,6 @@ data class AddDogRequest(
     val age: Int = 0,
     val birthDate: String = "",
     val photo: String = ""
-    // TANPA ownerId - karena diambil dari token
 )
 
 data class ApiResponse(
@@ -35,7 +34,14 @@ data class ApiResponse(
 
 data class DogsResponse(
     val success: Boolean,
-    val dogs: Map<String, DogData> = emptyMap(),
+    val dogs: List<DogData?>? = emptyList(),
+    val error: String? = null
+)
+
+// ✅ NEW: Response untuk single dog
+data class DogResponse(
+    val success: Boolean,
+    val dog: DogData? = null,
     val error: String? = null
 )
 
@@ -44,8 +50,8 @@ data class DogData(
     val name: String,
     val breed: String,
     val age: Int,
-    val birthDate: String,
-    val photo: String,
+    val birthDate: String?,
+    val photo: String?,
     val ownerId: Int,
     val createdAt: String
 )
@@ -64,4 +70,8 @@ interface ApiService {
 
     @GET("api/my-dogs")
     fun getMyDogs(): Call<DogsResponse>
+
+    // ✅ NEW: Get single dog by ID
+    @GET("api/dogs/{id}")
+    fun getDogById(@Path("id") dogId: String): Call<DogResponse>
 }

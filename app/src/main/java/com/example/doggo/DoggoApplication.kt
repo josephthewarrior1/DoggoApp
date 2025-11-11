@@ -1,19 +1,14 @@
 package com.example.doggo
 
 import android.app.Application
-import android.util.Log
 import com.example.doggo.network.RetrofitClient
+import android.util.Log
 
 class DoggoApplication : Application() {
-
     override fun onCreate() {
         super.onCreate()
-
-        Log.d("DoggoApp", "🚀 Application onCreate called")
-
-        // ✅ PENTING: Initialize RetrofitClient dengan context
+        // Initialize RetrofitClient dengan context
         RetrofitClient.init(this)
-
-        Log.d("DoggoApp", "✅ RetrofitClient initialized successfully")
+        Log.d("DoggoApplication", "✅ Application initialized")
     }
 }

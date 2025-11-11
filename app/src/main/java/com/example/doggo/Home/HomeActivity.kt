@@ -34,11 +34,11 @@ class HomeActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         dogProfileAdapter = DogProfileAdapter(dogProfiles) { dogProfile ->
             // Handle profile click - navigate to profile details
-            // TODO: Implement profile details view
+            navigateToProfileDetail(dogProfile)
         }
 
         binding.rvDogProfiles.apply {
-            layoutManager = LinearLayoutManager(this@HomeActivity)
+            layoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = dogProfileAdapter
         }
     }
@@ -87,42 +87,72 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun checkProfilesAndUpdateUI() {
-        // TODO: Load profiles from database
-        // For now, we'll check if the list is empty
-        loadTemporaryProfiles() // Temporary - will be replaced with database call
+        // Load profiles from ProfileManager
+        loadTemporaryProfiles()
 
-        if (dogProfiles.isEmpty()) {
-            showEmptyState()
-        } else {
+        val profileCount = dogProfiles.size
+        android.util.Log.d("HomeActivity", "Number of profiles: $profileCount")
+        android.util.Log.d("HomeActivity", "isEmpty check: ${dogProfiles.isEmpty()}")
+
+        if (profileCount > 0) {
+            android.util.Log.d("HomeActivity", "Will show profiles content")
             showProfilesContent()
+        } else {
+            android.util.Log.d("HomeActivity", "Will show empty state")
+            showEmptyState()
         }
     }
 
     private fun loadTemporaryProfiles() {
-        // TODO: Replace this with actual database loading
         // Load from ProfileManager
         dogProfiles.clear()
-        dogProfiles.addAll(ProfileManager.getAllProfiles())
+        android.util.Log.d("HomeActivity", "dogProfiles cleared, size: ${dogProfiles.size}")
+
+        val allProfiles = ProfileManager.getAllProfiles()
+        android.util.Log.d("HomeActivity", "Loaded from ProfileManager: ${allProfiles.size} profiles")
+
+        dogProfiles.addAll(allProfiles)
+        android.util.Log.d("HomeActivity", "dogProfiles list now has: ${dogProfiles.size} profiles")
+
+        // Log each profile for debugging
+        dogProfiles.forEachIndexed { index, profile ->
+            android.util.Log.d("HomeActivity", "Profile $index: ${profile.name}, ${profile.breed}")
+        }
     }
 
     private fun showEmptyState() {
+        android.util.Log.d("HomeActivity", "Showing empty state")
         binding.emptyStateLayout.visibility = View.VISIBLE
         binding.profilesContentLayout.visibility = View.GONE
     }
 
     private fun showProfilesContent() {
+        android.util.Log.d("HomeActivity", "Showing profiles content")
         binding.emptyStateLayout.visibility = View.GONE
         binding.profilesContentLayout.visibility = View.VISIBLE
 
         // Update profile count
         binding.tvProfileCount.text = dogProfiles.size.toString()
 
-        // Update adapter
-        dogProfileAdapter.updateProfiles(dogProfiles)
+        // Log before updating adapter
+        android.util.Log.d("HomeActivity", "About to update adapter with ${dogProfiles.size} profiles")
+        dogProfiles.forEach { profile ->
+            android.util.Log.d("HomeActivity", "Profile in list: ${profile.name}")
+        }
+
+        // Update adapter with a copy of the list
+        dogProfileAdapter.updateProfiles(dogProfiles.toList())
+        android.util.Log.d("HomeActivity", "Adapter updated with ${dogProfiles.size} profiles")
     }
 
     private fun navigateToAddDogProfile() {
         val intent = Intent(this, AddDogProfileActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun navigateToProfileDetail(dogProfile: DogProfile) {
+        val intent = Intent(this, DogProfileDetailActivity::class.java)
+        intent.putExtra("DOG_PROFILE_ID", dogProfile.id)
         startActivity(intent)
     }
 

@@ -6,49 +6,51 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.doggo.databinding.ItemDogProfileCardBinding
 
 class DogProfileAdapter(
-    private var dogProfiles: MutableList<DogProfile>,
-    private val onItemClick: (DogProfile) -> Unit
-) : RecyclerView.Adapter<DogProfileAdapter.DogProfileViewHolder>() {
+    private val profiles: MutableList<DogProfile>,
+    private val onClick: (DogProfile) -> Unit
+) : RecyclerView.Adapter<DogProfileAdapter.ViewHolder>() {
 
-    inner class DogProfileViewHolder(private val binding: ItemDogProfileCardBinding) :
+    inner class ViewHolder(private val binding: ItemDogProfileCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(dogProfile: DogProfile) {
-            binding.tvDogName.text = dogProfile.name
-            binding.tvDogInfo.text = "${dogProfile.gender} | ${dogProfile.breed}"
+        fun bind(profile: DogProfile) {
+            binding.tvDogName.text = profile.name
+            binding.tvDogBreed.text = "Dog | ${profile.breed}"
 
             // TODO: Load photo from URL when implementing image storage
             // For now, it will use the placeholder from layout
 
             binding.root.setOnClickListener {
-                onItemClick(dogProfile)
+                onClick(profile)
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogProfileViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemDogProfileCardBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return DogProfileViewHolder(binding)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: DogProfileViewHolder, position: Int) {
-        holder.bind(dogProfiles[position])
+    override fun getItemCount(): Int = profiles.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(profiles[position])
     }
 
-    override fun getItemCount(): Int = dogProfiles.size
-
+    /**
+     * Replace adapter data and refresh the RecyclerView.
+     */
     fun updateProfiles(newProfiles: List<DogProfile>) {
-        dogProfiles.clear()
-        dogProfiles.addAll(newProfiles)
+        android.util.Log.d("DogProfileAdapter", "updateProfiles called with ${newProfiles.size} profiles")
+        profiles.clear()
+        android.util.Log.d("DogProfileAdapter", "profiles cleared, size: ${profiles.size}")
+        profiles.addAll(newProfiles)
+        android.util.Log.d("DogProfileAdapter", "profiles after addAll: ${profiles.size}")
         notifyDataSetChanged()
-    }
-
-    fun addProfile(profile: DogProfile) {
-        dogProfiles.add(profile)
-        notifyItemInserted(dogProfiles.size - 1)
+        android.util.Log.d("DogProfileAdapter", "notifyDataSetChanged called")
     }
 }

@@ -32,13 +32,14 @@ data class ApiResponse(
     val error: String? = null
 )
 
+// ✅ FIXED: Changed from List to Map
 data class DogsResponse(
     val success: Boolean,
-    val dogs: List<DogData?>? = emptyList(),
+    val dogs: Map<String, DogData>? = emptyMap(),  // Changed from List to Map
     val error: String? = null
 )
 
-// ✅ NEW: Response untuk single dog
+// Response for single dog
 data class DogResponse(
     val success: Boolean,
     val dog: DogData? = null,
@@ -71,7 +72,6 @@ interface ApiService {
     @GET("api/my-dogs")
     fun getMyDogs(): Call<DogsResponse>
 
-    // ✅ NEW: Get single dog by ID
     @GET("api/dogs/{id}")
     fun getDogById(@Path("id") dogId: String): Call<DogResponse>
 }

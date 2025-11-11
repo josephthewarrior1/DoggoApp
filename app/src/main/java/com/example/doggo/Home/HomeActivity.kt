@@ -98,14 +98,17 @@ class HomeActivity : AppCompatActivity() {
                     Log.d("HomeActivity", "✅ API Response: ${dogsResponse?.success}")
 
                     if (dogsResponse?.success == true) {
-                        val dogsList = dogsResponse.dogs ?: emptyList()
+                        // ✅ FIXED: Convert Map to List
+                        val dogsMap = dogsResponse.dogs ?: emptyMap()
+                        val dogsList = dogsMap.values.toList()
+
                         Log.d("HomeActivity", "📊 Dogs list size: ${dogsList.size}")
 
                         // Clear existing profiles
                         dogProfiles.clear()
 
-                        // Convert API response to DogProfile objects - FILTER NULL VALUES
-                        dogsList.filterNotNull().forEach { dogData: DogData -> // ✅ TAMBAH TYPE EXPLICIT DI SINI
+                        // Convert API response to DogProfile objects
+                        dogsList.forEach { dogData ->
                             val profile = DogProfile(
                                 id = dogData.dogId.toString(),
                                 name = dogData.name,

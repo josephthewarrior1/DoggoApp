@@ -1,9 +1,11 @@
 package com.example.doggo.Home
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,14 +23,21 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var dogProfileAdapter: DogProfileAdapter
     private val dogProfiles = mutableListOf<DogProfile>()
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var tvUserName: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize SharedPreferences dan TextView
+        sharedPreferences = getSharedPreferences("doggo_pref", MODE_PRIVATE)
+        tvUserName = findViewById(R.id.tvUserName) // Pastikan ID ini ada di XML layout
+
         setupRecyclerView()
         setupUI()
+        loadUserData() // ← TAMBAH INI: Load username dari SharedPreferences
         checkProfilesAndUpdateUI()
     }
 
@@ -36,6 +45,24 @@ class HomeActivity : AppCompatActivity() {
         super.onResume()
         // Refresh UI ketika kembali dari AddDogProfileActivity
         checkProfilesAndUpdateUI()
+    }
+
+    private fun loadUserData() {
+        val username = sharedPreferences.getString("username", null)
+
+        if (!username.isNullOrEmpty()) {
+            // Jika username ada, set ke TextView
+            tvUserName.text = username
+            Log.d("HomeActivity", "✅ Username loaded from SharedPreferences: $username")
+        } else {
+            // Jika ga ada username, set default
+            tvUserName.text = "User"
+            Log.d("HomeActivity", "❌ No username found in SharedPreferences, using default")
+
+            // Debug: Check what's actually in SharedPreferences
+            val allPrefs = sharedPreferences.all
+            Log.d("HomeActivity", "🔍 All SharedPreferences: $allPrefs")
+        }
     }
 
     private fun setupRecyclerView() {
@@ -62,18 +89,36 @@ class HomeActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_home -> true
                 R.id.nav_profiles -> true
-                R.id.nav_my_profile -> true
+                R.id.nav_my_profile -> {
+                    // TODO: Navigate to user profile
+                    showUserProfile()
+                    true
+                }
                 else -> false
             }
         }
 
         binding.btnSearch.setOnClickListener {
             // TODO: Implement search functionality
+            Toast.makeText(this, "Search clicked", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnMenu.setOnClickListener {
             // TODO: Implement menu functionality
+            showUserMenu()
         }
+    }
+
+    private fun showUserMenu() {
+        val username = sharedPreferences.getString("username", "User")
+        Toast.makeText(this, "Logged in as: $username", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showUserProfile() {
+        val username = sharedPreferences.getString("username", "User")
+        val userId = sharedPreferences.getString("user_id", "Unknown")
+
+        Toast.makeText(this, "User Profile: $username (ID: $userId)", Toast.LENGTH_SHORT).show()
     }
 
     private fun checkProfilesAndUpdateUI() {

@@ -20,16 +20,25 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
+        val etUsername = findViewById<EditText>(R.id.etUsername) // ← TAMBAH INI
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnSignUp = findViewById<Button>(R.id.btnSignUp)
 
         btnSignUp.setOnClickListener {
+            val username = etUsername.text.toString().trim() // ← TAMBAH INI
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
-            if (email.isEmpty() || password.isEmpty()) {
+            // Validasi semua field
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validasi username (optional)
+            if (username.length < 3) {
+                Toast.makeText(this, "Username should be at least 3 characters", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -40,7 +49,8 @@ class SignUpActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Creating account...", Toast.LENGTH_SHORT).show()
 
-            val signUpRequest = SignUpRequest(email, password)
+            // TAMBAH username di SignUpRequest
+            val signUpRequest = SignUpRequest(email, password, username)
 
             RetrofitClient.instance.signUp(signUpRequest).enqueue(object : Callback<ApiResponse> {
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {

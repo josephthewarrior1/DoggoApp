@@ -46,38 +46,44 @@ class SignInActivity : AppCompatActivity() {
                         val apiResponse = response.body()
                         if (apiResponse?.success == true) {
 
-                            // ✅ PENTING: SIMPAN TOKEN KE SHAREDPREFERENCES
+                            // ✅ SIMPAN SEMUA DATA USER + USERNAME
                             val sharedPref = getSharedPreferences("doggo_pref", MODE_PRIVATE)
                             sharedPref.edit().apply {
                                 putString("user_token", apiResponse.token)
-                                putInt("user_id", apiResponse.userId ?: 0)
+                                putString("user_id", apiResponse.userId?.toString() ?: "0") // ← FIX: Convert to String
                                 putString("user_uid", apiResponse.uid)
-                                apply() // ✅ WAJIB PANGGIL apply() atau commit()
+                                putString("user_db_id", apiResponse.userDbId?.toString() ?: "0") // ← Juga ini
+                                putString("username", apiResponse.username ?: "User")
+                                apply()
                             }
 
-                            Log.d("SignIn", "✅ Token saved: ${apiResponse.token}")
-                            Log.d("SignIn", "✅ User ID: ${apiResponse.userId}")
+                            Log.d("SignIn", "✅ Login successful!")
+                            Log.d("SignIn", "   - Username: ${apiResponse.username}")
+                            Log.d("SignIn", "   - User ID: ${apiResponse.userId}")
+                            Log.d("SignIn", "   - Token: ${apiResponse.token?.take(20)}...")
 
-                            // Verifikasi token tersimpan
-                            val savedToken = sharedPref.getString("user_token", null)
-                            Log.d("SignIn", "🔍 Verify token: ${if (savedToken != null) "EXISTS" else "NULL"}")
+                            // Verifikasi data tersimpan
+                            val savedUsername = sharedPref.getString("username", null)
+                            val savedUserId = sharedPref.getString("user_id", null)
+                            Log.d("SignIn", "🔍 Verified - Username: $savedUsername, UserId: $savedUserId")
 
                             Toast.makeText(
                                 this@SignInActivity,
-                                "Welcome back! User #${apiResponse.userId}",
+                                "Welcome back, ${apiResponse.username}! 🐶",
                                 Toast.LENGTH_SHORT
                             ).show()
 
+                            // Redirect ke HomeActivity
                             startActivity(Intent(this@SignInActivity, HomeActivity::class.java))
                             finish()
+
                         } else {
-                            Toast.makeText(
-                                this@SignInActivity,
-                                apiResponse?.error ?: "Login failed",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val errorMsg = apiResponse?.error ?: "Login failed"
+                            Log.e("SignIn", "❌ API Error: $errorMsg")
+                            Toast.makeText(this@SignInActivity, errorMsg, Toast.LENGTH_SHORT).show()
                         }
                     } else {
+                        Log.e("SignIn", "❌ HTTP Error: ${response.code()} - ${response.message()}")
                         Toast.makeText(
                             this@SignInActivity,
                             "Login failed: ${response.message()}",

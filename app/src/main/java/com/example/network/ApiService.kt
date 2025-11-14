@@ -5,7 +5,8 @@ import retrofit2.http.*
 
 data class SignUpRequest(
     val email: String,
-    val password: String
+    val password: String,
+    val username: String
 )
 
 data class SignInRequest(
@@ -29,6 +30,7 @@ data class ApiResponse(
     val userDbId: Int? = null,
     val uid: String? = null,
     val dogId: Int? = null,
+    val username: String? = null, // ← TAMBAH INI
     val error: String? = null
 )
 

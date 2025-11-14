@@ -7,8 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.doggo.Home.HomeActivity
 import com.example.doggo.network.RetrofitClient
+import com.example.doggo.network.SignUpRequest
+import com.example.doggo.network.ApiResponse
 import com.example.doggo.network.SignUpRequest
 import com.example.doggo.network.SignInRequest
 import com.example.doggo.network.ApiResponse
@@ -32,6 +33,11 @@ class SignUpActivity : AppCompatActivity() {
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password.length < 6) {
+                Toast.makeText(this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -145,6 +151,45 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
 
+                            Log.d("SignUp", "✅ Account created successfully")
+
+                            Toast.makeText(
+                                this@SignUpActivity,
+                                "Account created! Please sign in",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            // Redirect ke SignIn activity
+                            val intent = Intent(this@SignUpActivity, SignInActivity::class.java)
+                            intent.putExtra("email", email) // Optional: biar email nya udah keisi
+                            startActivity(intent)
+                            finish()
+
+                        } else {
+                            val errorMsg = apiResponse?.error ?: "Sign up failed"
+                            Log.e("SignUp", "❌ API Error: $errorMsg")
+                            Toast.makeText(this@SignUpActivity, errorMsg, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Log.e("SignUp", "❌ HTTP Error: ${response.code()} - ${response.message()}")
+                        Toast.makeText(
+                            this@SignUpActivity,
+                            "Sign up failed: ${response.message()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                    Log.e("SignUp", "❌ Network Error: ${t.message}", t)
+                    Toast.makeText(
+                        this@SignUpActivity,
+                        "Network error: ${t.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        }
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                 Log.e("SignUp", "❌ Auto sign in network error: ${t.message}")
                 Toast.makeText(

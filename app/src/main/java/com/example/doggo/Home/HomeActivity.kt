@@ -143,7 +143,7 @@ class HomeActivity : AppCompatActivity() {
                     Log.d("HomeActivity", "✅ API Response: ${dogsResponse?.success}")
 
                     if (dogsResponse?.success == true) {
-                        // ✅ FIXED: Convert Map to List
+                        // ✅ Convert Map to List
                         val dogsMap = dogsResponse.dogs ?: emptyMap()
                         val dogsList = dogsMap.values.toList()
 
@@ -159,13 +159,13 @@ class HomeActivity : AppCompatActivity() {
                                 name = dogData.name,
                                 breed = dogData.breed,
                                 age = dogData.age,
-                                weight = 0.0,
-                                gender = "",
+                                weight = dogData.weight ?: 0.0,  // ✅ FETCH WEIGHT
+                                gender = dogData.gender ?: "",   // ✅ FETCH GENDER
                                 photoUrl = dogData.photo ?: "",
                                 additionalInfo = ""
                             )
                             dogProfiles.add(profile)
-                            Log.d("HomeActivity", "🐶 Added: ${dogData.name} (${dogData.breed})")
+                            Log.d("HomeActivity", "🐶 Added: ${dogData.name} (${dogData.breed}) - ${dogData.gender}, ${dogData.weight}kg")
                         }
 
                         Log.d("HomeActivity", "✅ Total dogs loaded: ${dogProfiles.size}")
@@ -214,7 +214,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun showEmptyState() {
-        Log.d("HomeActivity", "📭 Showing empty state")
+        Log.d("HomeActivity", "🔭 Showing empty state")
         binding.emptyStateLayout.visibility = View.VISIBLE
         binding.profilesContentLayout.visibility = View.GONE
     }

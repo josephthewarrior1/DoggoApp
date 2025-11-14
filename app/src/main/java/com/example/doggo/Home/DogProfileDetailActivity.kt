@@ -57,8 +57,8 @@ class DogProfileDetailActivity : AppCompatActivity() {
                             name = dogData.name,
                             breed = dogData.breed,
                             age = dogData.age,
-                            weight = 0.0, // Backend belum ada weight
-                            gender = "",  // Backend belum ada gender
+                            weight = dogData.weight ?: 0.0,      // ✅ FETCH WEIGHT
+                            gender = dogData.gender ?: "",       // ✅ FETCH GENDER
                             photoUrl = dogData.photo ?: "",
                             additionalInfo = "" // Backend belum ada additionalInfo
                         )
@@ -117,7 +117,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
             // For now, use placeholder
         }
 
-        Log.d("DogProfileDetail", "📱 Displaying: ${profile.name} - ${profile.breed}")
+        Log.d("DogProfileDetail", "📱 Displaying: ${profile.name} - ${profile.breed} - ${profile.gender} - ${profile.weight}kg")
     }
 
     private fun setupUI() {

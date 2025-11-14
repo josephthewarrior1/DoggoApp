@@ -18,6 +18,8 @@ data class AddDogRequest(
     val name: String,
     val breed: String = "",
     val age: Int = 0,
+    val weight: Double? = null,
+    val gender: String? = null,
     val birthDate: String = "",
     val photo: String = ""
 )
@@ -30,14 +32,14 @@ data class ApiResponse(
     val userDbId: Int? = null,
     val uid: String? = null,
     val dogId: Int? = null,
-    val username: String? = null, // ← TAMBAH INI
+    val username: String? = null,
     val error: String? = null
 )
 
-// ✅ FIXED: Changed from List to Map
+// Changed from List to Map
 data class DogsResponse(
     val success: Boolean,
-    val dogs: Map<String, DogData>? = emptyMap(),  // Changed from List to Map
+    val dogs: Map<String, DogData>? = emptyMap(),
     val error: String? = null
 )
 
@@ -56,6 +58,8 @@ data class DogData(
     val birthDate: String?,
     val photo: String?,
     val ownerId: Int,
+    val weight: Double?,
+    val gender: String?,
     val createdAt: String
 )
 

@@ -95,12 +95,14 @@ class AddDogProfileActivity : AppCompatActivity() {
         // Show loading
         Toast.makeText(this, "Saving dog profile...", Toast.LENGTH_SHORT).show()
 
-        // ✅ PAKAI REQUEST TANPA ownerId
+        // ✅ INCLUDE weight and gender in the request
         val addDogRequest = AddDogRequest(
             name = name,
             breed = breed,
-            age = age
-            // birthDate dan photo bisa dikosongin dulu
+            age = age,
+            weight = weight,    // ✅ ADD WEIGHT
+            gender = gender     // ✅ ADD GENDER
+            // birthDate and photo can be empty for now
         )
 
         // Send to backend

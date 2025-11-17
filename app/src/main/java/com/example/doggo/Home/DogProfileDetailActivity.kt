@@ -1,5 +1,6 @@
 package com.example.doggo.Home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -135,8 +136,9 @@ class DogProfileDetailActivity : AppCompatActivity() {
         }
 
         binding.btnEdit.setOnClickListener {
-            // TODO: Navigate to edit profile screen
-            Toast.makeText(this, "Edit feature coming soon!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, EditDogProfileActivity::class.java)
+            intent.putExtra("DOG_ID", dogProfile?.id?.toIntOrNull() ?: -1)
+            startActivity(intent)
         }
 
         binding.btnDelete.setOnClickListener {

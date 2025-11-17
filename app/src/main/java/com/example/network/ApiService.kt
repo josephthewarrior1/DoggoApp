@@ -94,4 +94,10 @@ interface ApiService {
 
     @GET("api/dogs/{id}")
     fun getDogById(@Path("id") dogId: String): Call<DogResponse>
+
+    @PUT("api/dogs/{id}")
+    fun updateDog(
+        @Path("id") dogId: Int,
+        @Body request: AddDogRequest
+    ): Call<ApiResponse>
 }

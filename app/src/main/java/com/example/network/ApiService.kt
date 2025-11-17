@@ -21,9 +21,22 @@ data class AddDogRequest(
     val weight: Double? = null,
     val gender: String? = null,
     val birthDate: String = "",
-    val photo: String = ""
+    val photo: String = "",
+    val schedule: DogSchedule? = null
+)
+data class DogSchedule(
+    val eat: List<ScheduleItem> = emptyList(),
+    val walk: List<ScheduleItem> = emptyList(),
+    val sleep: List<ScheduleItem> = emptyList(),
+    val medicine: List<ScheduleItem> = emptyList(),
+    val groom: List<ScheduleItem> = emptyList()
 )
 
+data class ScheduleItem(
+    val time: String,        // format: "HH:mm" contoh "08:00"
+    val description: String, // contoh: "Morning walk"
+    val days: List<String> = emptyList() // ["Monday", "Tuesday", ...] atau empty untuk every day
+)
 data class ApiResponse(
     val success: Boolean,
     val message: String? = null,
@@ -60,7 +73,8 @@ data class DogData(
     val ownerId: Int,
     val weight: Double?,
     val gender: String?,
-    val createdAt: String
+    val createdAt: String,
+    val schedule: DogSchedule? = null
 )
 
 interface ApiService {

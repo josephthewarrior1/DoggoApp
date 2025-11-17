@@ -71,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.rvDogProfiles.apply {
-            layoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(this@HomeActivity, LinearLayoutManager.VERTICAL, false)
             adapter = dogProfileAdapter
         }
     }

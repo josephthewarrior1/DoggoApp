@@ -1,0 +1,70 @@
+[
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\activity_signup.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\activity_signup.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\ic_groom.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\ic_groom.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\activity_dog_profile_detail.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\activity_dog_profile_detail.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\activity_intro.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\activity_intro.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\ic_walk.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\ic_walk.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\activity_home.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\activity_home.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\item_schedule.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\item_schedule.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\fragment_dog_profiles.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\fragment_dog_profiles.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\activity_add_dog_profile.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\activity_add_dog_profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\ic_schedule.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\ic_schedule.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\fragment_my_profile.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\fragment_my_profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\item_dog_profile_card.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\item_dog_profile_card.xml"
+    },
+    {
+        "merged": "com.example.doggo.app-mergeDebugResources-77:/layout/dialog_schedule.xml",
+        "source": "com.example.doggo.app-main-80:/layout/dialog_schedule.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\dialog_schedule.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\dialog_schedule.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\ic_eat.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\ic_eat.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\activity_signin.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\activity_signin.xml"
+    },
+    {
+        "merged": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-mergeDebugResources-77:\\layout\\ic_medicine.xml",
+        "source": "C:\\Users\\ASUS\\.gradle\\daemon\\8.13\\com.example.doggo.app-main-80:\\layout\\ic_medicine.xml"
+    }
+]

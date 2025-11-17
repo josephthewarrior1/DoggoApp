@@ -2,7 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.doggo">
 
+    <!-- ✅ Existing permission -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- ✅ NEW: Camera permission -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- ✅ NEW: Read external storage (for gallery access on Android 12 and below) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <!-- ✅ NEW: For Android 13+ (API 33+) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- ✅ NEW: Camera feature (optional, not all devices have camera) -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:name=".DoggoApplication"

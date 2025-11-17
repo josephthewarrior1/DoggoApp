@@ -1,0 +1,114 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Main Dog (Husky-style) -->
+    <path
+        android:fillColor="#C5CAE9"
+        android:pathData="M100,80c-15,0 -27,12 -27,27c0,15 12,27 27,27c15,0 27,-12 27,-27C127,92 115,80 100,80z"/>
+
+    <!-- Ears -->
+    <path
+        android:fillColor="#C5CAE9"
+        android:pathData="M85,70c-5,0 -9,4 -9,9l0,18c0,5 4,9 9,9c5,0 9,-4 9,-9l0,-18C94,74 90,70 85,70z"/>
+    <path
+        android:fillColor="#C5CAE9"
+        android:pathData="M115,70c-5,0 -9,4 -9,9l0,18c0,5 4,9 9,9c5,0 9,-4 9,-9l0,-18C124,74 120,70 115,70z"/>
+
+    <!-- Eyes -->
+    <path
+        android:fillColor="#5C6BC0"
+        android:pathData="M90,96c-2.209,0 -4,1.791 -4,4c0,2.209 1.791,4 4,4c2.209,0 4,-1.791 4,-4C94,97.791 92.209,96 90,96z"/>
+    <path
+        android:fillColor="#5C6BC0"
+        android:pathData="M110,96c-2.209,0 -4,1.791 -4,4c0,2.209 1.791,4 4,4c2.209,0 4,-1.791 4,-4C114,97.791 112.209,96 110,96z"/>
+
+    <!-- Nose -->
+    <path
+        android:fillColor="#5C6BC0"
+        android:pathData="M100,105c-3,0 -5,2 -5,4c0,2 2,4 5,4c3,0 5,-2 5,-4C105,107 103,105 100,105z"/>
+
+    <!-- Mouth -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#5C6BC0"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M100,109 Q92,115 85,112"/>
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#5C6BC0"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M100,109 Q108,115 115,112"/>
+
+    <!-- Small Cat on left -->
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M60,120c-8,0 -14,6 -14,14c0,8 6,14 14,14c8,0 14,-6 14,-14C74,126 68,120 60,120z"/>
+
+    <!-- Cat Ears (pointy) -->
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M52,115 L56,125 L48,125 Z"/>
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M68,115 L72,125 L64,125 Z"/>
+
+    <!-- Cat Eyes -->
+    <path
+        android:fillColor="#5C6BC0"
+        android:pathData="M56,129.5c-1.381,0 -2.5,1.119 -2.5,2.5c0,1.381 1.119,2.5 2.5,2.5c1.381,0 2.5,-1.119 2.5,-2.5C58.5,130.619 57.381,129.5 56,129.5z"/>
+    <path
+        android:fillColor="#5C6BC0"
+        android:pathData="M64,129.5c-1.381,0 -2.5,1.119 -2.5,2.5c0,1.381 1.119,2.5 2.5,2.5c1.381,0 2.5,-1.119 2.5,-2.5C66.5,130.619 65.381,129.5 64,129.5z"/>
+
+    <!-- Small Dog on right -->
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M140,120c-8,0 -14,6 -14,14c0,8 6,14 14,14c8,0 14,-6 14,-14C154,126 148,120 140,120z"/>
+
+    <!-- Small Dog Ears (floppy) -->
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M132,115c-3,0 -5,2 -5,5l0,8c0,3 2,5 5,5c3,0 5,-2 5,-5l0,-8C137,117 135,115 132,115z"/>
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M148,115c-3,0 -5,2 -5,5l0,8c0,3 2,5 5,5c3,0 5,-2 5,-5l0,-8C153,117 151,115 148,115z"/>
+
+    <!-- Small Dog Eyes -->
+    <path
+        android:fillColor="#5C6BC0"
+        android:pathData="M136,129.5c-1.381,0 -2.5,1.119 -2.5,2.5c0,1.381 1.119,2.5 2.5,2.5c1.381,0 2.5,-1.119 2.5,-2.5C138.5,130.619 137.381,129.5 136,129.5z"/>
+    <path
+        android:fillColor="#5C6BC0"
+        android:pathData="M144,129.5c-1.381,0 -2.5,1.119 -2.5,2.5c0,1.381 1.119,2.5 2.5,2.5c1.381,0 2.5,-1.119 2.5,-2.5C146.5,130.619 145.381,129.5 144,129.5z"/>
+
+    <!-- Bird Body (ellipse converted to path) -->
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M155,64c-4.418,0 -8,2.686 -8,6c0,3.314 3.582,6 8,6c4.418,0 8,-2.686 8,-6C163,66.686 159.418,64 155,64z"/>
+
+    <!-- Bird Head -->
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M162,63c-2.761,0 -5,2.239 -5,5c0,2.761 2.239,5 5,5c2.761,0 5,-2.239 5,-5C167,65.239 164.761,63 162,63z"/>
+
+    <!-- Bird Eye -->
+    <path
+        android:fillColor="#5C6BC0"
+        android:pathData="M163,66.5c-0.828,0 -1.5,0.672 -1.5,1.5c0,0.828 0.672,1.5 1.5,1.5c0.828,0 1.5,-0.672 1.5,-1.5C164.5,67.172 163.828,66.5 163,66.5z"/>
+
+    <!-- Bird Beak -->
+    <path
+        android:fillColor="#FFB74D"
+        android:pathData="M166,68 L170,68 L166,70 Z"/>
+
+    <!-- Bird Tail -->
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M147,71 L150,73 L147,75 Z"/>
+
+</vector>

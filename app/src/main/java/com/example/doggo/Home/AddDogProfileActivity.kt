@@ -1,12 +1,18 @@
 package com.example.doggo.Home
 
 import android.app.AlertDialog
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.doggo.R
 import com.example.doggo.databinding.ActivityAddDogProfileBinding
 import com.example.doggo.network.RetrofitClient
@@ -17,11 +23,35 @@ import com.example.doggo.network.ApiResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
 
 class AddDogProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddDogProfileBinding
     private val scheduleItems = mutableListOf<ScheduleItem>()
+    private var selectedImageBase64: String? = null
+    private var selectedImageUri: Uri? = null
+
+    // Image Picker Launcher
+    private val imagePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+            displaySelectedImage(it)
+            convertImageToBase64(it)
+        }
+    }
+
+    // Camera Launcher
+    private val cameraLauncher = registerForActivityResult(
+        ActivityResultContracts.TakePicturePreview()
+    ) { bitmap: Bitmap? ->
+        bitmap?.let {
+            displaySelectedBitmap(it)
+            convertBitmapToBase64(it)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +66,9 @@ class AddDogProfileActivity : AppCompatActivity() {
             finish()
         }
 
+        // Image picker click
         binding.cvProfilePhoto.setOnClickListener {
-            Toast.makeText(this, "Image picker coming soon!", Toast.LENGTH_SHORT).show()
+            showImagePickerDialog()
         }
 
         binding.btnSave.setOnClickListener {
@@ -51,28 +82,124 @@ class AddDogProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun showImagePickerDialog() {
+        val options = arrayOf("Take Photo", "Choose from Gallery", "Cancel")
+
+        AlertDialog.Builder(this)
+            .setTitle("Select Photo")
+            .setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> openCamera()
+                    1 -> openGallery()
+                    2 -> dialog.dismiss()
+                }
+            }
+            .show()
+    }
+
+    private fun openCamera() {
+        try {
+            cameraLauncher.launch(null)
+        } catch (e: Exception) {
+            Log.e("AddDogProfile", "Camera error: ${e.message}")
+            Toast.makeText(this, "Camera not available", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openGallery() {
+        try {
+            imagePickerLauncher.launch("image/*")
+        } catch (e: Exception) {
+            Log.e("AddDogProfile", "Gallery error: ${e.message}")
+            Toast.makeText(this, "Gallery not available", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun displaySelectedImage(uri: Uri) {
+        // Load image using Glide
+        Glide.with(this)
+            .load(uri)
+            .centerCrop()
+            .placeholder(R.drawable.ic_dog_placeholder)
+            .into(binding.ivDogPhoto)
+
+        // Update hint text
+        binding.tvAddPhoto.text = "Photo selected ✓"
+
+        Log.d("AddDogProfile", "✅ Image selected from gallery")
+    }
+
+    private fun displaySelectedBitmap(bitmap: Bitmap) {
+        binding.ivDogPhoto.setImageBitmap(bitmap)
+        binding.tvAddPhoto.text = "Photo captured ✓"
+        Log.d("AddDogProfile", "✅ Image captured from camera")
+    }
+
+    private fun convertImageToBase64(uri: Uri) {
+        try {
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+            convertBitmapToBase64(bitmap)
+        } catch (e: Exception) {
+            Log.e("AddDogProfile", "❌ Image conversion error: ${e.message}")
+            Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun convertBitmapToBase64(bitmap: Bitmap) {
+        try {
+            // Resize bitmap to reduce size (max 800x800)
+            val resizedBitmap = resizeBitmap(bitmap, 800, 800)
+
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+
+            selectedImageBase64 = "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.NO_WRAP)
+
+            Log.d("AddDogProfile", "✅ Image converted to Base64 (${byteArray.size / 1024} KB)")
+        } catch (e: Exception) {
+            Log.e("AddDogProfile", "❌ Base64 conversion error: ${e.message}")
+            Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun resizeBitmap(bitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+
+        val ratioBitmap = width.toFloat() / height.toFloat()
+        val ratioMax = maxWidth.toFloat() / maxHeight.toFloat()
+
+        var finalWidth = maxWidth
+        var finalHeight = maxHeight
+
+        if (ratioMax > ratioBitmap) {
+            finalWidth = (maxHeight.toFloat() * ratioBitmap).toInt()
+        } else {
+            finalHeight = (maxWidth.toFloat() / ratioBitmap).toInt()
+        }
+
+        return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
+    }
+
     private fun showScheduleDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_schedule, null)
 
-        // Setup NumberPickers
         val npHour = dialogView.findViewById<NumberPicker>(R.id.npHour)
         val npMinute = dialogView.findViewById<NumberPicker>(R.id.npMinute)
 
-        // Configure hour picker (0-23) - PROGRAMMATICALLY
         npHour.minValue = 0
         npHour.maxValue = 23
-        npHour.value = 8 // Default to 8 AM
+        npHour.value = 8
         npHour.setFormatter { i -> String.format("%02d", i) }
         npHour.wrapSelectorWheel = true
 
-        // Configure minute picker (0-59) - PROGRAMMATICALLY
         npMinute.minValue = 0
         npMinute.maxValue = 59
-        npMinute.value = 0 // Default to 00 minutes
+        npMinute.value = 0
         npMinute.setFormatter { i -> String.format("%02d", i) }
         npMinute.wrapSelectorWheel = true
 
-        // Set default description based on selected type
         val etDescription = dialogView.findViewById<EditText>(R.id.etDescription)
         val rgScheduleType = dialogView.findViewById<RadioGroup>(R.id.rgScheduleType)
 
@@ -173,7 +300,6 @@ class AddDogProfileActivity : AppCompatActivity() {
         val weight = binding.etWeight.text.toString().toDoubleOrNull() ?: 0.0
         val gender = if (binding.rbMale.isChecked) "Male" else "Female"
 
-        // Create schedule from collected items
         val schedule = if (scheduleItems.isNotEmpty()) {
             DogSchedule(
                 eat = scheduleItems.filter { it.description.contains("eat", true) || it.description.contains("food", true) || it.description.contains("meal", true) },
@@ -183,10 +309,12 @@ class AddDogProfileActivity : AppCompatActivity() {
                 groom = scheduleItems.filter { it.description.contains("groom", true) || it.description.contains("bath", true) }
             )
         } else {
-            null // No schedule if user didn't add any
+            null
         }
 
-        Toast.makeText(this, "Saving dog profile...", Toast.LENGTH_SHORT).show()
+        // Show loading
+        binding.btnSave.isEnabled = false
+        binding.btnSave.text = "Uploading..."
 
         val addDogRequest = AddDogRequest(
             name = name,
@@ -194,14 +322,21 @@ class AddDogProfileActivity : AppCompatActivity() {
             age = age,
             weight = weight,
             gender = gender,
+            photo = selectedImageBase64 ?: "", // ✅ SEND BASE64 IMAGE
             schedule = schedule
         )
 
+        Log.d("AddDogProfile", "📤 Sending dog profile with photo: ${if (selectedImageBase64 != null) "Yes (${selectedImageBase64!!.length} chars)" else "No"}")
+
         RetrofitClient.instance.addDog(addDogRequest).enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                binding.btnSave.isEnabled = true
+                binding.btnSave.text = "Save Profile"
+
                 if (response.isSuccessful) {
                     val apiResponse = response.body()
                     if (apiResponse?.success == true) {
+                        Log.d("AddDogProfile", "✅ Dog saved successfully with ID: ${apiResponse.dogId}")
                         Toast.makeText(
                             this@AddDogProfileActivity,
                             "Dog profile saved successfully!",
@@ -209,6 +344,7 @@ class AddDogProfileActivity : AppCompatActivity() {
                         ).show()
                         finish()
                     } else {
+                        Log.e("AddDogProfile", "❌ API Error: ${apiResponse?.error}")
                         Toast.makeText(
                             this@AddDogProfileActivity,
                             apiResponse?.error ?: "Failed to save dog profile",
@@ -216,6 +352,7 @@ class AddDogProfileActivity : AppCompatActivity() {
                         ).show()
                     }
                 } else {
+                    Log.e("AddDogProfile", "❌ HTTP Error: ${response.code()} - ${response.message()}")
                     Toast.makeText(
                         this@AddDogProfileActivity,
                         "Failed to save: ${response.message()}",
@@ -225,6 +362,10 @@ class AddDogProfileActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                binding.btnSave.isEnabled = true
+                binding.btnSave.text = "Save Profile"
+
+                Log.e("AddDogProfile", "❌ Network error: ${t.message}")
                 Toast.makeText(
                     this@AddDogProfileActivity,
                     "Network error: ${t.message}",

@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.doggo.R
 import com.example.doggo.databinding.ActivityDogProfileDetailBinding
 import com.example.doggo.network.RetrofitClient
 import com.example.doggo.network.DogResponse
@@ -30,8 +33,6 @@ class DogProfileDetailActivity : AppCompatActivity() {
 
         if (profileId != null) {
             Log.d("DogProfileDetail", "🔍 Loading dog with ID: $profileId")
-
-            // ✅ COBA LOAD DARI API DULU
             loadDogFromAPI(profileId)
         } else {
             Toast.makeText(this, "Invalid profile ID", Toast.LENGTH_SHORT).show()
@@ -40,7 +41,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
     }
 
     private fun loadDogFromAPI(profileId: String) {
-        Log.d("DogProfileDetail", "🔄 Loading dog from API...")
+        Log.d("DogProfileDetail", "📡 Loading dog from API...")
 
         RetrofitClient.instance.getDogById(profileId).enqueue(object : Callback<DogResponse> {
             override fun onResponse(call: Call<DogResponse>, response: Response<DogResponse>) {
@@ -51,42 +52,37 @@ class DogProfileDetailActivity : AppCompatActivity() {
                         val dogData = dogResponse.dog
                         Log.d("DogProfileDetail", "✅ Dog found in API: ${dogData.name}")
 
-                        // Convert API data to DogProfile
                         dogProfile = DogProfile(
                             id = dogData.dogId.toString(),
                             name = dogData.name,
                             breed = dogData.breed,
                             age = dogData.age,
-                            weight = dogData.weight ?: 0.0,      // ✅ FETCH WEIGHT
-                            gender = dogData.gender ?: "",       // ✅ FETCH GENDER
+                            weight = dogData.weight ?: 0.0,
+                            gender = dogData.gender ?: "",
                             photoUrl = dogData.photo ?: "",
-                            additionalInfo = "" // Backend belum ada additionalInfo
+                            additionalInfo = ""
                         )
 
                         displayDogProfile(dogProfile!!)
 
                     } else {
                         Log.e("DogProfileDetail", "❌ Dog not found in API, trying local...")
-                        // Fallback ke ProfileManager lokal
                         loadDogFromLocal(profileId)
                     }
                 } else {
                     Log.e("DogProfileDetail", "❌ HTTP error: ${response.code()}")
-                    // Fallback ke ProfileManager lokal
                     loadDogFromLocal(profileId)
                 }
             }
 
             override fun onFailure(call: Call<DogResponse>, t: Throwable) {
                 Log.e("DogProfileDetail", "❌ Network error: ${t.message}")
-                // Fallback ke ProfileManager lokal
                 loadDogFromLocal(profileId)
             }
         })
     }
 
     private fun loadDogFromLocal(profileId: String) {
-        // Fallback: Get profile from local ProfileManager
         dogProfile = ProfileManager.getAllProfiles().find { it.id == profileId }
 
         if (dogProfile != null) {
@@ -113,8 +109,21 @@ class DogProfileDetailActivity : AppCompatActivity() {
                 tvAdditionalInfo.text = "No additional information provided"
             }
 
-            // TODO: Load photo from URL when image storage is implemented
-            // For now, use placeholder
+            // ✅ Load photo using Glide
+            if (profile.photoUrl.isNotEmpty()) {
+                Log.d("DogProfileDetail", "🖼️ Loading photo from: ${profile.photoUrl}")
+
+                Glide.with(this@DogProfileDetailActivity)
+                    .load(profile.photoUrl)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_dog_placeholder)
+                    .error(R.drawable.ic_dog_placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(ivDogPhoto)
+            } else {
+                Log.d("DogProfileDetail", "📷 No photo URL, using placeholder")
+                ivDogPhoto.setImageResource(R.drawable.ic_dog_placeholder)
+            }
         }
 
         Log.d("DogProfileDetail", "📱 Displaying: ${profile.name} - ${profile.breed} - ${profile.gender} - ${profile.weight}kg")
@@ -152,7 +161,6 @@ class DogProfileDetailActivity : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
 
-        // Customize button colors
         dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
             ?.setTextColor(getColor(android.R.color.holo_red_dark))
     }
@@ -160,7 +168,6 @@ class DogProfileDetailActivity : AppCompatActivity() {
     private fun deleteProfile() {
         dogProfile?.let { profile ->
             // TODO: Implement API delete
-            // Untuk sekarang, hapus dari ProfileManager lokal dulu
             ProfileManager.removeProfile(profile.id)
 
             Toast.makeText(
@@ -169,7 +176,6 @@ class DogProfileDetailActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            // Close this activity and return to home
             finish()
         }
     }

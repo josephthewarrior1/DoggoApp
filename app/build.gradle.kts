@@ -60,6 +60,11 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    // ✅ Glide for image loading
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    // or if using Kotlin
+    // kapt("com.github.bumptech.glide:compiler:4.16.0")
 
     // Retrofit untuk API calls ke backend Node.js
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

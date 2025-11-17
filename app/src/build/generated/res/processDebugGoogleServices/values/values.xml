@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="firebase_database_url" translatable="false">https://doggoapp-d4a68-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+    <string name="gcm_defaultSenderId" translatable="false">465309675699</string>
+    <string name="google_api_key" translatable="false">AIzaSyCsrUl2UutKuqXUyOGN1G10aWpbCJMX5GE</string>
+    <string name="google_app_id" translatable="false">1:465309675699:android:12d83acae869c51beb40c6</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCsrUl2UutKuqXUyOGN1G10aWpbCJMX5GE</string>
+    <string name="google_storage_bucket" translatable="false">doggoapp-d4a68.firebasestorage.app</string>
+    <string name="project_id" translatable="false">doggoapp-d4a68</string>
+</resources>

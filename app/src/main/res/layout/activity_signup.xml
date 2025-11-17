@@ -2,89 +2,199 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#F5F5F7">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="32dp"
+        android:padding="24dp"
         android:gravity="center_horizontal">
 
-        <!-- Judul -->
+        <!-- Logo/Image Section -->
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="234dp"
+            android:layout_height="197dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="24dp"
+            android:contentDescription="Dog Logo"
+            android:src="@drawable/hotdog" />
+
+        <!-- Create Account Title -->
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Account"
-            android:textSize="28sp"
+            android:text="Create Account 🐶"
+            android:textSize="24sp"
+            android:textColor="#1C1C1E"
             android:textStyle="bold"
-            android:textColor="#212121"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="32dp" />
 
-        <!-- Container form -->
-        <LinearLayout
+        <!-- Username Input Container -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:elevation="4dp"
-            android:layout_marginBottom="24dp"
-            android:clipToOutline="true"
-            android:layout_gravity="center"
-            android:background="@drawable/rounded_bg">
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            android:background="#FFFFFF">
 
-            <!-- TAMBAHIN EDIT TEXT USERNAME DI SINI -->
             <EditText
                 android:id="@+id/etUsername"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="Username"
+                android:textColorHint="#CCCCCC"
                 android:inputType="text"
-                android:layout_marginBottom="16dp"
-                android:padding="12dp"
-                android:background="@drawable/rounded_edittext" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@android:color/transparent" />
+
+        </FrameLayout>
+
+        <!-- Email Input Container -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            android:background="#FFFFFF">
 
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="Email"
+                android:textColorHint="#CCCCCC"
                 android:inputType="textEmailAddress"
-                android:layout_marginBottom="16dp"
-                android:padding="12dp"
-                android:background="@drawable/rounded_edittext" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@android:color/transparent" />
+
+        </FrameLayout>
+
+        <!-- Password Input Container -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            android:background="#FFFFFF">
 
             <EditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="Password"
+                android:textColorHint="#CCCCCC"
                 android:inputType="textPassword"
-                android:layout_marginBottom="16dp"
-                android:padding="12dp"
-                android:background="@drawable/rounded_edittext" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@android:color/transparent" />
 
-            <Button
-                android:id="@+id/btnSignUp"
+        </FrameLayout>
+
+        <!-- Confirm Password Input Container -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            android:background="#FFFFFF">
+
+            <EditText
+                android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Confirm Password"
+                android:textColorHint="#CCCCCC"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@android:color/transparent" />
+
+        </FrameLayout>
+
+        <!-- Terms & Conditions Checkbox -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <CheckBox
+                android:id="@+id/cbTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign Up"
-                android:background="@drawable/rounded_button"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp" />
+                android:text="I agree to the "
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/tvTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Terms &amp; Conditions"
+                android:textSize="14sp"
+                android:textColor="#007AFF"
+                android:clickable="true"
+                android:focusable="true" />
+
         </LinearLayout>
 
-        <!-- Sudah punya akun -->
-        <TextView
-            android:id="@+id/tvLogin"
+        <!-- Sign Up Button -->
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Sign Up"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:background="#D1D1D6"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Already have account -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Already have an account? Login"
-            android:textColor="#FF9800"
-            android:textSize="14sp" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? "
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/tvLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Log In"
+                android:textSize="14sp"
+                android:textColor="#007AFF"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+        <!-- Footer Text -->
+        <TextView
+            android:id="@+id/tvFooter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="By signing up, you agree to our Terms &amp; Privacy Policy."
+            android:textSize="12sp"
+            android:textColor="#999999"
+            android:gravity="center"
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
+
 </ScrollView>

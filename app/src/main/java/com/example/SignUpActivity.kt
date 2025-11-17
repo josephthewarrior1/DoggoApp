@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.doggo.network.RetrofitClient
@@ -20,36 +22,64 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        val etUsername = findViewById<EditText>(R.id.etUsername) // ← TAMBAH INI
+        val etUsername = findViewById<EditText>(R.id.etUsername)
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
+        val etConfirmPassword = findViewById<EditText>(R.id.etConfirmPassword)
+        val cbTerms = findViewById<CheckBox>(R.id.cbTerms)
         val btnSignUp = findViewById<Button>(R.id.btnSignUp)
+        val tvLogin = findViewById<TextView>(R.id.tvLogin)
+
+        // Ke halaman login
+        tvLogin.setOnClickListener {
+            startActivity(Intent(this, SignInActivity::class.java))
+            finish()
+        }
 
         btnSignUp.setOnClickListener {
-            val username = etUsername.text.toString().trim() // ← TAMBAH INI
+            val username = etUsername.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
+            val confirmPassword = etConfirmPassword.text.toString().trim()
 
             // Validasi semua field
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Validasi username (optional)
+            // Validasi username
             if (username.length < 3) {
                 Toast.makeText(this, "Username should be at least 3 characters", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // Validasi email
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validasi password
             if (password.length < 6) {
                 Toast.makeText(this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // Validasi confirm password
+            if (password != confirmPassword) {
+                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validasi checkbox
+            if (!cbTerms.isChecked) {
+                Toast.makeText(this, "Please agree to Terms & Conditions", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             Toast.makeText(this, "Creating account...", Toast.LENGTH_SHORT).show()
 
-            // TAMBAH username di SignUpRequest
             val signUpRequest = SignUpRequest(email, password, username)
 
             RetrofitClient.instance.signUp(signUpRequest).enqueue(object : Callback<ApiResponse> {
@@ -62,13 +92,13 @@ class SignUpActivity : AppCompatActivity() {
 
                             Toast.makeText(
                                 this@SignUpActivity,
-                                "Account created! Please sign in",
+                                "Account created! Please sign in 🐶",
                                 Toast.LENGTH_SHORT
                             ).show()
 
                             // Redirect ke SignIn activity
                             val intent = Intent(this@SignUpActivity, SignInActivity::class.java)
-                            intent.putExtra("email", email) // Optional: biar email nya udah keisi
+                            intent.putExtra("email", email)
                             startActivity(intent)
                             finish()
 

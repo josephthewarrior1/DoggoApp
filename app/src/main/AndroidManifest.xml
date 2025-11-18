@@ -67,6 +67,11 @@
             android:name="com.example.doggo.Home.DogProfileDetailActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".Home.EditDogProfileActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
     </application>
 
 </manifest>

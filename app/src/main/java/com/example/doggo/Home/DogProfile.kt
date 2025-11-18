@@ -1,6 +1,7 @@
 package com.example.doggo.Home
 
 import com.example.doggo.network.DogSchedule
+import java.io.Serializable
 
 data class DogProfile(
     val id: String = "",
@@ -12,4 +13,4 @@ data class DogProfile(
     val photoUrl: String = "",
     val additionalInfo: String = "",
     val schedule: DogSchedule? = null  // ← TAMBAH INI
-)
+) : Serializable

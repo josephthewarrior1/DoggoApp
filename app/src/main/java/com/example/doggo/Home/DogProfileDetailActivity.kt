@@ -8,21 +8,23 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.doggo.R
-import com.example.doggo.databinding.ActivityDogProfileDetailBinding
+import com.example.doggo.databinding.ActivityDogProfileDetailTabsBinding
 import com.example.doggo.network.RetrofitClient
 import com.example.doggo.network.DogResponse
+import com.google.android.material.tabs.TabLayoutMediator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class DogProfileDetailActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityDogProfileDetailBinding
+    private lateinit var binding: ActivityDogProfileDetailTabsBinding
     private var dogProfile: DogProfile? = null
+    private var pagerAdapter: DogDetailPagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDogProfileDetailBinding.inflate(layoutInflater)
+        binding = ActivityDogProfileDetailTabsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         loadDogProfile()
@@ -65,6 +67,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
                         )
 
                         displayDogProfile(dogProfile!!)
+                        setupViewPager(dogProfile!!)
 
                     } else {
                         Log.e("DogProfileDetail", "❌ Dog not found in API, trying local...")
@@ -89,6 +92,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
         if (dogProfile != null) {
             Log.d("DogProfileDetail", "✅ Dog found in local: ${dogProfile!!.name}")
             displayDogProfile(dogProfile!!)
+            setupViewPager(dogProfile!!)
         } else {
             Log.e("DogProfileDetail", "❌ Dog not found anywhere")
             Toast.makeText(this, "Profile not found", Toast.LENGTH_SHORT).show()
@@ -100,17 +104,8 @@ class DogProfileDetailActivity : AppCompatActivity() {
         binding.apply {
             tvDogName.text = profile.name
             tvBreed.text = profile.breed
-            tvAgeValue.text = profile.age.toString()
-            tvGenderValue.text = if (profile.gender.isNotEmpty()) profile.gender else "Not specified"
-            tvWeightValue.text = if (profile.weight > 0) String.format("%.1f kg", profile.weight) else "Not specified"
 
-            if (profile.additionalInfo.isNotEmpty()) {
-                tvAdditionalInfo.text = profile.additionalInfo
-            } else {
-                tvAdditionalInfo.text = "No additional information provided"
-            }
-
-            // ✅ Load photo using Glide
+            // Load photo using Glide
             if (profile.photoUrl.isNotEmpty()) {
                 Log.d("DogProfileDetail", "🖼️ Loading photo from: ${profile.photoUrl}")
 
@@ -127,7 +122,22 @@ class DogProfileDetailActivity : AppCompatActivity() {
             }
         }
 
-        Log.d("DogProfileDetail", "📱 Displaying: ${profile.name} - ${profile.breed} - ${profile.gender} - ${profile.weight}kg")
+        Log.d("DogProfileDetail", "📱 Displaying: ${profile.name} - ${profile.breed}")
+    }
+
+    private fun setupViewPager(profile: DogProfile) {
+        pagerAdapter = DogDetailPagerAdapter(this, profile)
+        binding.viewPager.adapter = pagerAdapter
+
+        // Connect TabLayout with ViewPager2
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> "Info"
+                1 -> "Medical"
+                2 -> "Schedule"
+                else -> "Tab ${position + 1}"
+            }
+        }.attach()
     }
 
     private fun setupUI() {
@@ -180,5 +190,11 @@ class DogProfileDetailActivity : AppCompatActivity() {
 
             finish()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reload profile when returning from edit
+        dogProfile?.id?.let { loadDogFromAPI(it) }
     }
 }

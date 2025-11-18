@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#F8F9FA">
 
     <!-- Top Bar -->
     <LinearLayout
@@ -13,73 +13,57 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
+        android:background="#FFFFFF"
         android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Profile Picture -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="2dp">
-
-            <ImageView
-                android:id="@+id/ivUserProfile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_dog_placeholder"
-                android:contentDescription="User profile" />
-
-        </androidx.cardview.widget.CardView>
 
         <!-- Greeting Text -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvGreeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hello,"
-                android:textSize="14sp"
-                android:textColor="#6B7280" />
-
-            <TextView
-                android:id="@+id/tvUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Esther"
+                android:text="Hi tester71"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#2D2D2D" />
+                android:textColor="#1F2937" />
+
+            <TextView
+                android:id="@+id/tvSubGreeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Good Morning!"
+                android:textSize="14sp"
+                android:textColor="#9CA3AF"
+                android:layout_marginTop="2dp" />
 
         </LinearLayout>
 
-        <!-- Search Icon -->
-        <ImageButton
-            android:id="@+id/btnSearch"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_search"
-            android:contentDescription="Search" />
+        <!-- Profile Icon -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#3B82F6">
 
-        <!-- Menu Icon -->
-        <ImageButton
-            android:id="@+id/btnMenu"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_menu"
-            android:contentDescription="Menu" />
+            <ImageView
+                android:id="@+id/ivUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:src="@drawable/ic_person"
+                android:tint="#FFFFFF"
+                android:contentDescription="User profile" />
+
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
@@ -93,6 +77,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Main Content Layout -->
+        <LinearLayout
+            android:id="@+id/mainContentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <!-- Add Your Pet Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddYourPet"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Add Your Pet"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:textAllCaps="false"
+                app:icon="@drawable/ic_add"
+                app:iconGravity="start"
+                app:iconTint="#FFFFFF"
+                app:backgroundTint="#3B82F6"
+                app:cornerRadius="12dp"
+                app:iconPadding="8dp" />
+
+            <!-- My Pets Section -->
+            <TextView
+                android:id="@+id/tvMyPets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Pets"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1F2937"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Pets List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDogProfiles"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                tools:listitem="@layout/item_dog_profile_card" />
+
+        </LinearLayout>
+
         <!-- Empty State Layout -->
         <LinearLayout
             android:id="@+id/emptyStateLayout"
@@ -101,7 +139,7 @@
             android:orientation="vertical"
             android:gravity="center"
             android:padding="24dp"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <!-- Dog Illustration -->
             <ImageView
@@ -149,79 +187,6 @@
                 app:backgroundTint="#3B82F6"
                 app:cornerRadius="28dp"
                 style="@style/Widget.Material3.Button.ElevatedButton" />
-
-        </LinearLayout>
-
-        <!-- Profiles Content Layout -->
-        <LinearLayout
-            android:id="@+id/profilesContentLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp">
-
-            <!-- Active Pet Profiles Header -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Active pet profiles"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#2D2D2D" />
-
-                <TextView
-                    android:id="@+id/tvProfileCount"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:text="2"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#6B7280"
-                    android:gravity="center"
-                    android:background="@drawable/bg_count_badge" />
-
-            </LinearLayout>
-
-            <!-- Dog Profiles RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvDogProfiles"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:clipToPadding="false"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                tools:listitem="@layout/item_dog_profile_card" />
-
-            <!-- Add More Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAddMore"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:text="Add Another Pet"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#3B82F6"
-                app:backgroundTint="#E0E7FF"
-                app:cornerRadius="28px"
-                app:icon="@drawable/ic_add"
-                app:iconGravity="textStart"
-                app:iconTint="#3B82F6" />
 
         </LinearLayout>
 

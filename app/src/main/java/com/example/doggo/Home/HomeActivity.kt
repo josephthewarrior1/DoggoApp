@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,20 +23,18 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var dogProfileAdapter: DogProfileAdapter
     private val dogProfiles = mutableListOf<DogProfile>()
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var tvUserName: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize SharedPreferences dan TextView
+        // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("doggo_pref", MODE_PRIVATE)
-        tvUserName = findViewById(R.id.tvUserName) // Pastikan ID ini ada di XML layout
 
         setupRecyclerView()
         setupUI()
-        loadUserData() // ← TAMBAH INI: Load username dari SharedPreferences
+        loadUserData()
         checkProfilesAndUpdateUI()
     }
 
@@ -52,17 +49,26 @@ class HomeActivity : AppCompatActivity() {
 
         if (!username.isNullOrEmpty()) {
             // Jika username ada, set ke TextView
-            tvUserName.text = username
+            binding.tvGreeting.text = "Hi $username"
             Log.d("HomeActivity", "✅ Username loaded from SharedPreferences: $username")
         } else {
             // Jika ga ada username, set default
-            tvUserName.text = "User"
+            binding.tvGreeting.text = "Hi User"
             Log.d("HomeActivity", "❌ No username found in SharedPreferences, using default")
 
             // Debug: Check what's actually in SharedPreferences
             val allPrefs = sharedPreferences.all
             Log.d("HomeActivity", "🔍 All SharedPreferences: $allPrefs")
         }
+
+        // Set greeting berdasarkan waktu
+        val currentHour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+        val greetingText = when (currentHour) {
+            in 0..11 -> "Good Morning!"
+            in 12..17 -> "Good Afternoon!"
+            else -> "Good Evening!"
+        }
+        binding.tvSubGreeting.text = greetingText
     }
 
     private fun setupRecyclerView() {
@@ -77,11 +83,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        binding.btnAddPet.setOnClickListener {
-            navigateToAddDogProfile()
-        }
-
-        binding.btnAddMore.setOnClickListener {
+        binding.btnAddYourPet.setOnClickListener {
             navigateToAddDogProfile()
         }
 
@@ -90,28 +92,12 @@ class HomeActivity : AppCompatActivity() {
                 R.id.nav_home -> true
                 R.id.nav_profiles -> true
                 R.id.nav_my_profile -> {
-                    // TODO: Navigate to user profile
                     showUserProfile()
                     true
                 }
                 else -> false
             }
         }
-
-        binding.btnSearch.setOnClickListener {
-            // TODO: Implement search functionality
-            Toast.makeText(this, "Search clicked", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.btnMenu.setOnClickListener {
-            // TODO: Implement menu functionality
-            showUserMenu()
-        }
-    }
-
-    private fun showUserMenu() {
-        val username = sharedPreferences.getString("username", "User")
-        Toast.makeText(this, "Logged in as: $username", Toast.LENGTH_SHORT).show()
     }
 
     private fun showUserProfile() {
@@ -122,7 +108,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun checkProfilesAndUpdateUI() {
-        // COBA LOAD DARI API DULU
+        // Load dari API
         loadDogsFromAPI()
     }
 
@@ -130,20 +116,20 @@ class HomeActivity : AppCompatActivity() {
         Log.d("HomeActivity", "🔄 Loading dogs from API...")
 
         // Show loading state
-        binding.profilesContentLayout.visibility = View.VISIBLE
+        binding.mainContentLayout.visibility = View.VISIBLE
         binding.emptyStateLayout.visibility = View.GONE
-        binding.profilesContentLayout.alpha = 0.5f
+        binding.mainContentLayout.alpha = 0.5f
 
         RetrofitClient.instance.getMyDogs().enqueue(object : Callback<DogsResponse> {
             override fun onResponse(call: Call<DogsResponse>, response: Response<DogsResponse>) {
-                binding.profilesContentLayout.alpha = 1.0f
+                binding.mainContentLayout.alpha = 1.0f
 
                 if (response.isSuccessful) {
                     val dogsResponse = response.body()
                     Log.d("HomeActivity", "✅ API Response: ${dogsResponse?.success}")
 
                     if (dogsResponse?.success == true) {
-                        // ✅ Convert Map to List
+                        // Convert Map to List
                         val dogsMap = dogsResponse.dogs ?: emptyMap()
                         val dogsList = dogsMap.values.toList()
 
@@ -159,8 +145,8 @@ class HomeActivity : AppCompatActivity() {
                                 name = dogData.name,
                                 breed = dogData.breed,
                                 age = dogData.age,
-                                weight = dogData.weight ?: 0.0,  // ✅ FETCH WEIGHT
-                                gender = dogData.gender ?: "",   // ✅ FETCH GENDER
+                                weight = dogData.weight ?: 0.0,
+                                gender = dogData.gender ?: "",
                                 photoUrl = dogData.photo ?: "",
                                 additionalInfo = ""
                             )
@@ -184,7 +170,7 @@ class HomeActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<DogsResponse>, t: Throwable) {
-                binding.profilesContentLayout.alpha = 1.0f
+                binding.mainContentLayout.alpha = 1.0f
                 Log.e("HomeActivity", "❌ Network error: ${t.message}")
                 Toast.makeText(this@HomeActivity, "Network error", Toast.LENGTH_SHORT).show()
                 // Fallback ke local data
@@ -216,16 +202,13 @@ class HomeActivity : AppCompatActivity() {
     private fun showEmptyState() {
         Log.d("HomeActivity", "🔭 Showing empty state")
         binding.emptyStateLayout.visibility = View.VISIBLE
-        binding.profilesContentLayout.visibility = View.GONE
+        binding.mainContentLayout.visibility = View.GONE
     }
 
     private fun showProfilesContent() {
         Log.d("HomeActivity", "📊 Showing profiles content")
         binding.emptyStateLayout.visibility = View.GONE
-        binding.profilesContentLayout.visibility = View.VISIBLE
-
-        // Update profile count
-        binding.tvProfileCount.text = dogProfiles.size.toString()
+        binding.mainContentLayout.visibility = View.VISIBLE
 
         // Update adapter
         dogProfileAdapter.updateProfiles(dogProfiles.toList())

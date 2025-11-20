@@ -24,19 +24,21 @@ data class AddDogRequest(
     val photo: String = "",
     val schedule: DogSchedule? = null
 )
+
 data class DogSchedule(
-    val eat: List<ScheduleItem> = emptyList(),
-    val walk: List<ScheduleItem> = emptyList(),
-    val sleep: List<ScheduleItem> = emptyList(),
-    val medicine: List<ScheduleItem> = emptyList(),
-    val groom: List<ScheduleItem> = emptyList()
+    val eat: List<ScheduleDetail>? = null,
+    val walk: List<ScheduleDetail>? = null,
+    val sleep: List<ScheduleDetail>? = null,
+    val medicine: List<ScheduleDetail>? = null,
+    val groom: List<ScheduleDetail>? = null
 )
 
-data class ScheduleItem(
-    val time: String,        // format: "HH:mm" contoh "08:00"
-    val description: String, // contoh: "Morning walk"
-    val days: List<String> = emptyList() // ["Monday", "Tuesday", ...] atau empty untuk every day
+data class ScheduleDetail(
+    val time: String = "",
+    val description: String = "",
+    val duration: String? = null
 )
+
 data class ApiResponse(
     val success: Boolean,
     val message: String? = null,

@@ -54,6 +54,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
                     if (dogResponse?.success == true && dogResponse.dog != null) {
                         val dogData = dogResponse.dog
                         Log.d("DogProfileDetail", "✅ Dog found in API: ${dogData.name}")
+                        Log.d("DogProfileDetail", "📅 Schedule data: ${dogData.schedule}")
 
                         dogProfile = DogProfile(
                             id = dogData.dogId.toString(),
@@ -63,7 +64,8 @@ class DogProfileDetailActivity : AppCompatActivity() {
                             weight = dogData.weight ?: 0.0,
                             gender = dogData.gender ?: "",
                             photoUrl = dogData.photo ?: "",
-                            additionalInfo = ""
+                            additionalInfo = "",
+                            schedule = dogData.schedule
                         )
 
                         displayDogProfile(dogProfile!!)

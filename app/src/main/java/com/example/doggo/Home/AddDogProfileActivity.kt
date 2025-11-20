@@ -18,7 +18,7 @@ import com.example.doggo.databinding.ActivityAddDogProfileBinding
 import com.example.doggo.network.RetrofitClient
 import com.example.doggo.network.AddDogRequest
 import com.example.doggo.network.DogSchedule
-import com.example.doggo.network.ScheduleItem
+import com.example.doggo.network.ScheduleDetail
 import com.example.doggo.network.ApiResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,7 +28,11 @@ import java.io.ByteArrayOutputStream
 class AddDogProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddDogProfileBinding
-    private val scheduleItems = mutableListOf<ScheduleItem>()
+    private val eatSchedule = mutableListOf<ScheduleDetail>()
+    private val walkSchedule = mutableListOf<ScheduleDetail>()
+    private val sleepSchedule = mutableListOf<ScheduleDetail>()
+    private val medicineSchedule = mutableListOf<ScheduleDetail>()
+    private val groomSchedule = mutableListOf<ScheduleDetail>()
     private var selectedImageBase64: String? = null
     private var selectedImageUri: Uri? = null
 
@@ -229,31 +233,40 @@ class AddDogProfileActivity : AppCompatActivity() {
 
         dialog.show()
     }
-
     private fun addScheduleItem(dialogView: View, hour: Int, minute: Int) {
-        val scheduleType = when (dialogView.findViewById<RadioGroup>(R.id.rgScheduleType).checkedRadioButtonId) {
-            R.id.rbEat -> "eat"
-            R.id.rbWalk -> "walk"
-            R.id.rbSleep -> "sleep"
-            R.id.rbMedicine -> "medicine"
-            R.id.rbGroom -> "groom"
-            else -> "eat"
-        }
-
+        val scheduleType = dialogView.findViewById<RadioGroup>(R.id.rgScheduleType).checkedRadioButtonId
         val description = dialogView.findViewById<EditText>(R.id.etDescription).text.toString()
         val time = String.format("%02d:%02d", hour, minute)
 
         if (description.isNotEmpty()) {
-            val scheduleItem = ScheduleItem(
+            val scheduleDetail = ScheduleDetail(
                 time = time,
                 description = description,
-                days = emptyList()
+                duration = null  // No duration field in dialog, so set to null
             )
 
-            scheduleItems.add(scheduleItem)
-            binding.tvScheduleCount.text = "Schedule items: ${scheduleItems.size}"
+            when (scheduleType) {
+                R.id.rbEat -> eatSchedule.add(scheduleDetail)
+                R.id.rbWalk -> walkSchedule.add(scheduleDetail)
+                R.id.rbSleep -> sleepSchedule.add(scheduleDetail)
+                R.id.rbMedicine -> medicineSchedule.add(scheduleDetail)
+                R.id.rbGroom -> groomSchedule.add(scheduleDetail)
+            }
 
-            Toast.makeText(this, "$scheduleType schedule added at $time", Toast.LENGTH_SHORT).show()
+            val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
+                    medicineSchedule.size + groomSchedule.size
+            binding.tvScheduleCount.text = "Schedule items: $totalItems"
+
+            val typeText = when (scheduleType) {
+                R.id.rbEat -> "Eat"
+                R.id.rbWalk -> "Walk"
+                R.id.rbSleep -> "Sleep"
+                R.id.rbMedicine -> "Medicine"
+                R.id.rbGroom -> "Groom"
+                else -> "Activity"
+            }
+
+            Toast.makeText(this, "$typeText schedule added at $time", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Please enter description", Toast.LENGTH_SHORT).show()
         }
@@ -300,13 +313,16 @@ class AddDogProfileActivity : AppCompatActivity() {
         val weight = binding.etWeight.text.toString().toDoubleOrNull() ?: 0.0
         val gender = if (binding.rbMale.isChecked) "Male" else "Female"
 
-        val schedule = if (scheduleItems.isNotEmpty()) {
+        val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
+                medicineSchedule.size + groomSchedule.size
+
+        val schedule = if (totalItems > 0) {
             DogSchedule(
-                eat = scheduleItems.filter { it.description.contains("eat", true) || it.description.contains("food", true) || it.description.contains("meal", true) },
-                walk = scheduleItems.filter { it.description.contains("walk", true) || it.description.contains("exercise", true) },
-                sleep = scheduleItems.filter { it.description.contains("sleep", true) || it.description.contains("rest", true) },
-                medicine = scheduleItems.filter { it.description.contains("medicine", true) || it.description.contains("pill", true) },
-                groom = scheduleItems.filter { it.description.contains("groom", true) || it.description.contains("bath", true) }
+                eat = eatSchedule.takeIf { it.isNotEmpty() },
+                walk = walkSchedule.takeIf { it.isNotEmpty() },
+                sleep = sleepSchedule.takeIf { it.isNotEmpty() },
+                medicine = medicineSchedule.takeIf { it.isNotEmpty() },
+                groom = groomSchedule.takeIf { it.isNotEmpty() }
             )
         } else {
             null
@@ -322,7 +338,7 @@ class AddDogProfileActivity : AppCompatActivity() {
             age = age,
             weight = weight,
             gender = gender,
-            photo = selectedImageBase64 ?: "", // ✅ SEND BASE64 IMAGE
+            photo = selectedImageBase64 ?: "",
             schedule = schedule
         )
 

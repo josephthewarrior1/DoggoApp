@@ -15,6 +15,7 @@ class DogScheduleFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var dogProfile: DogProfile? = null
+    private lateinit var scheduleAdapter: ScheduleAdapter
 
     companion object {
         private const val ARG_DOG_PROFILE = "dog_profile"
@@ -52,8 +53,11 @@ class DogScheduleFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        binding.rvSchedule.layoutManager = LinearLayoutManager(requireContext())
-        // TODO: Set adapter when schedule model is ready
+        scheduleAdapter = ScheduleAdapter(mutableListOf())
+        binding.rvSchedule.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = scheduleAdapter
+        }
     }
 
     private fun setupButtons() {
@@ -64,9 +68,85 @@ class DogScheduleFragment : Fragment() {
     }
 
     private fun loadSchedule() {
-        // TODO: Load schedule from API/database
-        // For now, show empty state
-        showEmptyState(true)
+        val schedule = dogProfile?.schedule
+
+        if (schedule == null) {
+            showEmptyState(true)
+            return
+        }
+
+        // Convert schedule to list of ScheduleItem
+        val scheduleItems = mutableListOf<ScheduleItem>()
+
+        // Add eat schedules
+        schedule.eat?.forEach { detail ->
+            scheduleItems.add(
+                ScheduleItem(
+                    type = ScheduleType.EAT,
+                    time = detail.time,
+                    description = detail.description,
+                    duration = detail.duration
+                )
+            )
+        }
+
+        // Add walk schedules
+        schedule.walk?.forEach { detail ->
+            scheduleItems.add(
+                ScheduleItem(
+                    type = ScheduleType.WALK,
+                    time = detail.time,
+                    description = detail.description,
+                    duration = detail.duration
+                )
+            )
+        }
+
+        // Add sleep schedules
+        schedule.sleep?.forEach { detail ->
+            scheduleItems.add(
+                ScheduleItem(
+                    type = ScheduleType.SLEEP,
+                    time = detail.time,
+                    description = detail.description,
+                    duration = detail.duration
+                )
+            )
+        }
+
+        // Add medicine schedules
+        schedule.medicine?.forEach { detail ->
+            scheduleItems.add(
+                ScheduleItem(
+                    type = ScheduleType.MEDICINE,
+                    time = detail.time,
+                    description = detail.description,
+                    duration = detail.duration
+                )
+            )
+        }
+
+        // Add groom schedules
+        schedule.groom?.forEach { detail ->
+            scheduleItems.add(
+                ScheduleItem(
+                    type = ScheduleType.GROOM,
+                    time = detail.time,
+                    description = detail.description,
+                    duration = detail.duration
+                )
+            )
+        }
+
+        // Sort by time (optional)
+        scheduleItems.sortBy { it.time }
+
+        if (scheduleItems.isEmpty()) {
+            showEmptyState(true)
+        } else {
+            showEmptyState(false)
+            scheduleAdapter.updateSchedule(scheduleItems)
+        }
     }
 
     private fun showEmptyState(show: Boolean) {

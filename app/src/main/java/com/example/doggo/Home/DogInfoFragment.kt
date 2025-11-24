@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import com.example.doggo.R
 import com.example.doggo.databinding.FragmentDogInfoBinding
 import com.example.doggo.network.*
+import com.example.doggo.notifications.ScheduleNotificationManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -363,6 +364,21 @@ class DogInfoFragment : Fragment() {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Log.d("DogInfoFragment", "✅ Schedule added successfully")
                     Toast.makeText(requireContext(), "Schedule added!", Toast.LENGTH_SHORT).show()
+
+                    // Schedule notification
+                    val scheduleItem = response.body()?.scheduleItem
+                    if (scheduleItem != null) {
+                        ScheduleNotificationManager.scheduleNotification(
+                            context = requireContext(),
+                            dogId = dogId,
+                            dogName = dogProfile?.name ?: "Dog",
+                            scheduleType = scheduleType,
+                            scheduleTime = time,
+                            description = description,
+                            scheduleId = scheduleItem.id
+                        )
+                    }
+
                     reloadDogProfile()
                 } else {
                     Log.e("DogInfoFragment", "❌ Failed to add schedule: ${response.body()?.error}")
@@ -394,6 +410,25 @@ class DogInfoFragment : Fragment() {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Log.d("DogInfoFragment", "✅ Schedule updated successfully")
                     Toast.makeText(requireContext(), "Schedule updated!", Toast.LENGTH_SHORT).show()
+
+                    // Re-schedule notification dengan waktu baru
+                    ScheduleNotificationManager.cancelNotification(
+                        context = requireContext(),
+                        dogId = dogId,
+                        scheduleType = scheduleType,
+                        scheduleId = scheduleItemId
+                    )
+
+                    ScheduleNotificationManager.scheduleNotification(
+                        context = requireContext(),
+                        dogId = dogId,
+                        dogName = dogProfile?.name ?: "Dog",
+                        scheduleType = scheduleType,
+                        scheduleTime = time,
+                        description = description,
+                        scheduleId = scheduleItemId
+                    )
+
                     reloadDogProfile()
                 } else {
                     Log.e("DogInfoFragment", "❌ Failed to update schedule: ${response.body()?.error}")
@@ -434,6 +469,15 @@ class DogInfoFragment : Fragment() {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Log.d("DogInfoFragment", "✅ Schedule deleted successfully")
                     Toast.makeText(requireContext(), "Schedule deleted!", Toast.LENGTH_SHORT).show()
+
+                    // Cancel notification
+                    ScheduleNotificationManager.cancelNotification(
+                        context = requireContext(),
+                        dogId = dogId,
+                        scheduleType = scheduleType,
+                        scheduleId = scheduleItemId
+                    )
+
                     reloadDogProfile()
                 } else {
                     Log.e("DogInfoFragment", "❌ Failed to delete schedule: ${response.body()?.error}")

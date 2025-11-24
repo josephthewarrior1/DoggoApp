@@ -5,17 +5,24 @@
     <!-- ✅ Existing permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- ✅ NEW: Camera permission -->
+    <!-- ✅ Camera permission -->
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <!-- ✅ NEW: Read external storage (for gallery access on Android 12 and below) -->
+    <!-- ✅ Read external storage (for gallery access on Android 12 and below) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
-    <!-- ✅ NEW: For Android 13+ (API 33+) -->
+    <!-- ✅ For Android 13+ (API 33+) -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
-    <!-- ✅ NEW: Camera feature (optional, not all devices have camera) -->
+    <!-- ✅ NEW: Notification Permissions -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <!-- ✅ Camera feature (optional, not all devices have camera) -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -71,6 +78,25 @@
             android:name=".Home.EditDogProfileActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
+
+        <!-- ✅ NEW: Notification Receivers -->
+        <receiver
+            android:name=".notifications.ScheduleNotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.doggo.SCHEDULE_REMINDER"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".notifications.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.Intent.ACTION_BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

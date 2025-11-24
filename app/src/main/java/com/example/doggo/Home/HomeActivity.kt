@@ -89,9 +89,17 @@ class HomeActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> true
-                R.id.nav_profiles -> true
-                R.id.nav_my_profile -> {
+                R.id.nav_home -> {
+                    // Already on home
+                    true
+                }
+                R.id.nav_reminders -> {
+                    // TODO: Navigate to reminders
+                    Toast.makeText(this, "Reminders coming soon", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.nav_account -> {
+                    // Navigate to account/profile
                     showUserProfile()
                     true
                 }

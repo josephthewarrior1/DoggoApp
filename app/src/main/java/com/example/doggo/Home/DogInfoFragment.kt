@@ -1,11 +1,15 @@
 package com.example.doggo.Home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.doggo.databinding.FragmentDogInfoBinding
+import com.example.doggo.network.DogSchedule
+import com.example.doggo.network.ScheduleDetail
 
 class DogInfoFragment : Fragment() {
 
@@ -45,6 +49,7 @@ class DogInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         displayDogInfo()
+        displaySchedule()
     }
 
     private fun displayDogInfo() {
@@ -63,10 +68,83 @@ class DogInfoFragment : Fragment() {
         }
     }
 
+    private fun displaySchedule() {
+        val schedule = dogProfile?.schedule
+
+        Log.d("DogInfoFragment", "📅 Displaying schedule: $schedule")
+
+        if (schedule == null) {
+            binding.tvEmptySchedule.isVisible = true
+            binding.llScheduleContainer.isVisible = false
+            return
+        }
+
+        var hasAnySchedule = false
+
+        // Display Eat Schedule
+        if (!schedule.eat.isNullOrEmpty()) {
+            hasAnySchedule = true
+            binding.cvEatSchedule.isVisible = true
+            binding.tvEatSchedule.text = formatScheduleList(schedule.eat)
+        } else {
+            binding.cvEatSchedule.isVisible = false
+        }
+
+        // Display Walk Schedule
+        if (!schedule.walk.isNullOrEmpty()) {
+            hasAnySchedule = true
+            binding.cvWalkSchedule.isVisible = true
+            binding.tvWalkSchedule.text = formatScheduleList(schedule.walk)
+        } else {
+            binding.cvWalkSchedule.isVisible = false
+        }
+
+        // Display Sleep Schedule
+        if (!schedule.sleep.isNullOrEmpty()) {
+            hasAnySchedule = true
+            binding.cvSleepSchedule.isVisible = true
+            binding.tvSleepSchedule.text = formatScheduleList(schedule.sleep)
+        } else {
+            binding.cvSleepSchedule.isVisible = false
+        }
+
+        // Display Medicine Schedule
+        if (!schedule.medicine.isNullOrEmpty()) {
+            hasAnySchedule = true
+            binding.cvMedicineSchedule.isVisible = true
+            binding.tvMedicineSchedule.text = formatScheduleList(schedule.medicine)
+        } else {
+            binding.cvMedicineSchedule.isVisible = false
+        }
+
+        // Display Groom Schedule
+        if (!schedule.groom.isNullOrEmpty()) {
+            hasAnySchedule = true
+            binding.cvGroomSchedule.isVisible = true
+            binding.tvGroomSchedule.text = formatScheduleList(schedule.groom)
+        } else {
+            binding.cvGroomSchedule.isVisible = false
+        }
+
+        // Show empty message if no schedule
+        binding.tvEmptySchedule.isVisible = !hasAnySchedule
+        binding.llScheduleContainer.isVisible = hasAnySchedule
+    }
+
+    private fun formatScheduleList(scheduleList: List<ScheduleDetail>): String {
+        return scheduleList.joinToString("\n") { detail ->
+            val time = detail.time.ifEmpty { "Not set" }
+            val description = if (detail.description.isNotEmpty()) " - ${detail.description}" else ""
+            val duration = if (!detail.duration.isNullOrEmpty()) " (${detail.duration})" else ""
+            "⏰ $time$description$duration"
+        }
+    }
+
     fun updateDogProfile(profile: DogProfile) {
         dogProfile = profile
         if (_binding != null) {
             displayDogInfo()
+            displaySchedule()
         }
     }
 

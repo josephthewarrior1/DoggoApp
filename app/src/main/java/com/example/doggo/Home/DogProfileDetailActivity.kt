@@ -131,12 +131,11 @@ class DogProfileDetailActivity : AppCompatActivity() {
         pagerAdapter = DogDetailPagerAdapter(this, profile)
         binding.viewPager.adapter = pagerAdapter
 
-        // Connect TabLayout with ViewPager2
+        // Connect TabLayout with ViewPager2 - Hanya 2 tab
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "Info"
                 1 -> "Medical"
-                2 -> "Schedule"
                 else -> "Tab ${position + 1}"
             }
         }.attach()

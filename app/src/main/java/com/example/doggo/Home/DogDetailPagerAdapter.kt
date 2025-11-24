@@ -9,13 +9,13 @@ class DogDetailPagerAdapter(
     private val dogProfile: DogProfile
 ) : FragmentStateAdapter(fragmentActivity) {
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 2  // ⬅️ UBAH INI dari 3 jadi 2
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> DogInfoFragment.newInstance(dogProfile)
             1 -> DogMedicalFragment.newInstance(dogProfile)
-            2 -> DogScheduleFragment.newInstance(dogProfile)
+            // HAPUS yang position 2
             else -> DogInfoFragment.newInstance(dogProfile)
         }
     }

@@ -72,7 +72,7 @@ class ScheduleNotificationReceiver : BroadcastReceiver() {
         }
 
         val notification = NotificationCompat.Builder(context, "dog_schedule_channel")
-            .setSmallIcon(R.drawable.ic_notification) // Ganti dengan icon lo
+            .setSmallIcon(android.R.drawable.ic_dialog_info) // Ganti dengan icon lo
             .setContentTitle(title)
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))

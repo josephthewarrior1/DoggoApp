@@ -19,7 +19,7 @@ object ScheduleNotificationManager {
 
     private const val CHANNEL_ID = "dog_schedule_channel"
     private const val CHANNEL_NAME = "Dog Schedule Reminders"
-    private const val REMINDER_MINUTES_BEFORE = 2 // ⚠️ TEST MODE: 2 menit sebelum (ganti jadi 30 setelah test)
+    private const val REMINDER_MINUTES_BEFORE = 30 // ⚠️ TEST MODE: 2 menit sebelum (ganti jadi 30 setelah test)
 
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

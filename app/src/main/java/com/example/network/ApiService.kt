@@ -2,6 +2,7 @@ package com.example.doggo.network
 
 import retrofit2.Call
 import retrofit2.http.*
+import java.io.Serializable
 
 data class SignUpRequest(
     val email: String,
@@ -25,19 +26,21 @@ data class AddDogRequest(
     val schedule: DogSchedule? = null
 )
 
+// ✅ TAMBAH: Serializable
 data class DogSchedule(
     val eat: List<ScheduleDetail>? = null,
     val walk: List<ScheduleDetail>? = null,
     val sleep: List<ScheduleDetail>? = null,
     val medicine: List<ScheduleDetail>? = null,
     val groom: List<ScheduleDetail>? = null
-)
+) : Serializable
 
+// ✅ TAMBAH: Serializable
 data class ScheduleDetail(
     val time: String = "",
     val description: String = "",
     val duration: String? = null
-)
+) : Serializable
 
 data class ApiResponse(
     val success: Boolean,

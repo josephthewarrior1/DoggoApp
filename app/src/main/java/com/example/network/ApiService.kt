@@ -37,9 +37,20 @@ data class DogSchedule(
 
 // ✅ TAMBAH: Serializable
 data class ScheduleDetail(
+    val id: String? = null,
     val time: String = "",
     val description: String = "",
-    val duration: String? = null
+    val duration: String? = null,
+    val createdAt: String? = null,
+    val updatedAt: String? = null
+) : Serializable
+
+// Schedule detail dengan ID (untuk response dari API)
+data class ScheduleDetailWithId(
+    val id: String,
+    val time: String,
+    val description: String,
+    val createdAt: String
 ) : Serializable
 
 data class ApiResponse(
@@ -82,6 +93,35 @@ data class DogData(
     val schedule: DogSchedule? = null
 )
 
+// Request untuk add/update/delete schedule
+data class ScheduleRequest(
+    val scheduleType: String,
+    val time: String,
+    val description: String = ""
+)
+
+data class ScheduleUpdateRequest(
+    val scheduleType: String,
+    val scheduleItemId: String,
+    val time: String? = null,
+    val description: String? = null
+)
+
+data class ScheduleDeleteRequest(
+    val scheduleType: String,
+    val scheduleItemId: String
+)
+
+data class ScheduleResponse(
+    val success: Boolean,
+    val message: String? = null,
+    val scheduleType: String? = null,
+    val scheduleItem: ScheduleDetailWithId? = null,
+    val scheduleItemId: String? = null,
+    val dogId: Int? = null,
+    val error: String? = null
+)
+
 interface ApiService {
     // Authentication
     @POST("api/signup")
@@ -105,4 +145,23 @@ interface ApiService {
         @Path("id") dogId: Int,
         @Body request: AddDogRequest
     ): Call<ApiResponse>
+
+    // Schedule endpoints
+    @POST("api/dogs/{id}/schedule")
+    fun addSchedule(
+        @Path("id") dogId: String,
+        @Body request: ScheduleRequest
+    ): Call<ScheduleResponse>
+
+    @PUT("api/dogs/{id}/schedule")
+    fun updateSchedule(
+        @Path("id") dogId: String,
+        @Body request: ScheduleUpdateRequest
+    ): Call<ScheduleResponse>
+
+    @HTTP(method = "DELETE", path = "api/dogs/{id}/schedule", hasBody = true)
+    fun deleteSchedule(
+        @Path("id") dogId: String,
+        @Body request: ScheduleDeleteRequest
+    ): Call<ScheduleResponse>
 }

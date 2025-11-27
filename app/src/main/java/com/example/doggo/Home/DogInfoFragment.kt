@@ -67,15 +67,20 @@ class DogInfoFragment : Fragment() {
     private fun displayDogInfo() {
         dogProfile?.let { profile ->
             binding.apply {
-                tvAgeValue.text = profile.age.toString()
-                tvGenderValue.text = if (profile.gender.isNotEmpty()) profile.gender else "Not specified"
-                tvWeightValue.text = if (profile.weight > 0) String.format("%.1f", profile.weight) else "N/A"
+                // Display breed
+                tvBreedValue.text = if (profile.breed.isNotEmpty()) profile.breed else "Not specified"
 
-                if (profile.additionalInfo.isNotEmpty()) {
-                    tvAdditionalInfo.text = profile.additionalInfo
-                } else {
-                    tvAdditionalInfo.text = "No additional information provided"
-                }
+                // Display gender
+                tvGenderValue.text = if (profile.gender.isNotEmpty()) profile.gender else "Not specified"
+
+                // Display age
+                tvAgeValue.text = "${profile.age} years"
+
+                // Display weight
+                tvWeightValue.text = if (profile.weight > 0) String.format("%.1f kg", profile.weight) else "N/A"
+
+                // Display birth date (if available in your DogProfile model)
+                // tvBirthDate.text = profile.birthDate ?: "Not specified"
             }
         }
     }
@@ -511,6 +516,7 @@ class DogInfoFragment : Fragment() {
                             additionalInfo = "",
                             schedule = dogData.schedule
                         )
+                        displayDogInfo()
                         displaySchedule()
                     }
                 }

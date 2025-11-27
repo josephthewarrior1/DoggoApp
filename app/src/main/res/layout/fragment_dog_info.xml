@@ -16,133 +16,11 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- 3 Cards Container dengan ukuran yang SAMA -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3"
-                android:layout_marginBottom="16dp">
-
-                <!-- Card 1: Years -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#F3F4F6">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:id="@+id/tvAgeValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="#1F2937" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Years"
-                            android:textSize="12sp"
-                            android:textColor="#6B7280"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Card 2: Gender -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#F3F4F6">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:id="@+id/tvGenderValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Male"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="#1F2937" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Gender"
-                            android:textSize="12sp"
-                            android:textColor="#6B7280"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- Card 3: Weight (Kg) -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#F3F4F6">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:id="@+id/tvWeightValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="22.0"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:textColor="#1F2937" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Kg"
-                            android:textSize="12sp"
-                            android:textColor="#6B7280"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-
-            <!-- Additional Information Card -->
+            <!-- Card Info Basic - Style Row kayak gambar 2 -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="#F3F4F6">
@@ -153,26 +31,160 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Breed Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Additional Information"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#1F2937" />
+                        android:orientation="horizontal"
+                        android:paddingVertical="12dp">
 
-                    <TextView
-                        android:id="@+id/tvAdditionalInfo"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Breed:"
+                            android:textSize="15sp"
+                            android:textColor="#6B7280" />
+
+                        <TextView
+                            android:id="@+id/tvBreedValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Border Collie"
+                            android:textSize="15sp"
+                            android:textColor="#1F2937"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E5E7EB" />
+
+                    <!-- Gender Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No additional information provided"
-                        android:textSize="14sp"
-                        android:textColor="#6B7280"
-                        android:layout_marginTop="8dp" />
+                        android:orientation="horizontal"
+                        android:paddingVertical="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Gender:"
+                            android:textSize="15sp"
+                            android:textColor="#6B7280" />
+
+                        <TextView
+                            android:id="@+id/tvGenderValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Male"
+                            android:textSize="15sp"
+                            android:textColor="#1F2937"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E5E7EB" />
+
+                    <!-- Age Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Age:"
+                            android:textSize="15sp"
+                            android:textColor="#6B7280" />
+
+                        <TextView
+                            android:id="@+id/tvAgeValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1 years"
+                            android:textSize="15sp"
+                            android:textColor="#1F2937"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E5E7EB" />
+
+                    <!-- Birth Date Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Birth Date:"
+                            android:textSize="15sp"
+                            android:textColor="#6B7280" />
+
+                        <TextView
+                            android:id="@+id/tvBirthDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2023-01-01"
+                            android:textSize="15sp"
+                            android:textColor="#1F2937"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E5E7EB" />
+
+                    <!-- Weight Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Weight:"
+                            android:textSize="15sp"
+                            android:textColor="#6B7280" />
+
+                        <TextView
+                            android:id="@+id/tvWeightValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="22.0 kg"
+                            android:textSize="15sp"
+                            android:textColor="#1F2937"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
+
+
 
             <!-- Schedule Section (Digabung di Info Tab) -->
             <TextView

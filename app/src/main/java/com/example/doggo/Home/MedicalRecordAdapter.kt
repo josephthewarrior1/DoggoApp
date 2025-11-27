@@ -10,10 +10,11 @@ import com.example.doggo.network.MedicalRecord
 import com.google.android.material.card.MaterialCardView
 
 class MedicalRecordAdapter(
-    private var records: MutableList<MedicalRecord>,
     private val onItemClick: (MedicalRecord) -> Unit,
     private val onItemLongClick: (MedicalRecord) -> Unit
 ) : RecyclerView.Adapter<MedicalRecordAdapter.MedicalRecordViewHolder>() {
+
+    private val records = mutableListOf<MedicalRecord>()
 
     class MedicalRecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardView: MaterialCardView = itemView.findViewById(R.id.cardMedicalRecord)

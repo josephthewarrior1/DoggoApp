@@ -53,7 +53,7 @@
             android:layout_height="120dp"
             android:src="@drawable/ic_dog_placeholder"
             android:alpha="0.3"
-            android:contentDescription="No records" />
+            android:contentDescription="No medical records" />
 
         <TextView
             android:layout_width="wrap_content"

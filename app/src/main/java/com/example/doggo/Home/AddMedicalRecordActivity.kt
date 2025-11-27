@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.doggo.R
 import com.example.doggo.databinding.ActivityAddMedicalRecordBinding
 import com.example.doggo.network.AddMedicalRecordRequest
 import com.example.doggo.network.MedicalRecordResponse

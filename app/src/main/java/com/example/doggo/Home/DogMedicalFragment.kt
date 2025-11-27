@@ -26,7 +26,6 @@ class DogMedicalFragment : Fragment() {
 
     private var dogProfile: DogProfile? = null
     private lateinit var medicalAdapter: MedicalRecordAdapter
-    private val medicalRecords = mutableListOf<MedicalRecord>()
 
     companion object {
         private const val ARG_DOG_PROFILE = "dog_profile"
@@ -65,7 +64,6 @@ class DogMedicalFragment : Fragment() {
 
     private fun setupRecyclerView() {
         medicalAdapter = MedicalRecordAdapter(
-            records = medicalRecords,
             onItemClick = { record ->
                 showMedicalRecordDetails(record)
             },
@@ -89,7 +87,13 @@ class DogMedicalFragment : Fragment() {
     }
 
     private fun loadMedicalRecords() {
-        val dogId = dogProfile?.id?.toIntOrNull() ?: return
+        val dogId = dogProfile?.id?.toIntOrNull()
+
+        if (dogId == null) {
+            Log.e("DogMedicalFragment", "❌ Invalid dog ID: ${dogProfile?.id}")
+            showEmptyState(true)
+            return
+        }
 
         Log.d("DogMedicalFragment", "📋 Loading medical records for dog: $dogId")
 
@@ -99,27 +103,42 @@ class DogMedicalFragment : Fragment() {
                     call: Call<MedicalRecordsResponse>,
                     response: Response<MedicalRecordsResponse>
                 ) {
+                    Log.d("DogMedicalFragment", "📡 Response received: ${response.code()}")
+                    Log.d("DogMedicalFragment", "📊 Response body: ${response.body()}")
+
                     if (response.isSuccessful && response.body()?.success == true) {
                         val recordsMap = response.body()?.medicalRecords
 
+                        Log.d("DogMedicalFragment", "📦 Records map: $recordsMap")
+                        Log.d("DogMedicalFragment", "📊 Records map size: ${recordsMap?.size}")
+
                         if (recordsMap.isNullOrEmpty()) {
-                            Log.d("DogMedicalFragment", "📭 No medical records found")
+                            Log.d("DogMedicalFragment", "🔭 No medical records found")
                             showEmptyState(true)
                         } else {
                             Log.d("DogMedicalFragment", "✅ Found ${recordsMap.size} medical records")
-                            medicalRecords.clear()
-                            medicalRecords.addAll(recordsMap.values.sortedByDescending { it.date })
+                            val medicalRecords = recordsMap.values.sortedByDescending { it.date }
+
+                            Log.d("DogMedicalFragment", "📝 Medical records list: $medicalRecords")
+                            Log.d("DogMedicalFragment", "📝 Adapter item count before: ${medicalAdapter.itemCount}")
+
                             medicalAdapter.updateRecords(medicalRecords)
+
+                            Log.d("DogMedicalFragment", "📝 Adapter item count after: ${medicalAdapter.itemCount}")
+
                             showEmptyState(false)
                         }
                     } else {
+                        val errorBody = response.errorBody()?.string()
                         Log.e("DogMedicalFragment", "❌ Failed to load: ${response.body()?.error}")
+                        Log.e("DogMedicalFragment", "❌ Error body: $errorBody")
                         showEmptyState(true)
                     }
                 }
 
                 override fun onFailure(call: Call<MedicalRecordsResponse>, t: Throwable) {
                     Log.e("DogMedicalFragment", "❌ Network error: ${t.message}")
+                    Log.e("DogMedicalFragment", "❌ Stack trace: ", t)
                     Toast.makeText(requireContext(), "Failed to load medical records", Toast.LENGTH_SHORT).show()
                     showEmptyState(true)
                 }

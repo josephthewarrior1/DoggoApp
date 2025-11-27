@@ -1,22 +1,17 @@
-<?xml  version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
-        android:title="Home"
-        android:enabled="true" />
+        android:title="Home" />
 
     <item
-        android:id="@+id/nav_profiles"
-        android:icon="@drawable/ic_profiles"
-        android:title="Profiles"
-        android:enabled="true" />
+        android:id="@+id/nav_reminders"
+        android:icon="@drawable/ic_reminders"
+        android:title="Reminders" />
 
     <item
-        android:id="@+id/nav_my_profile"
-        android:icon="@drawable/ic_my_profile"
-        android:title="My Profile"
-        android:enabled="true" />
-
+        android:id="@+id/nav_account"
+        android:icon="@drawable/ic_account"
+        android:title="Account" />
 </menu>

@@ -80,6 +80,11 @@
             android:screenOrientation="portrait"
             android:exported="false" />
 
+        <activity
+            android:name=".Home.AddMedicalRecordActivity"
+            android:label="Add Medical Record"
+            android:theme="@style/Theme.Doggo" />
+
         <!-- ✅ NEW: Notification Receivers -->
         <receiver
             android:name=".notifications.ScheduleNotificationReceiver"

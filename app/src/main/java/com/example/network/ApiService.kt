@@ -26,7 +26,6 @@ data class AddDogRequest(
     val schedule: DogSchedule? = null
 )
 
-// ✅ TAMBAH: Serializable
 data class DogSchedule(
     val eat: List<ScheduleDetail>? = null,
     val walk: List<ScheduleDetail>? = null,
@@ -35,7 +34,6 @@ data class DogSchedule(
     val groom: List<ScheduleDetail>? = null
 ) : Serializable
 
-// ✅ TAMBAH: Serializable
 data class ScheduleDetail(
     val id: String? = null,
     val time: String = "",
@@ -45,7 +43,6 @@ data class ScheduleDetail(
     val updatedAt: String? = null
 ) : Serializable
 
-// Schedule detail dengan ID (untuk response dari API)
 data class ScheduleDetailWithId(
     val id: String,
     val time: String,
@@ -65,14 +62,12 @@ data class ApiResponse(
     val error: String? = null
 )
 
-// Changed from List to Map
 data class DogsResponse(
     val success: Boolean,
     val dogs: Map<String, DogData>? = emptyMap(),
     val error: String? = null
 )
 
-// Response for single dog
 data class DogResponse(
     val success: Boolean,
     val dog: DogData? = null,
@@ -93,7 +88,6 @@ data class DogData(
     val schedule: DogSchedule? = null
 )
 
-// Request untuk add/update/delete schedule
 data class ScheduleRequest(
     val scheduleType: String,
     val time: String,
@@ -119,6 +113,70 @@ data class ScheduleResponse(
     val scheduleItem: ScheduleDetailWithId? = null,
     val scheduleItemId: String? = null,
     val dogId: Int? = null,
+    val error: String? = null
+)
+
+// Medical Record Models
+data class MedicalRecord(
+    val medicalId: Int,
+    val dogId: Int,
+    val ownerId: Int,
+    val type: String,
+    val name: String,
+    val date: String,
+    val nextDueDate: String? = null,
+    val veterinarian: String? = null,
+    val clinic: String? = null,
+    val notes: String? = null,
+    val documents: List<String>? = null,
+    val status: String? = "completed",
+    val reminderEnabled: Boolean = true,
+    val reminderDays: Int = 7,
+    val reminderSent: Boolean = false,
+    val createdAt: String,
+    val updatedAt: String
+) : Serializable
+
+data class AddMedicalRecordRequest(
+    val dogId: Int,
+    val type: String,
+    val name: String,
+    val date: String,
+    val nextDueDate: String? = null,
+    val veterinarian: String? = null,
+    val clinic: String? = null,
+    val notes: String? = null,
+    val documents: List<String>? = null,
+    val status: String? = "completed",
+    val reminderEnabled: Boolean = true,
+    val reminderDays: Int = 7
+)
+
+data class UpdateMedicalRecordRequest(
+    val type: String? = null,
+    val name: String? = null,
+    val date: String? = null,
+    val nextDueDate: String? = null,
+    val veterinarian: String? = null,
+    val clinic: String? = null,
+    val notes: String? = null,
+    val documents: List<String>? = null,
+    val status: String? = null,
+    val reminderEnabled: Boolean? = null,
+    val reminderDays: Int? = null
+)
+
+data class MedicalRecordResponse(
+    val success: Boolean,
+    val message: String? = null,
+    val medicalId: Int? = null,
+    val medicalRecord: MedicalRecord? = null,
+    val error: String? = null
+)
+
+data class MedicalRecordsResponse(
+    val success: Boolean,
+    val medicalRecords: Map<String, MedicalRecord>? = null,
     val error: String? = null
 )
 
@@ -164,4 +222,29 @@ interface ApiService {
         @Path("id") dogId: String,
         @Body request: ScheduleDeleteRequest
     ): Call<ScheduleResponse>
+
+    // Medical Records endpoints
+    @POST("api/medical-records")
+    fun addMedicalRecord(@Body request: AddMedicalRecordRequest): Call<MedicalRecordResponse>
+
+    @GET("api/medical-records/dog/{dogId}")
+    fun getMedicalRecordsByDog(@Path("dogId") dogId: Int): Call<MedicalRecordsResponse>
+
+    @GET("api/medical-records/{id}")
+    fun getMedicalRecordById(@Path("id") medicalId: Int): Call<MedicalRecordResponse>
+
+    @PUT("api/medical-records/{id}")
+    fun updateMedicalRecord(
+        @Path("id") medicalId: Int,
+        @Body request: UpdateMedicalRecordRequest
+    ): Call<MedicalRecordResponse>
+
+    @DELETE("api/medical-records/{id}")
+    fun deleteMedicalRecord(@Path("id") medicalId: Int): Call<MedicalRecordResponse>
+
+    @GET("api/medical-records/upcoming")
+    fun getUpcomingMedicalRecords(): Call<MedicalRecordsResponse>
+
+    @GET("api/medical-records/overdue")
+    fun getOverdueMedicalRecords(): Call<MedicalRecordsResponse>
 }

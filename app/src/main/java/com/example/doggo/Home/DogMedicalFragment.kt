@@ -1,6 +1,8 @@
 package com.example.doggo.Home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.doggo.databinding.FragmentDogMedicalBinding
+import com.example.doggo.network.MedicalRecord
+import com.example.doggo.network.MedicalRecordResponse
+import com.example.doggo.network.MedicalRecordsResponse
+import com.example.doggo.network.RetrofitClient
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class DogMedicalFragment : Fragment() {
 
@@ -15,6 +25,8 @@ class DogMedicalFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var dogProfile: DogProfile? = null
+    private lateinit var medicalAdapter: MedicalRecordAdapter
+    private val medicalRecords = mutableListOf<MedicalRecord>()
 
     companion object {
         private const val ARG_DOG_PROFILE = "dog_profile"
@@ -52,21 +64,154 @@ class DogMedicalFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        binding.rvMedicalRecords.layoutManager = LinearLayoutManager(requireContext())
-        // TODO: Set adapter when medical records model is ready
+        medicalAdapter = MedicalRecordAdapter(
+            records = medicalRecords,
+            onItemClick = { record ->
+                showMedicalRecordDetails(record)
+            },
+            onItemLongClick = { record ->
+                showMedicalRecordOptions(record)
+            }
+        )
+
+        binding.rvMedicalRecords.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = medicalAdapter
+        }
     }
 
     private fun setupButtons() {
         binding.btnAddMedical.setOnClickListener {
-            // TODO: Navigate to add medical record screen
-            Toast.makeText(requireContext(), "Add Medical Record (Coming Soon)", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), AddMedicalRecordActivity::class.java)
+            intent.putExtra("DOG_ID", dogProfile?.id?.toIntOrNull() ?: -1)
+            startActivity(intent)
         }
     }
 
     private fun loadMedicalRecords() {
-        // TODO: Load medical records from API/database
-        // For now, show empty state
-        showEmptyState(true)
+        val dogId = dogProfile?.id?.toIntOrNull() ?: return
+
+        Log.d("DogMedicalFragment", "📋 Loading medical records for dog: $dogId")
+
+        RetrofitClient.instance.getMedicalRecordsByDog(dogId)
+            .enqueue(object : Callback<MedicalRecordsResponse> {
+                override fun onResponse(
+                    call: Call<MedicalRecordsResponse>,
+                    response: Response<MedicalRecordsResponse>
+                ) {
+                    if (response.isSuccessful && response.body()?.success == true) {
+                        val recordsMap = response.body()?.medicalRecords
+
+                        if (recordsMap.isNullOrEmpty()) {
+                            Log.d("DogMedicalFragment", "📭 No medical records found")
+                            showEmptyState(true)
+                        } else {
+                            Log.d("DogMedicalFragment", "✅ Found ${recordsMap.size} medical records")
+                            medicalRecords.clear()
+                            medicalRecords.addAll(recordsMap.values.sortedByDescending { it.date })
+                            medicalAdapter.updateRecords(medicalRecords)
+                            showEmptyState(false)
+                        }
+                    } else {
+                        Log.e("DogMedicalFragment", "❌ Failed to load: ${response.body()?.error}")
+                        showEmptyState(true)
+                    }
+                }
+
+                override fun onFailure(call: Call<MedicalRecordsResponse>, t: Throwable) {
+                    Log.e("DogMedicalFragment", "❌ Network error: ${t.message}")
+                    Toast.makeText(requireContext(), "Failed to load medical records", Toast.LENGTH_SHORT).show()
+                    showEmptyState(true)
+                }
+            })
+    }
+
+    private fun showMedicalRecordDetails(record: MedicalRecord) {
+        val details = buildString {
+            append("Type: ${record.type}\n")
+            append("Name: ${record.name}\n")
+            append("Date: ${record.date}\n")
+
+            record.veterinarian?.let {
+                if (it.isNotEmpty()) append("Veterinarian: $it\n")
+            }
+
+            record.clinic?.let {
+                if (it.isNotEmpty()) append("Clinic: $it\n")
+            }
+
+            record.nextDueDate?.let {
+                if (it.isNotEmpty()) append("Next Due: $it\n")
+            }
+
+            record.notes?.let {
+                if (it.isNotEmpty()) append("\nNotes:\n$it")
+            }
+        }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Medical Record Details")
+            .setMessage(details)
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
+    private fun showMedicalRecordOptions(record: MedicalRecord) {
+        val options = arrayOf("View Details", "Edit", "Delete")
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Medical Record")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showMedicalRecordDetails(record)
+                    1 -> editMedicalRecord(record)
+                    2 -> deleteMedicalRecord(record)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun editMedicalRecord(record: MedicalRecord) {
+        // TODO: Navigate to edit medical record activity
+        Toast.makeText(requireContext(), "Edit Medical Record (Coming Soon)", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun deleteMedicalRecord(record: MedicalRecord) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Medical Record")
+            .setMessage("Are you sure you want to delete this medical record?")
+            .setPositiveButton("Delete") { _, _ ->
+                performDelete(record)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun performDelete(record: MedicalRecord) {
+        Log.d("DogMedicalFragment", "🗑️ Deleting medical record: ${record.medicalId}")
+
+        RetrofitClient.instance.deleteMedicalRecord(record.medicalId)
+            .enqueue(object : Callback<MedicalRecordResponse> {
+                override fun onResponse(
+                    call: Call<MedicalRecordResponse>,
+                    response: Response<MedicalRecordResponse>
+                ) {
+                    if (response.isSuccessful && response.body()?.success == true) {
+                        Log.d("DogMedicalFragment", "✅ Medical record deleted")
+                        Toast.makeText(requireContext(), "Medical record deleted", Toast.LENGTH_SHORT).show()
+                        loadMedicalRecords() // Reload list
+                    } else {
+                        Log.e("DogMedicalFragment", "❌ Failed to delete: ${response.body()?.error}")
+                        Toast.makeText(requireContext(), "Failed to delete record", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<MedicalRecordResponse>, t: Throwable) {
+                    Log.e("DogMedicalFragment", "❌ Network error: ${t.message}")
+                    Toast.makeText(requireContext(), "Network error", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     private fun showEmptyState(show: Boolean) {
@@ -77,6 +222,12 @@ class DogMedicalFragment : Fragment() {
             binding.emptyStateMedical.visibility = View.GONE
             binding.rvMedicalRecords.visibility = View.VISIBLE
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reload when returning from add/edit screen
+        loadMedicalRecords()
     }
 
     override fun onDestroyView() {

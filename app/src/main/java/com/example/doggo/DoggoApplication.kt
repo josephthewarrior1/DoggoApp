@@ -4,20 +4,21 @@ import android.app.Application
 import android.util.Log
 import com.example.doggo.network.RetrofitClient
 import com.example.doggo.notifications.ScheduleNotificationManager
+import com.example.doggo.notifications.MedicalNotificationManager
 
 class DoggoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("DoggoApp", "🚀 Application starting...")
 
-        // Initialize Retrofit
+        // Initialize RetrofitClient with context
         RetrofitClient.init(this)
-        Log.d("DoggoApplication", "✅ RetrofitClient initialized")
 
-        // Create Notification Channel
+        // Create notification channels
         ScheduleNotificationManager.createNotificationChannel(this)
-        Log.d("DoggoApplication", "✅ Notification channel created")
+        MedicalNotificationManager.createNotificationChannel(this)
 
-        Log.d("DoggoApplication", "✅ Application initialized")
+        Log.d("DoggoApp", "✅ Application initialized")
     }
 }

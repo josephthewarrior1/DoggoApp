@@ -85,7 +85,15 @@
             android:label="Add Medical Record"
             android:theme="@style/Theme.Doggo" />
 
-        <!-- ✅ NEW: Notification Receivers -->
+        <!-- ✅ FIXED: Reminder Activity - Changed from .Reminders to .Home -->
+        <activity
+            android:name=".Home.ReminderActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:label="Reminders"
+            android:parentActivityName=".Home.HomeActivity" />
+
+        <!-- ✅ Notification Receivers -->
         <receiver
             android:name=".notifications.ScheduleNotificationReceiver"
             android:enabled="true"
@@ -101,6 +109,16 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- ✅ Medical Reminder Receiver -->
+        <receiver
+            android:name=".notifications.MedicalReminderReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.doggo.MEDICAL_REMINDER"/>
             </intent-filter>
         </receiver>
 

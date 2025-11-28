@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // Android UI Components
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

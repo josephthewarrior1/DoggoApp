@@ -85,13 +85,6 @@
             android:label="Add Medical Record"
             android:theme="@style/Theme.Doggo" />
 
-        <!-- ✅ FIXED: Reminder Activity - Changed from .Reminders to .Home -->
-        <activity
-            android:name=".Home.ReminderActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:label="Reminders"
-            android:parentActivityName=".Home.HomeActivity" />
 
         <!-- ✅ Notification Receivers -->
         <receiver

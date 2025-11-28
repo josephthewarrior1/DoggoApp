@@ -34,11 +34,24 @@ class HomeActivity : AppCompatActivity() {
         setupUI()
         loadUserData()
         checkProfilesAndUpdateUI()
+
+        // Handle notification click
+        handleNotificationIntent()
     }
 
     override fun onResume() {
         super.onResume()
         checkProfilesAndUpdateUI()
+    }
+
+    private fun handleNotificationIntent() {
+        val openRemindersTab = intent.getBooleanExtra("OPEN_REMINDERS_TAB", false)
+        if (openRemindersTab) {
+            // Set bottom nav ke Reminders dan tampilkan fragment
+            binding.bottomNavigation.selectedItemId = R.id.nav_reminders
+            showReminderFragment()
+            Log.d("HomeActivity", "📲 Opened from notification - showing Reminders tab")
+        }
     }
 
     private fun loadUserData() {
@@ -100,16 +113,22 @@ class HomeActivity : AppCompatActivity() {
         binding.mainContentLayout.visibility = View.VISIBLE
         binding.fragmentContainer.visibility = View.GONE
         hideFragment()
+        Log.d("HomeActivity", "🏠 Showing Home content")
     }
 
     private fun showReminderFragment() {
         binding.mainContentLayout.visibility = View.GONE
         binding.fragmentContainer.visibility = View.VISIBLE
 
-        val fragment = ReminderFragment()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
+        // Check if fragment already exists
+        val existingFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+        if (existingFragment !is ReminderFragment) {
+            val fragment = ReminderFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit()
+            Log.d("HomeActivity", "📋 Showing Reminder fragment")
+        }
     }
 
     private fun hideFragment() {
@@ -118,6 +137,7 @@ class HomeActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .remove(fragment)
                 .commit()
+            Log.d("HomeActivity", "🗑️ Fragment removed")
         }
     }
 

@@ -10,7 +10,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.doggo.R
-import com.example.doggo.Home.ReminderActivity
+import com.example.doggo.Home.HomeActivity  // ✅ UBAH INI - dari ReminderActivity ke HomeActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -136,8 +136,11 @@ object MedicalNotificationManager {
         title: String,
         message: String
     ) {
-        val intent = Intent(context, ReminderActivity::class.java).apply {
+        // ✅ UBAH: Intent ke HomeActivity dengan extras untuk buka tab Reminders
+        val intent = Intent(context, HomeActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("OPEN_REMINDERS_TAB", true)  // Extra flag untuk buka tab Reminders
+            putExtra("MEDICAL_ID", medicalId)
         }
 
         val pendingIntent = PendingIntent.getActivity(

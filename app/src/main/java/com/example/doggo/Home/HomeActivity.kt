@@ -47,7 +47,6 @@ class HomeActivity : AppCompatActivity() {
     private fun handleNotificationIntent() {
         val openRemindersTab = intent.getBooleanExtra("OPEN_REMINDERS_TAB", false)
         if (openRemindersTab) {
-            // Set bottom nav ke Reminders dan tampilkan fragment
             binding.bottomNavigation.selectedItemId = R.id.nav_reminders
             showReminderFragment()
             Log.d("HomeActivity", "📲 Opened from notification - showing Reminders tab")
@@ -101,7 +100,7 @@ class HomeActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_account -> {
-                    showUserProfile()
+                    showProfileFragment()
                     true
                 }
                 else -> false
@@ -120,7 +119,6 @@ class HomeActivity : AppCompatActivity() {
         binding.mainContentLayout.visibility = View.GONE
         binding.fragmentContainer.visibility = View.VISIBLE
 
-        // Check if fragment already exists
         val existingFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
         if (existingFragment !is ReminderFragment) {
             val fragment = ReminderFragment()
@@ -128,6 +126,20 @@ class HomeActivity : AppCompatActivity() {
                 .replace(R.id.fragmentContainer, fragment)
                 .commit()
             Log.d("HomeActivity", "📋 Showing Reminder fragment")
+        }
+    }
+
+    private fun showProfileFragment() {
+        binding.mainContentLayout.visibility = View.GONE
+        binding.fragmentContainer.visibility = View.VISIBLE
+
+        val existingFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+        if (existingFragment !is MyProfileFragment) {
+            val fragment = MyProfileFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit()
+            Log.d("HomeActivity", "👤 Showing Profile fragment")
         }
     }
 
@@ -152,7 +164,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun loadDogsFromAPI() {
-        Log.d("HomeActivity", "🔄 Loading dogs from API...")
+        Log.d("HomeActivity", "📄 Loading dogs from API...")
 
         binding.mainContentLayout.visibility = View.VISIBLE
         binding.emptyStateLayout.visibility = View.GONE
@@ -216,7 +228,7 @@ class HomeActivity : AppCompatActivity() {
         dogProfiles.clear()
         val allProfiles = ProfileManager.getAllProfiles()
         dogProfiles.addAll(allProfiles)
-        Log.d("HomeActivity", "🔄 Loaded ${dogProfiles.size} profiles from local ProfileManager")
+        Log.d("HomeActivity", "📄 Loaded ${dogProfiles.size} profiles from local ProfileManager")
         updateUI()
     }
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- xml -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +25,6 @@
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold" />
-
         </LinearLayout>
 
         <!-- Profile Card -->
@@ -35,7 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,11 +43,10 @@
                 android:padding="16dp"
                 android:gravity="center_vertical">
 
-                <!-- Avatar Circle -->
                 <FrameLayout
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:background="@drawable/bg_avatar_circle">
+                    android:background="@null">
 
                     <TextView
                         android:id="@+id/tvAvatarInitial"
@@ -59,10 +57,8 @@
                         android:textColor="@android:color/white"
                         android:textSize="24sp"
                         android:textStyle="bold" />
-
                 </FrameLayout>
 
-                <!-- User Info -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -87,14 +83,10 @@
                         android:text="user@example.com"
                         android:textColor="#2196F3"
                         android:textSize="14sp" />
-
                 </LinearLayout>
-
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Account Settings Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -112,14 +104,14 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Edit Profile -->
                 <LinearLayout
                     android:id="@+id/layoutEditProfile"
                     android:layout_width="match_parent"
@@ -141,8 +133,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:src="@android:drawable/ic_menu_edit"
-                            android:tint="#000000" />
-
+                            app:tint="#000000" />
                     </FrameLayout>
 
                     <TextView
@@ -160,7 +151,6 @@
                         android:text="›"
                         android:textColor="#CCCCCC"
                         android:textSize="24sp" />
-
                 </LinearLayout>
 
                 <View
@@ -169,7 +159,6 @@
                     android:layout_marginStart="72dp"
                     android:background="#E0E0E0" />
 
-                <!-- Change Password -->
                 <LinearLayout
                     android:id="@+id/layoutChangePassword"
                     android:layout_width="match_parent"
@@ -191,8 +180,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:src="@android:drawable/ic_lock_lock"
-                            android:tint="#2196F3" />
-
+                            app:tint="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -210,7 +198,6 @@
                         android:text="›"
                         android:textColor="#CCCCCC"
                         android:textSize="24sp" />
-
                 </LinearLayout>
 
                 <View
@@ -219,7 +206,6 @@
                     android:layout_marginStart="72dp"
                     android:background="#E0E0E0" />
 
-                <!-- Notifications -->
                 <LinearLayout
                     android:id="@+id/layoutNotifications"
                     android:layout_width="match_parent"
@@ -241,8 +227,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:src="@android:drawable/ic_popup_reminder"
-                            android:tint="#2196F3" />
-
+                            app:tint="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -260,14 +245,10 @@
                         android:text="›"
                         android:textColor="#CCCCCC"
                         android:textSize="24sp" />
-
                 </LinearLayout>
-
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- App Settings Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -285,14 +266,14 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Privacy Policy -->
                 <LinearLayout
                     android:id="@+id/layoutPrivacyPolicy"
                     android:layout_width="match_parent"
@@ -314,8 +295,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:src="@android:drawable/ic_lock_idle_lock"
-                            android:tint="#2196F3" />
-
+                            app:tint="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -333,7 +313,6 @@
                         android:text="›"
                         android:textColor="#CCCCCC"
                         android:textSize="24sp" />
-
                 </LinearLayout>
 
                 <View
@@ -342,7 +321,6 @@
                     android:layout_marginStart="72dp"
                     android:background="#E0E0E0" />
 
-                <!-- Terms & Conditions -->
                 <LinearLayout
                     android:id="@+id/layoutTermsConditions"
                     android:layout_width="match_parent"
@@ -364,8 +342,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:src="@android:drawable/ic_menu_agenda"
-                            android:tint="#2196F3" />
-
+                            app:tint="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -383,7 +360,6 @@
                         android:text="›"
                         android:textColor="#CCCCCC"
                         android:textSize="24sp" />
-
                 </LinearLayout>
 
                 <View
@@ -392,7 +368,6 @@
                     android:layout_marginStart="72dp"
                     android:background="#E0E0E0" />
 
-                <!-- About Us -->
                 <LinearLayout
                     android:id="@+id/layoutAboutUs"
                     android:layout_width="match_parent"
@@ -414,8 +389,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:src="@android:drawable/ic_menu_info_details"
-                            android:tint="#2196F3" />
-
+                            app:tint="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -433,21 +407,18 @@
                         android:text="›"
                         android:textColor="#CCCCCC"
                         android:textSize="24sp" />
-
                 </LinearLayout>
-
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Logout Button -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="24dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent">
 
             <LinearLayout
                 android:id="@+id/layoutLogout"
@@ -470,8 +441,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:src="@android:drawable/ic_menu_close_clear_cancel"
-                        android:tint="#F44336" />
-
+                        app:tint="#F44336" />
                 </FrameLayout>
 
                 <TextView
@@ -483,11 +453,7 @@
                     android:textColor="#F44336"
                     android:textSize="16sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
-
     </LinearLayout>
-
 </ScrollView>

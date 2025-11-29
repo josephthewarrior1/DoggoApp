@@ -1,4 +1,4 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.profile
 
 import com.example.doggo.network.DogSchedule
 import java.io.Serializable

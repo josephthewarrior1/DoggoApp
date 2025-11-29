@@ -1,4 +1,4 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.reminder
 
 import com.example.doggo.network.MedicalRecord
 import com.example.doggo.network.ScheduleDetail

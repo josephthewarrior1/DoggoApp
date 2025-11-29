@@ -1,6 +1,5 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.profile
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -35,7 +34,7 @@ class EditDogProfileActivity : AppCompatActivity() {
     private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             result.data?.data?.let { uri ->
                 selectedImageUri = uri
                 binding.ivDogPhoto.setImageURI(uri)
@@ -83,7 +82,8 @@ class EditDogProfileActivity : AppCompatActivity() {
     private fun loadDogData() {
         Log.d("EditDogProfile", "📡 Loading dog data for ID: $dogId")
 
-        RetrofitClient.instance.getDogById(dogId.toString()).enqueue(object : Callback<DogResponse> {
+        RetrofitClient.instance.getDogById(dogId.toString()).enqueue(object :
+            Callback<DogResponse> {
             override fun onResponse(call: Call<DogResponse>, response: Response<DogResponse>) {
                 if (response.isSuccessful) {
                     val dogResponse = response.body()
@@ -234,7 +234,8 @@ class EditDogProfileActivity : AppCompatActivity() {
         binding.btnSave.isEnabled = false
         binding.btnSave.text = "Updating..."
 
-        RetrofitClient.instance.updateDog(dogId, updateRequest).enqueue(object : Callback<ApiResponse> {
+        RetrofitClient.instance.updateDog(dogId, updateRequest).enqueue(object :
+            Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 binding.btnSave.isEnabled = true
                 binding.btnSave.text = "Update Profile"

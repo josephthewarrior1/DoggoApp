@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.example.doggo.Home.ProfileManager
+import com.example.doggo.Home.profile.ProfileManager
 import com.example.doggo.network.RetrofitClient
 
 class BootReceiver : BroadcastReceiver() {

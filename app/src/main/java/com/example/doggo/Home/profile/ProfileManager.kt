@@ -1,4 +1,4 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.profile
 
 import android.util.Log
 

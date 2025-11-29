@@ -1,4 +1,4 @@
-package com.example.doggo.notifications
+package com.example.doggo.Home.medical
 
 import android.app.AlarmManager
 import android.app.NotificationChannel
@@ -9,10 +9,11 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.doggo.Home.HomeActivity
 import com.example.doggo.R
-import com.example.doggo.Home.HomeActivity  // ✅ UBAH INI - dari ReminderActivity ke HomeActivity
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 object MedicalNotificationManager {
 
@@ -67,7 +68,7 @@ object MedicalNotificationManager {
             }
 
             val intent = Intent(context, MedicalReminderReceiver::class.java).apply {
-                action = "com.example.doggo.MEDICAL_REMINDER"
+                action = "com.example.doggo.MEDICAL_REMINDER"  // ✅ FIX: action = bukan setAction =
                 putExtra("MEDICAL_ID", medicalId)
                 putExtra("DOG_ID", dogId)
                 putExtra("DOG_NAME", dogName)
@@ -136,9 +137,9 @@ object MedicalNotificationManager {
         title: String,
         message: String
     ) {
-        // ✅ UBAH: Intent ke HomeActivity dengan extras untuk buka tab Reminders
+        // ✅ Intent ke HomeActivity dengan extras untuk buka tab Reminders
         val intent = Intent(context, HomeActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK  // ✅ FIX: flags = bukan setFlags =
             putExtra("OPEN_REMINDERS_TAB", true)  // Extra flag untuk buka tab Reminders
             putExtra("MEDICAL_ID", medicalId)
         }

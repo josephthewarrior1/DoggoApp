@@ -1,4 +1,4 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.profile
 
 import android.app.AlertDialog
 import android.graphics.Bitmap
@@ -9,17 +9,20 @@ import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.NumberPicker
+import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.doggo.R
 import com.example.doggo.databinding.ActivityAddDogProfileBinding
-import com.example.doggo.network.RetrofitClient
 import com.example.doggo.network.AddDogRequest
-import com.example.doggo.network.DogSchedule
-import com.example.doggo.network.ScheduleDetail
 import com.example.doggo.network.ApiResponse
+import com.example.doggo.network.DogSchedule
+import com.example.doggo.network.RetrofitClient
+import com.example.doggo.network.ScheduleDetail
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

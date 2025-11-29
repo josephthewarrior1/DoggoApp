@@ -1,5 +1,6 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.schedule
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,11 +50,11 @@ class ScheduleAdapter(
 
         // Set icon background color based on type
         val backgroundColor = when (item.type) {
-            ScheduleType.EAT -> android.graphics.Color.parseColor("#10B981") // Green
-            ScheduleType.WALK -> android.graphics.Color.parseColor("#3B82F6") // Blue
-            ScheduleType.SLEEP -> android.graphics.Color.parseColor("#8B5CF6") // Purple
-            ScheduleType.MEDICINE -> android.graphics.Color.parseColor("#EF4444") // Red
-            ScheduleType.GROOM -> android.graphics.Color.parseColor("#F59E0B") // Orange
+            ScheduleType.EAT -> Color.parseColor("#10B981") // Green
+            ScheduleType.WALK -> Color.parseColor("#3B82F6") // Blue
+            ScheduleType.SLEEP -> Color.parseColor("#8B5CF6") // Purple
+            ScheduleType.MEDICINE -> Color.parseColor("#EF4444") // Red
+            ScheduleType.GROOM -> Color.parseColor("#F59E0B") // Orange
         }
         holder.iconContainer.setCardBackgroundColor(backgroundColor)
 

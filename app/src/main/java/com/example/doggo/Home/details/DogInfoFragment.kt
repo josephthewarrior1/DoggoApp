@@ -1,4 +1,4 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.details
 
 import android.os.Bundle
 import android.util.Log
@@ -7,14 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.example.doggo.Home.profile.DogProfile
 import com.example.doggo.R
 import com.example.doggo.databinding.FragmentDogInfoBinding
-import com.example.doggo.network.*
+import com.example.doggo.network.DogResponse
+import com.example.doggo.network.RetrofitClient
+import com.example.doggo.network.ScheduleDeleteRequest
+import com.example.doggo.network.ScheduleDetail
+import com.example.doggo.network.ScheduleRequest
+import com.example.doggo.network.ScheduleResponse
+import com.example.doggo.network.ScheduleUpdateRequest
 import com.example.doggo.notifications.ScheduleNotificationManager
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -198,7 +206,11 @@ class DogInfoFragment : Fragment() {
 
         // Setup schedule type dropdown
         val scheduleTypes = listOf("🍽️ Eating", "🚶 Walking", "😴 Sleeping", "💊 Medicine", "✂️ Grooming")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, scheduleTypes)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            scheduleTypes
+        )
         actvScheduleType.setAdapter(adapter)
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
@@ -281,7 +293,7 @@ class DogInfoFragment : Fragment() {
 
     private fun showAddScheduleDialogForType(scheduleType: String) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
-        val tvTitle = dialogView.findViewById<View>(R.id.tvDialogTitle) as? android.widget.TextView
+        val tvTitle = dialogView.findViewById<View>(R.id.tvDialogTitle) as? TextView
         val tilScheduleType = dialogView.findViewById<TextInputLayout>(R.id.tilScheduleType)
         val etTime = dialogView.findViewById<TextInputEditText>(R.id.etTime)
         val etDescription = dialogView.findViewById<TextInputEditText>(R.id.etDescription)
@@ -315,11 +327,11 @@ class DogInfoFragment : Fragment() {
 
     private fun showEditScheduleDialog(scheduleType: String, scheduleDetail: ScheduleDetail) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
-        val tvTitle = dialogView.findViewById<View>(R.id.tvDialogTitle) as? android.widget.TextView
+        val tvTitle = dialogView.findViewById<View>(R.id.tvDialogTitle) as? TextView
         val tilScheduleType = dialogView.findViewById<TextInputLayout>(R.id.tilScheduleType)
         val etTime = dialogView.findViewById<TextInputEditText>(R.id.etTime)
         val etDescription = dialogView.findViewById<TextInputEditText>(R.id.etDescription)
-        val btnSave = dialogView.findViewById<View>(R.id.btnSave) as? com.google.android.material.button.MaterialButton
+        val btnSave = dialogView.findViewById<View>(R.id.btnSave) as? MaterialButton
 
         tvTitle?.text = "Edit Schedule"
         tilScheduleType.visibility = View.GONE
@@ -364,7 +376,8 @@ class DogInfoFragment : Fragment() {
             description = description
         )
 
-        RetrofitClient.instance.addSchedule(dogId, request).enqueue(object : Callback<ScheduleResponse> {
+        RetrofitClient.instance.addSchedule(dogId, request).enqueue(object :
+            Callback<ScheduleResponse> {
             override fun onResponse(call: Call<ScheduleResponse>, response: Response<ScheduleResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Log.d("DogInfoFragment", "✅ Schedule added successfully")
@@ -410,7 +423,8 @@ class DogInfoFragment : Fragment() {
             description = description
         )
 
-        RetrofitClient.instance.updateSchedule(dogId, request).enqueue(object : Callback<ScheduleResponse> {
+        RetrofitClient.instance.updateSchedule(dogId, request).enqueue(object :
+            Callback<ScheduleResponse> {
             override fun onResponse(call: Call<ScheduleResponse>, response: Response<ScheduleResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Log.d("DogInfoFragment", "✅ Schedule updated successfully")
@@ -469,7 +483,8 @@ class DogInfoFragment : Fragment() {
             scheduleItemId = scheduleItemId
         )
 
-        RetrofitClient.instance.deleteSchedule(dogId, request).enqueue(object : Callback<ScheduleResponse> {
+        RetrofitClient.instance.deleteSchedule(dogId, request).enqueue(object :
+            Callback<ScheduleResponse> {
             override fun onResponse(call: Call<ScheduleResponse>, response: Response<ScheduleResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Log.d("DogInfoFragment", "✅ Schedule deleted successfully")

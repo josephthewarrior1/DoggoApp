@@ -8,7 +8,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.example.doggo.Home.DogProfileDetailActivity
+import com.example.doggo.Home.profile.DogProfileDetailActivity
 import com.example.doggo.R
 
 class ScheduleNotificationReceiver : BroadcastReceiver() {

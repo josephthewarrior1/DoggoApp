@@ -1,5 +1,6 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.medical
 
+import android.R
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +16,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class AddMedicalRecordActivity : AppCompatActivity() {
 
@@ -58,7 +60,7 @@ class AddMedicalRecordActivity : AppCompatActivity() {
 
     private fun setupTypeDropdown() {
         val types = listOf("Vaccine", "Checkup", "Treatment", "Surgery", "Medication")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, types)
+        val adapter = ArrayAdapter(this, R.layout.simple_dropdown_item_1line, types)
         binding.actvType.setAdapter(adapter)
     }
 

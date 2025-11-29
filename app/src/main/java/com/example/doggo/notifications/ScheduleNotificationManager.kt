@@ -9,7 +9,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.example.doggo.Home.DogProfileDetailActivity
+import com.example.doggo.Home.profile.DogProfileDetailActivity
 import com.example.doggo.R
 import com.example.doggo.network.ScheduleDetail
 import java.text.SimpleDateFormat

@@ -8,6 +8,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.doggo.Home.profile.AddDogProfileActivity
+import com.example.doggo.Home.profile.DogProfile
+import com.example.doggo.Home.profile.DogProfileAdapter
+import com.example.doggo.Home.profile.DogProfileDetailActivity
+import com.example.doggo.Home.profile.ProfileManager
+import com.example.doggo.Home.reminder.ReminderFragment
 import com.example.doggo.R
 import com.example.doggo.databinding.ActivityHomeBinding
 import com.example.doggo.network.RetrofitClient

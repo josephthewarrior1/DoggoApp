@@ -1,4 +1,4 @@
-package com.example.doggo.notifications
+package com.example.doggo.Home.medical
 
 import android.content.BroadcastReceiver
 import android.content.Context

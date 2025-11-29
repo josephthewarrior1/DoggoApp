@@ -1,16 +1,20 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.profile
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.doggo.Home.details.DogDetailPagerAdapter
+import com.example.doggo.Home.profile.EditDogProfileActivity
+import com.example.doggo.Home.profile.ProfileManager
 import com.example.doggo.R
 import com.example.doggo.databinding.ActivityDogProfileDetailTabsBinding
-import com.example.doggo.network.RetrofitClient
 import com.example.doggo.network.DogResponse
+import com.example.doggo.network.RetrofitClient
 import com.google.android.material.tabs.TabLayoutMediator
 import retrofit2.Call
 import retrofit2.Callback
@@ -158,7 +162,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
     }
 
     private fun showDeleteConfirmationDialog() {
-        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)
         builder.setTitle("Delete Profile")
         builder.setMessage("Are you sure you want to delete ${dogProfile?.name}'s profile? This action cannot be undone.")
 
@@ -174,7 +178,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
 
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             ?.setTextColor(getColor(android.R.color.holo_red_dark))
     }
 

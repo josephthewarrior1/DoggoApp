@@ -1,4 +1,4 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.profile
 
 import android.view.LayoutInflater
 import android.view.View

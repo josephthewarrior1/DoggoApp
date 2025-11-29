@@ -67,21 +67,21 @@
             android:exported="false" />
 
         <activity
-            android:name=".Home.AddDogProfileActivity"
+            android:name=".Home.profile.AddDogProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.example.doggo.Home.DogProfileDetailActivity"
+            android:name="com.example.doggo.Home.profile.DogProfileDetailActivity"
             android:exported="false" />
 
         <activity
-            android:name=".Home.EditDogProfileActivity"
+            android:name=".Home.profile.EditDogProfileActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
 
         <activity
-            android:name=".Home.AddMedicalRecordActivity"
+            android:name=".Home.medical.AddMedicalRecordActivity"
             android:label="Add Medical Record"
             android:theme="@style/Theme.Doggo" />
 
@@ -107,7 +107,7 @@
 
         <!-- ✅ Medical Reminder Receiver -->
         <receiver
-            android:name=".notifications.MedicalReminderReceiver"
+            android:name=".Home.medical.MedicalReminderReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

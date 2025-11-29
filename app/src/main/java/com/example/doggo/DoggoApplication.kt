@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.example.doggo.network.RetrofitClient
 import com.example.doggo.notifications.ScheduleNotificationManager
-import com.example.doggo.notifications.MedicalNotificationManager
+import com.example.doggo.Home.medical.MedicalNotificationManager
 
 class DoggoApplication : Application() {
 

@@ -1,4 +1,4 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.reminder
 
 import android.graphics.Color
 import android.view.LayoutInflater

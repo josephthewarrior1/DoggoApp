@@ -1,4 +1,4 @@
-package com.example.doggo.Home
+package com.example.doggo.Home.reminder
 
 import android.os.Bundle
 import android.util.Log
@@ -85,6 +85,13 @@ class ReminderFragment : Fragment() {
 
     private fun loadReminders() {
         Log.d("ReminderFragment", "📥 Loading all reminders...")
+
+        // ✅ NULL CHECK
+        if (_binding == null) {
+            Log.w("ReminderFragment", "⚠️ Binding is null, skipping load")
+            return
+        }
+
         binding.swipeRefresh.isRefreshing = true
         allReminders.clear()
         loadAllMedicalRecords()
@@ -93,6 +100,12 @@ class ReminderFragment : Fragment() {
     private fun loadAllMedicalRecords() {
         RetrofitClient.instance.getMyDogs().enqueue(object : Callback<DogsResponse> {
             override fun onResponse(call: Call<DogsResponse>, response: Response<DogsResponse>) {
+                // ✅ NULL CHECK di callback
+                if (_binding == null) {
+                    Log.w("ReminderFragment", "⚠️ Fragment destroyed, ignoring callback")
+                    return
+                }
+
                 if (response.isSuccessful && response.body()?.success == true) {
                     val dogs = response.body()?.dogs?.values?.toList() ?: emptyList()
                     var loadedCount = 0
@@ -109,6 +122,9 @@ class ReminderFragment : Fragment() {
                                     call: Call<MedicalRecordsResponse>,
                                     response: Response<MedicalRecordsResponse>
                                 ) {
+                                    // ✅ NULL CHECK
+                                    if (_binding == null) return
+
                                     loadedCount++
                                     if (response.isSuccessful && response.body()?.success == true) {
                                         val records = response.body()?.medicalRecords?.values?.toList() ?: emptyList()
@@ -120,6 +136,9 @@ class ReminderFragment : Fragment() {
                                 }
 
                                 override fun onFailure(call: Call<MedicalRecordsResponse>, t: Throwable) {
+                                    // ✅ NULL CHECK
+                                    if (_binding == null) return
+
                                     loadedCount++
                                     if (loadedCount == dogs.size) {
                                         loadScheduleReminders()
@@ -133,6 +152,8 @@ class ReminderFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<DogsResponse>, t: Throwable) {
+                // ✅ NULL CHECK
+                if (_binding == null) return
                 loadScheduleReminders()
             }
         })
@@ -181,6 +202,12 @@ class ReminderFragment : Fragment() {
     private fun loadScheduleReminders() {
         RetrofitClient.instance.getMyDogs().enqueue(object : Callback<DogsResponse> {
             override fun onResponse(call: Call<DogsResponse>, response: Response<DogsResponse>) {
+                // ✅ NULL CHECK di callback
+                if (_binding == null) {
+                    Log.w("ReminderFragment", "⚠️ Fragment destroyed, ignoring callback")
+                    return
+                }
+
                 if (response.isSuccessful && response.body()?.success == true) {
                     val dogs = response.body()?.dogs?.values?.toList() ?: emptyList()
                     dogs.forEach { dog -> processScheduleForDog(dog) }
@@ -189,6 +216,8 @@ class ReminderFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<DogsResponse>, t: Throwable) {
+                // ✅ NULL CHECK
+                if (_binding == null) return
                 updateUI()
             }
         })
@@ -248,6 +277,12 @@ class ReminderFragment : Fragment() {
     }
 
     private fun updateUI() {
+        // ✅ NULL CHECK sebelum akses binding
+        if (_binding == null) {
+            Log.w("ReminderFragment", "⚠️ Binding is null in updateUI")
+            return
+        }
+
         binding.swipeRefresh.isRefreshing = false
         if (allReminders.isEmpty()) {
             showEmptyState()
@@ -259,6 +294,9 @@ class ReminderFragment : Fragment() {
     }
 
     private fun filterReminders() {
+        // ✅ NULL CHECK
+        if (_binding == null) return
+
         val filtered = when (currentFilter) {
             ReminderFilter.ALL -> allReminders
             ReminderFilter.OVERDUE -> allReminders.filter { it.status == ReminderStatus.OVERDUE }
@@ -284,6 +322,9 @@ class ReminderFragment : Fragment() {
     }
 
     private fun updateTabBadges() {
+        // ✅ NULL CHECK
+        if (_binding == null) return
+
         val overdueCount = allReminders.count { it.status == ReminderStatus.OVERDUE }
         val upcomingCount = allReminders.count { it.status == ReminderStatus.UPCOMING && !isToday(it.dueDate) }
         val todayCount = allReminders.count { isToday(it.dueDate) }
@@ -295,11 +336,17 @@ class ReminderFragment : Fragment() {
     }
 
     private fun showEmptyState() {
+        // ✅ NULL CHECK
+        if (_binding == null) return
+
         binding.emptyStateReminders.visibility = View.VISIBLE
         binding.rvReminders.visibility = View.GONE
     }
 
     private fun showReminders() {
+        // ✅ NULL CHECK
+        if (_binding == null) return
+
         binding.emptyStateReminders.visibility = View.GONE
         binding.rvReminders.visibility = View.VISIBLE
     }

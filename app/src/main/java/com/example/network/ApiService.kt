@@ -180,6 +180,7 @@ data class MedicalRecordsResponse(
     val error: String? = null
 )
 
+// User Models
 data class UserResponse(
     val success: Boolean,
     val user: User? = null,
@@ -195,6 +196,12 @@ data class User(
     val createdAt: String? = null,
     val lastLogin: String? = null,
     val uid: String? = null
+)
+
+data class UpdateUserRequest(
+    val username: String? = null,
+    val email: String? = null,
+    val password: String
 )
 
 interface ApiService {
@@ -275,6 +282,6 @@ interface ApiService {
     @PUT("api/user/{id}")
     fun updateUser(
         @Path("id") userId: Int,
-        @Body request: Map<String, Any>
+        @Body request: UpdateUserRequest
     ): Call<UserResponse>
 }

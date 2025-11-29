@@ -85,6 +85,10 @@
             android:label="Add Medical Record"
             android:theme="@style/Theme.Doggo" />
 
+        <activity
+            android:name=".Home.EditProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Doggo" />
 
         <!-- ✅ Notification Receivers -->
         <receiver

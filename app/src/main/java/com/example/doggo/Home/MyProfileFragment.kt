@@ -45,6 +45,12 @@ class MyProfileFragment : Fragment() {
         setupClickListeners()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Reload user info when returning to this fragment
+        loadUserInfo()
+    }
+
     private fun loadUserInfo() {
         // First, load from SharedPreferences (for immediate display)
         val username = sharedPreferences.getString("username", null)
@@ -108,7 +114,8 @@ class MyProfileFragment : Fragment() {
     private fun setupClickListeners() {
         // Account Settings
         binding.layoutEditProfile.setOnClickListener {
-            showComingSoonToast("Edit Profile")
+            val intent = Intent(requireContext(), EditProfileActivity::class.java)
+            startActivity(intent)
         }
 
         binding.layoutChangePassword.setOnClickListener {

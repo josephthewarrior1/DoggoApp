@@ -50,10 +50,11 @@ class SignInActivity : AppCompatActivity() {
                             val sharedPref = getSharedPreferences("doggo_pref", MODE_PRIVATE)
                             sharedPref.edit().apply {
                                 putString("user_token", apiResponse.token)
-                                putString("user_id", apiResponse.userId?.toString() ?: "0") // ← FIX: Convert to String
+                                putInt("user_db_id", apiResponse.userDbId ?: 0)  // ✅ Save as Int
+                                putString("user_id", apiResponse.userId?.toString() ?: "0")
                                 putString("user_uid", apiResponse.uid)
-                                putString("user_db_id", apiResponse.userDbId?.toString() ?: "0") // ← Juga ini
                                 putString("username", apiResponse.username ?: "User")
+                                putString("email", email)  // ✅ Save the email from login form
                                 apply()
                             }
 

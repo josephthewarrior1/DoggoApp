@@ -180,6 +180,23 @@ data class MedicalRecordsResponse(
     val error: String? = null
 )
 
+data class UserResponse(
+    val success: Boolean,
+    val user: User? = null,
+    val error: String? = null
+)
+
+data class User(
+    val id: Int,
+    val email: String,
+    val username: String? = null,
+    val name: String? = null,
+    val profilePicture: String? = null,
+    val createdAt: String? = null,
+    val lastLogin: String? = null,
+    val uid: String? = null
+)
+
 interface ApiService {
     // Authentication
     @POST("api/signup")
@@ -247,4 +264,17 @@ interface ApiService {
 
     @GET("api/medical-records/overdue")
     fun getOverdueMedicalRecords(): Call<MedicalRecordsResponse>
+
+    // User endpoints
+    @GET("api/user/{id}")
+    fun getUserById(@Path("id") userId: Int): Call<UserResponse>
+
+    @GET("api/user/username/{username}")
+    fun getUserByUsername(@Path("username") username: String): Call<UserResponse>
+
+    @PUT("api/user/{id}")
+    fun updateUser(
+        @Path("id") userId: Int,
+        @Body request: Map<String, Any>
+    ): Call<UserResponse>
 }

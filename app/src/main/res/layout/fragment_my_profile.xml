@@ -1,117 +1,154 @@
-<!-- xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F5F5F5">
+    android:background="#FAFAFA">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
 
+        <!-- Header Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="24dp"
+            android:elevation="2dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Account"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textColor="#1A1A1A"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
-        <!-- Profile Card -->
+        <!-- Profile Card dengan Photo -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@android:color/transparent">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@android:color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:gravity="center_horizontal">
 
+                <!-- Profile Photo with Edit Icon -->
                 <FrameLayout
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@null">
+                    android:layout_width="100dp"
+                    android:layout_height="100dp">
 
-                    <TextView
-                        android:id="@+id/tvAvatarInitial"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="U"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+                    <!-- Avatar Circle -->
+                    <FrameLayout
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:background="@drawable/bg_avatar_circle">
+
+                        <TextView
+                            android:id="@+id/tvAvatarInitial"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="T"
+                            android:textColor="@android:color/white"
+                            android:textSize="40sp"
+                            android:textStyle="bold" />
+                    </FrameLayout>
+
+                    <!-- Edit Photo Icon -->
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabEditPhoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        app:fabSize="mini"
+                        app:backgroundTint="@android:color/white"
+                        app:tint="#2196F3"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:elevation="4dp" />
                 </FrameLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <!-- Username -->
+                <TextView
+                    android:id="@+id/tvUsername"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical">
+                    android:layout_marginTop="16dp"
+                    android:text="tester71"
+                    android:textColor="#1A1A1A"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
 
-                    <TextView
-                        android:id="@+id/tvUsername"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="tester71"
-                        android:textColor="#000000"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                <!-- Email -->
+                <TextView
+                    android:id="@+id/tvEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="user@example.com"
+                    android:textColor="#2196F3"
+                    android:textSize="15sp" />
 
-                    <TextView
-                        android:id="@+id/tvEmail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="user@example.com"
-                        android:textColor="#2196F3"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                <!-- Edit Profile Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Edit Profile"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    app:backgroundTint="#4CAF50"
+                    app:cornerRadius="24dp"
+                    android:paddingHorizontal="32dp"
+                    android:paddingVertical="12dp"
+                    app:elevation="2dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Section: ACCOUNT SETTINGS -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="12dp"
             android:text="ACCOUNT SETTINGS"
-            android:textColor="#888888"
+            android:textColor="#757575"
             android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@android:color/transparent">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@android:color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <!-- Edit Profile -->
                 <LinearLayout
                     android:id="@+id/layoutEditProfile"
                     android:layout_width="match_parent"
@@ -124,16 +161,16 @@
                     android:padding="16dp">
 
                     <FrameLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_icon_circle">
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_icon_circle_blue">
 
-                        <ImageView
+                        <com.mikepenz.iconics.view.IconicsImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_menu_edit"
-                            app:tint="#000000" />
+                            app:iiv_icon="gmd-edit"
+                            app:iiv_color="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -142,23 +179,24 @@
                         android:layout_weight="1"
                         android:layout_marginStart="16dp"
                         android:text="Edit Profile"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textColor="#1A1A1A"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textColor="#CCCCCC"
-                        android:textSize="24sp" />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:iiv_icon="gmd-chevron-right"
+                        app:iiv_color="#BDBDBD" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="72dp"
-                    android:background="#E0E0E0" />
+                    android:layout_marginStart="80dp"
+                    android:background="#F0F0F0" />
 
+                <!-- Change Password -->
                 <LinearLayout
                     android:id="@+id/layoutChangePassword"
                     android:layout_width="match_parent"
@@ -171,16 +209,16 @@
                     android:padding="16dp">
 
                     <FrameLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_icon_circle">
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_icon_circle_blue">
 
-                        <ImageView
+                        <com.mikepenz.iconics.view.IconicsImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_lock_lock"
-                            app:tint="#2196F3" />
+                            app:iiv_icon="gmd-lock"
+                            app:iiv_color="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -189,23 +227,24 @@
                         android:layout_weight="1"
                         android:layout_marginStart="16dp"
                         android:text="Change Password"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textColor="#1A1A1A"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textColor="#CCCCCC"
-                        android:textSize="24sp" />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:iiv_icon="gmd-chevron-right"
+                        app:iiv_color="#BDBDBD" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="72dp"
-                    android:background="#E0E0E0" />
+                    android:layout_marginStart="80dp"
+                    android:background="#F0F0F0" />
 
+                <!-- Notifications -->
                 <LinearLayout
                     android:id="@+id/layoutNotifications"
                     android:layout_width="match_parent"
@@ -218,16 +257,16 @@
                     android:padding="16dp">
 
                     <FrameLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_icon_circle">
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_icon_circle_blue">
 
-                        <ImageView
+                        <com.mikepenz.iconics.view.IconicsImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_popup_reminder"
-                            app:tint="#2196F3" />
+                            app:iiv_icon="gmd-notifications"
+                            app:iiv_color="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -236,44 +275,47 @@
                         android:layout_weight="1"
                         android:layout_marginStart="16dp"
                         android:text="Notifications"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textColor="#1A1A1A"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textColor="#CCCCCC"
-                        android:textSize="24sp" />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:iiv_icon="gmd-chevron-right"
+                        app:iiv_color="#BDBDBD" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Section: APP SETTINGS -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="12dp"
             android:text="APP SETTINGS"
-            android:textColor="#888888"
+            android:textColor="#757575"
             android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@android:color/transparent">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@android:color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <!-- Privacy Policy -->
                 <LinearLayout
                     android:id="@+id/layoutPrivacyPolicy"
                     android:layout_width="match_parent"
@@ -286,16 +328,16 @@
                     android:padding="16dp">
 
                     <FrameLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_icon_circle">
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_icon_circle_blue">
 
-                        <ImageView
+                        <com.mikepenz.iconics.view.IconicsImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_lock_idle_lock"
-                            app:tint="#2196F3" />
+                            app:iiv_icon="gmd-shield"
+                            app:iiv_color="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -304,23 +346,24 @@
                         android:layout_weight="1"
                         android:layout_marginStart="16dp"
                         android:text="Privacy Policy"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textColor="#1A1A1A"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textColor="#CCCCCC"
-                        android:textSize="24sp" />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:iiv_icon="gmd-chevron-right"
+                        app:iiv_color="#BDBDBD" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="72dp"
-                    android:background="#E0E0E0" />
+                    android:layout_marginStart="80dp"
+                    android:background="#F0F0F0" />
 
+                <!-- Terms & Conditions -->
                 <LinearLayout
                     android:id="@+id/layoutTermsConditions"
                     android:layout_width="match_parent"
@@ -333,16 +376,16 @@
                     android:padding="16dp">
 
                     <FrameLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_icon_circle">
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_icon_circle_blue">
 
-                        <ImageView
+                        <com.mikepenz.iconics.view.IconicsImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_menu_agenda"
-                            app:tint="#2196F3" />
+                            app:iiv_icon="gmd-description"
+                            app:iiv_color="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -351,23 +394,24 @@
                         android:layout_weight="1"
                         android:layout_marginStart="16dp"
                         android:text="Terms &amp; Conditions"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textColor="#1A1A1A"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textColor="#CCCCCC"
-                        android:textSize="24sp" />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:iiv_icon="gmd-chevron-right"
+                        app:iiv_color="#BDBDBD" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="72dp"
-                    android:background="#E0E0E0" />
+                    android:layout_marginStart="80dp"
+                    android:background="#F0F0F0" />
 
+                <!-- About Us -->
                 <LinearLayout
                     android:id="@+id/layoutAboutUs"
                     android:layout_width="match_parent"
@@ -380,16 +424,16 @@
                     android:padding="16dp">
 
                     <FrameLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_icon_circle">
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_icon_circle_blue">
 
-                        <ImageView
+                        <com.mikepenz.iconics.view.IconicsImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_menu_info_details"
-                            app:tint="#2196F3" />
+                            app:iiv_icon="gmd-info"
+                            app:iiv_color="#2196F3" />
                     </FrameLayout>
 
                     <TextView
@@ -398,27 +442,80 @@
                         android:layout_weight="1"
                         android:layout_marginStart="16dp"
                         android:text="About Us"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textColor="#1A1A1A"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textColor="#CCCCCC"
-                        android:textSize="24sp" />
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:iiv_icon="gmd-chevron-right"
+                        app:iiv_color="#BDBDBD" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Help & Support -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@android:color/white">
+
+            <LinearLayout
+                android:id="@+id/layoutHelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_icon_circle_blue">
+
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        app:iiv_icon="gmd-help"
+                        app:iiv_color="#2196F3" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:text="Help &amp; Support"
+                    android:textColor="#1A1A1A"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-medium" />
+
+                <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:iiv_icon="gmd-chevron-right"
+                    app:iiv_color="#BDBDBD" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Logout Button -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@android:color/transparent">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@android:color/white">
 
             <LinearLayout
                 android:id="@+id/layoutLogout"
@@ -432,16 +529,16 @@
                 android:padding="16dp">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_icon_circle">
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_icon_circle_red">
 
-                    <ImageView
+                    <com.mikepenz.iconics.view.IconicsImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="center"
-                        android:src="@android:drawable/ic_menu_close_clear_cancel"
-                        app:tint="#F44336" />
+                        app:iiv_icon="gmd-exit-to-app"
+                        app:iiv_color="#F44336" />
                 </FrameLayout>
 
                 <TextView
@@ -449,11 +546,28 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
-                    android:text="Logout"
+                    android:text="Log Out"
                     android:textColor="#F44336"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
+
+                <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:iiv_icon="gmd-chevron-right"
+                    app:iiv_color="#F44336" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- App Version -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="App version 1.0.0"
+            android:textColor="#BDBDBD"
+            android:textSize="12sp" />
     </LinearLayout>
 </ScrollView>

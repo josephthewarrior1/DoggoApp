@@ -20,6 +20,7 @@ import com.example.doggo.R
 import com.example.doggo.databinding.ActivityAddDogProfileBinding
 import com.example.doggo.network.AddDogRequest
 import com.example.doggo.network.ApiResponse
+import com.example.doggo.network.DogResponse
 import com.example.doggo.network.DogSchedule
 import com.example.doggo.network.RetrofitClient
 import com.example.doggo.network.ScheduleDetail
@@ -27,6 +28,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class AddDogProfileActivity : AppCompatActivity() {
 
@@ -236,43 +240,69 @@ class AddDogProfileActivity : AppCompatActivity() {
 
         dialog.show()
     }
+
     private fun addScheduleItem(dialogView: View, hour: Int, minute: Int) {
         val scheduleType = dialogView.findViewById<RadioGroup>(R.id.rgScheduleType).checkedRadioButtonId
         val description = dialogView.findViewById<EditText>(R.id.etDescription).text.toString()
         val time = String.format("%02d:%02d", hour, minute)
 
-        if (description.isNotEmpty()) {
-            val scheduleDetail = ScheduleDetail(
-                time = time,
-                description = description,
-                duration = null  // No duration field in dialog, so set to null
-            )
-
-            when (scheduleType) {
-                R.id.rbEat -> eatSchedule.add(scheduleDetail)
-                R.id.rbWalk -> walkSchedule.add(scheduleDetail)
-                R.id.rbSleep -> sleepSchedule.add(scheduleDetail)
-                R.id.rbMedicine -> medicineSchedule.add(scheduleDetail)
-                R.id.rbGroom -> groomSchedule.add(scheduleDetail)
-            }
-
-            val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
-                    medicineSchedule.size + groomSchedule.size
-            binding.tvScheduleCount.text = "Schedule items: $totalItems"
-
-            val typeText = when (scheduleType) {
-                R.id.rbEat -> "Eat"
-                R.id.rbWalk -> "Walk"
-                R.id.rbSleep -> "Sleep"
-                R.id.rbMedicine -> "Medicine"
-                R.id.rbGroom -> "Groom"
-                else -> "Activity"
-            }
-
-            Toast.makeText(this, "$typeText schedule added at $time", Toast.LENGTH_SHORT).show()
-        } else {
+        if (description.isEmpty()) {
             Toast.makeText(this, "Please enter description", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        // ✅ Generate schedule type string
+        val scheduleTypeStr = when (scheduleType) {
+            R.id.rbEat -> "eat"
+            R.id.rbWalk -> "walk"
+            R.id.rbSleep -> "sleep"
+            R.id.rbMedicine -> "medicine"
+            R.id.rbGroom -> "groom"
+            else -> "activity"
+        }
+
+        // ✅ Generate unique ID
+        val uniqueId = "${scheduleTypeStr}_${System.currentTimeMillis()}_${(Math.random() * 1000).toInt()}"
+
+        // ✅ Create schedule detail with ID
+        val scheduleDetail = ScheduleDetail(
+            id = uniqueId,
+            time = time,
+            description = description,
+            duration = null,
+            createdAt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date()),
+            updatedAt = null
+        )
+
+        Log.d("AddDogProfile", "✅ Created schedule item with ID: $uniqueId")
+        Log.d("AddDogProfile", "Time: $time, Description: $description")
+
+        // Add to respective list
+        when (scheduleType) {
+            R.id.rbEat -> eatSchedule.add(scheduleDetail)
+            R.id.rbWalk -> walkSchedule.add(scheduleDetail)
+            R.id.rbSleep -> sleepSchedule.add(scheduleDetail)
+            R.id.rbMedicine -> medicineSchedule.add(scheduleDetail)
+            R.id.rbGroom -> groomSchedule.add(scheduleDetail)
+        }
+
+        val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
+                medicineSchedule.size + groomSchedule.size
+        binding.tvScheduleCount.text = "Schedule items: $totalItems"
+
+        val typeText = when (scheduleType) {
+            R.id.rbEat -> "Eat"
+            R.id.rbWalk -> "Walk"
+            R.id.rbSleep -> "Sleep"
+            R.id.rbMedicine -> "Medicine"
+            R.id.rbGroom -> "Groom"
+            else -> "Activity"
+        }
+
+        Toast.makeText(this, "$typeText schedule added at $time", Toast.LENGTH_SHORT).show()
+
+        // ✅ Log total schedules
+        Log.d("AddDogProfile", "📋 Total schedules: Eat(${eatSchedule.size}), Walk(${walkSchedule.size}), Sleep(${sleepSchedule.size}), Medicine(${medicineSchedule.size}), Groom(${groomSchedule.size})")
     }
 
     private fun validateInputs(): Boolean {
@@ -319,6 +349,17 @@ class AddDogProfileActivity : AppCompatActivity() {
         val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
                 medicineSchedule.size + groomSchedule.size
 
+        // ✅ Log schedule items with IDs
+        Log.d("AddDogProfile", "📋 Preparing to save dog with schedules:")
+        Log.d("AddDogProfile", "Eat schedules: ${eatSchedule.size}")
+        eatSchedule.forEachIndexed { index, item ->
+            Log.d("AddDogProfile", "  [$index] ID: ${item.id}, Time: ${item.time}, Desc: ${item.description}")
+        }
+        Log.d("AddDogProfile", "Walk schedules: ${walkSchedule.size}")
+        walkSchedule.forEachIndexed { index, item ->
+            Log.d("AddDogProfile", "  [$index] ID: ${item.id}, Time: ${item.time}, Desc: ${item.description}")
+        }
+
         val schedule = if (totalItems > 0) {
             DogSchedule(
                 eat = eatSchedule.takeIf { it.isNotEmpty() },
@@ -346,6 +387,16 @@ class AddDogProfileActivity : AppCompatActivity() {
         )
 
         Log.d("AddDogProfile", "📤 Sending dog profile with photo: ${if (selectedImageBase64 != null) "Yes (${selectedImageBase64!!.length} chars)" else "No"}")
+        Log.d("AddDogProfile", "📅 Schedule included: ${schedule != null}")
+
+        if (schedule != null) {
+            Log.d("AddDogProfile", "📊 Schedule breakdown:")
+            Log.d("AddDogProfile", "  - Eat: ${schedule.eat?.size ?: 0} items")
+            Log.d("AddDogProfile", "  - Walk: ${schedule.walk?.size ?: 0} items")
+            Log.d("AddDogProfile", "  - Sleep: ${schedule.sleep?.size ?: 0} items")
+            Log.d("AddDogProfile", "  - Medicine: ${schedule.medicine?.size ?: 0} items")
+            Log.d("AddDogProfile", "  - Groom: ${schedule.groom?.size ?: 0} items")
+        }
 
         RetrofitClient.instance.addDog(addDogRequest).enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
@@ -356,6 +407,12 @@ class AddDogProfileActivity : AppCompatActivity() {
                     val apiResponse = response.body()
                     if (apiResponse?.success == true) {
                         Log.d("AddDogProfile", "✅ Dog saved successfully with ID: ${apiResponse.dogId}")
+
+                        // ✅ Verify schedule was saved
+                        apiResponse.dogId?.let { dogId ->
+                            verifyScheduleSaved(dogId.toString())
+                        }
+
                         Toast.makeText(
                             this@AddDogProfileActivity,
                             "Dog profile saved successfully!",
@@ -371,7 +428,9 @@ class AddDogProfileActivity : AppCompatActivity() {
                         ).show()
                     }
                 } else {
+                    val errorBody = response.errorBody()?.string()
                     Log.e("AddDogProfile", "❌ HTTP Error: ${response.code()} - ${response.message()}")
+                    Log.e("AddDogProfile", "Error body: $errorBody")
                     Toast.makeText(
                         this@AddDogProfileActivity,
                         "Failed to save: ${response.message()}",
@@ -384,12 +443,52 @@ class AddDogProfileActivity : AppCompatActivity() {
                 binding.btnSave.isEnabled = true
                 binding.btnSave.text = "Save Profile"
 
-                Log.e("AddDogProfile", "❌ Network error: ${t.message}")
+                Log.e("AddDogProfile", "❌ Network error: ${t.message}", t)
                 Toast.makeText(
                     this@AddDogProfileActivity,
                     "Network error: ${t.message}",
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+        })
+    }
+
+    // ✅ Method untuk verify schedule tersimpan dengan benar
+    private fun verifyScheduleSaved(dogId: String) {
+        RetrofitClient.instance.getDogById(dogId).enqueue(object : Callback<DogResponse> {
+            override fun onResponse(call: Call<DogResponse>, response: Response<DogResponse>) {
+                if (response.isSuccessful) {
+                    val dog = response.body()?.dog
+                    val schedule = dog?.schedule
+
+                    Log.d("AddDogProfile", "✅ Schedule verification:")
+                    Log.d("AddDogProfile", "  Eat items: ${schedule?.eat?.size ?: 0}")
+                    schedule?.eat?.forEach { item ->
+                        Log.d("AddDogProfile", "    - ID: ${item.id}, Time: ${item.time}")
+                    }
+                    Log.d("AddDogProfile", "  Walk items: ${schedule?.walk?.size ?: 0}")
+                    schedule?.walk?.forEach { item ->
+                        Log.d("AddDogProfile", "    - ID: ${item.id}, Time: ${item.time}")
+                    }
+
+                    // ✅ Check for items without ID
+                    var hasItemsWithoutId = false
+                    schedule?.eat?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
+                    schedule?.walk?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
+                    schedule?.sleep?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
+                    schedule?.medicine?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
+                    schedule?.groom?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
+
+                    if (hasItemsWithoutId) {
+                        Log.e("AddDogProfile", "⚠️ WARNING: Some schedule items don't have IDs!")
+                    } else {
+                        Log.d("AddDogProfile", "✅ All schedule items have valid IDs")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<DogResponse>, t: Throwable) {
+                Log.e("AddDogProfile", "❌ Failed to verify schedule: ${t.message}")
             }
         })
     }

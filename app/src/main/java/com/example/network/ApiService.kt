@@ -91,14 +91,16 @@ data class DogData(
 data class ScheduleRequest(
     val scheduleType: String,
     val time: String,
-    val description: String = ""
+    val description: String = "",
+    val duration: String? = null
 )
 
 data class ScheduleUpdateRequest(
     val scheduleType: String,
     val scheduleItemId: String,
     val time: String? = null,
-    val description: String? = null
+    val description: String? = null,
+    val duration: String? = null
 )
 
 data class ScheduleDeleteRequest(
@@ -229,18 +231,21 @@ interface ApiService {
     ): Call<ApiResponse>
 
     // Schedule endpoints
+    @Headers("Content-Type: application/json")
     @POST("api/dogs/{id}/schedule")
     fun addSchedule(
         @Path("id") dogId: String,
         @Body request: ScheduleRequest
     ): Call<ScheduleResponse>
 
+    @Headers("Content-Type: application/json")
     @PUT("api/dogs/{id}/schedule")
     fun updateSchedule(
         @Path("id") dogId: String,
         @Body request: ScheduleUpdateRequest
     ): Call<ScheduleResponse>
 
+    @Headers("Content-Type: application/json")
     @HTTP(method = "DELETE", path = "api/dogs/{id}/schedule", hasBody = true)
     fun deleteSchedule(
         @Path("id") dogId: String,

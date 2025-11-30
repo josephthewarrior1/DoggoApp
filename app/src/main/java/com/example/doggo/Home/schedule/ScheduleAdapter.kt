@@ -13,7 +13,8 @@ import com.example.doggo.R
 
 class ScheduleAdapter(
     private var scheduleItems: MutableList<ScheduleItem>,
-    private val onDeleteClick: ((ScheduleItem, Int) -> Unit)? = null
+    private val onDeleteClick: ((ScheduleItem, Int) -> Unit)? = null,
+    private val onItemClick: ((ScheduleItem, Int) -> Unit)? = null
 ) : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
 
     class ScheduleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -23,6 +24,7 @@ class ScheduleAdapter(
         val description: TextView = itemView.findViewById(R.id.tvScheduleDescription)
         val time: TextView = itemView.findViewById(R.id.tvScheduleTime)
         val duration: TextView = itemView.findViewById(R.id.tvScheduleDuration)
+        val editButton: ImageButton = itemView.findViewById(R.id.btnEditSchedule)    // ← TAMBAH INI
         val deleteButton: ImageButton = itemView.findViewById(R.id.btnDeleteSchedule)
     }
 
@@ -58,14 +60,19 @@ class ScheduleAdapter(
         }
         holder.iconContainer.setCardBackgroundColor(backgroundColor)
 
-        // Show/hide delete button
-        if (onDeleteClick != null) {
-            holder.deleteButton.visibility = View.VISIBLE
-            holder.deleteButton.setOnClickListener {
-                onDeleteClick.invoke(item, position)
-            }
-        } else {
-            holder.deleteButton.visibility = View.GONE
+        // ✅ Edit button click
+        holder.editButton.setOnClickListener {
+            onItemClick?.invoke(item, position)
+        }
+
+        // ✅ Delete button click
+        holder.deleteButton.setOnClickListener {
+            onDeleteClick?.invoke(item, position)
+        }
+
+        // ✅ Whole card click (optional - untuk user experience lebih baik)
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(item, position)
         }
     }
 

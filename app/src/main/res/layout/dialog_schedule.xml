@@ -1,59 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Schedule Type Dropdown -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Schedule Type"
         android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="#1A1A1A"
         android:layout_marginBottom="8dp" />
 
-    <RadioGroup
-        android:id="@+id/rgScheduleType"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilScheduleType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:hint="Select schedule type"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
-        <RadioButton
-            android:id="@+id/rbEat"
-            android:layout_width="0dp"
+        <AutoCompleteTextView
+            android:id="@+id/actvScheduleType"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Eat"
-            android:checked="true" />
-
-        <RadioButton
-            android:id="@+id/rbWalk"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Walk" />
-
-        <RadioButton
-            android:id="@+id/rbSleep"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Sleep" />
-
-        <RadioButton
-            android:id="@+id/rbMedicine"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Medicine" />
-
-        <RadioButton
-            android:id="@+id/rbGroom"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Groom" />
-    </RadioGroup>
+            android:inputType="none"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Time Picker Section -->
     <TextView
@@ -61,6 +37,8 @@
         android:layout_height="wrap_content"
         android:text="Time"
         android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="#1A1A1A"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp" />
 
@@ -80,8 +58,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=":"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="#1A1A1A"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp" />
 
@@ -97,14 +76,18 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:hint="Description"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description"
-            android:inputType="textCapSentences" />
+            android:inputType="textCapSentences"
+            android:minLines="2"
+            android:maxLines="4"
+            android:gravity="top|start" />
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

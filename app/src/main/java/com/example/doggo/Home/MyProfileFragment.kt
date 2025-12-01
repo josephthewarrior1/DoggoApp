@@ -112,18 +112,16 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
-        // Account Settings
-        binding.layoutEditProfile.setOnClickListener {
+        // Edit Profile Button (di dalam card)
+        binding.btnEditProfile.setOnClickListener {
             val intent = Intent(requireContext(), EditProfileActivity::class.java)
             startActivity(intent)
         }
 
-        binding.layoutChangePassword.setOnClickListener {
-            showComingSoonToast("Change Password")
-        }
-
-        binding.layoutNotifications.setOnClickListener {
-            showComingSoonToast("Notifications Settings")
+        // Account Settings - Edit Profile
+        binding.layoutEditProfile.setOnClickListener {
+            val intent = Intent(requireContext(), EditProfileActivity::class.java)
+            startActivity(intent)
         }
 
         // App Settings
@@ -137,6 +135,11 @@ class MyProfileFragment : Fragment() {
 
         binding.layoutAboutUs.setOnClickListener {
             showComingSoonToast("About Us")
+        }
+
+        // Help & Support
+        binding.layoutHelp.setOnClickListener {
+            showComingSoonToast("Help & Support")
         }
 
         // Logout

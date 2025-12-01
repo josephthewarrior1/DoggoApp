@@ -9,9 +9,10 @@ import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.NumberPicker
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -196,6 +197,13 @@ class AddDogProfileActivity : AppCompatActivity() {
     private fun showScheduleDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_schedule, null)
 
+        // Setup Dropdown untuk schedule type
+        val actvScheduleType = dialogView.findViewById<AutoCompleteTextView>(R.id.actvScheduleType)
+        val scheduleTypes = arrayOf("Eat", "Walk", "Sleep", "Medicine", "Groom")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, scheduleTypes)
+        actvScheduleType.setAdapter(adapter)
+        actvScheduleType.setText("Eat", false) // Set default value
+
         val npHour = dialogView.findViewById<NumberPicker>(R.id.npHour)
         val npMinute = dialogView.findViewById<NumberPicker>(R.id.npMinute)
 
@@ -212,25 +220,29 @@ class AddDogProfileActivity : AppCompatActivity() {
         npMinute.wrapSelectorWheel = true
 
         val etDescription = dialogView.findViewById<EditText>(R.id.etDescription)
-        val rgScheduleType = dialogView.findViewById<RadioGroup>(R.id.rgScheduleType)
 
-        rgScheduleType.setOnCheckedChangeListener { _, checkedId ->
-            val defaultDescription = when (checkedId) {
-                R.id.rbEat -> "Meal time"
-                R.id.rbWalk -> "Walk time"
-                R.id.rbSleep -> "Sleep time"
-                R.id.rbMedicine -> "Medicine time"
-                R.id.rbGroom -> "Grooming time"
+        // Update description when schedule type changes
+        actvScheduleType.setOnItemClickListener { _, _, position, _ ->
+            val defaultDescription = when (scheduleTypes[position]) {
+                "Eat" -> "Meal time"
+                "Walk" -> "Walk time"
+                "Sleep" -> "Sleep time"
+                "Medicine" -> "Medicine time"
+                "Groom" -> "Grooming time"
                 else -> "Activity time"
             }
             etDescription.setText(defaultDescription)
         }
 
+        // Set initial description
+        etDescription.setText("Meal time")
+
         val dialog = AlertDialog.Builder(this)
             .setTitle("Add Schedule Item")
             .setView(dialogView)
             .setPositiveButton("Add") { dialog, _ ->
-                addScheduleItem(dialogView, npHour.value, npMinute.value)
+                val selectedType = actvScheduleType.text.toString()
+                addScheduleItem(selectedType, npHour.value, npMinute.value, etDescription.text.toString())
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -241,9 +253,7 @@ class AddDogProfileActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun addScheduleItem(dialogView: View, hour: Int, minute: Int) {
-        val scheduleType = dialogView.findViewById<RadioGroup>(R.id.rgScheduleType).checkedRadioButtonId
-        val description = dialogView.findViewById<EditText>(R.id.etDescription).text.toString()
+    private fun addScheduleItem(scheduleType: String, hour: Int, minute: Int, description: String) {
         val time = String.format("%02d:%02d", hour, minute)
 
         if (description.isEmpty()) {
@@ -251,15 +261,8 @@ class AddDogProfileActivity : AppCompatActivity() {
             return
         }
 
-        // ✅ Generate schedule type string
-        val scheduleTypeStr = when (scheduleType) {
-            R.id.rbEat -> "eat"
-            R.id.rbWalk -> "walk"
-            R.id.rbSleep -> "sleep"
-            R.id.rbMedicine -> "medicine"
-            R.id.rbGroom -> "groom"
-            else -> "activity"
-        }
+        // ✅ Generate schedule type string (lowercase)
+        val scheduleTypeStr = scheduleType.lowercase()
 
         // ✅ Generate unique ID
         val uniqueId = "${scheduleTypeStr}_${System.currentTimeMillis()}_${(Math.random() * 1000).toInt()}"
@@ -277,29 +280,20 @@ class AddDogProfileActivity : AppCompatActivity() {
         Log.d("AddDogProfile", "✅ Created schedule item with ID: $uniqueId")
         Log.d("AddDogProfile", "Time: $time, Description: $description")
 
-        // Add to respective list
+        // Add to respective list based on schedule type
         when (scheduleType) {
-            R.id.rbEat -> eatSchedule.add(scheduleDetail)
-            R.id.rbWalk -> walkSchedule.add(scheduleDetail)
-            R.id.rbSleep -> sleepSchedule.add(scheduleDetail)
-            R.id.rbMedicine -> medicineSchedule.add(scheduleDetail)
-            R.id.rbGroom -> groomSchedule.add(scheduleDetail)
+            "Eat" -> eatSchedule.add(scheduleDetail)
+            "Walk" -> walkSchedule.add(scheduleDetail)
+            "Sleep" -> sleepSchedule.add(scheduleDetail)
+            "Medicine" -> medicineSchedule.add(scheduleDetail)
+            "Groom" -> groomSchedule.add(scheduleDetail)
         }
 
         val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
                 medicineSchedule.size + groomSchedule.size
         binding.tvScheduleCount.text = "Schedule items: $totalItems"
 
-        val typeText = when (scheduleType) {
-            R.id.rbEat -> "Eat"
-            R.id.rbWalk -> "Walk"
-            R.id.rbSleep -> "Sleep"
-            R.id.rbMedicine -> "Medicine"
-            R.id.rbGroom -> "Groom"
-            else -> "Activity"
-        }
-
-        Toast.makeText(this, "$typeText schedule added at $time", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "$scheduleType schedule added at $time", Toast.LENGTH_SHORT).show()
 
         // ✅ Log total schedules
         Log.d("AddDogProfile", "📋 Total schedules: Eat(${eatSchedule.size}), Walk(${walkSchedule.size}), Sleep(${sleepSchedule.size}), Medicine(${medicineSchedule.size}), Groom(${groomSchedule.size})")

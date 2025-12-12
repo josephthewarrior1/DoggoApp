@@ -283,7 +283,55 @@ class DogProfileDetailActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Log.d("DogProfileDetail", "✅ Schedule added successfully")
                     Toast.makeText(this@DogProfileDetailActivity, "Schedule added!", Toast.LENGTH_SHORT).show()
-                    loadDogFromAPI(dogId) // Reload data
+
+                    // ✅ Real-time update: Add new schedule to local data immediately
+                    val newScheduleItem = response.body()?.scheduleItem?.let {
+                        ScheduleDetail(
+                            id = it.id,
+                            time = it.time,
+                            description = it.description,
+                            createdAt = it.createdAt
+                        )
+                    }
+
+                    if (newScheduleItem != null) {
+                        dogProfile?.schedule?.let { currentSchedule ->
+                            when (scheduleType) {
+                                "eat" -> {
+                                    val updatedList = (currentSchedule.eat ?: emptyList()) + newScheduleItem
+                                    dogProfile = dogProfile?.copy(
+                                        schedule = currentSchedule.copy(eat = updatedList)
+                                    )
+                                    eatScheduleAdapter.updateSchedules(updatedList)
+                                }
+                                "walk" -> {
+                                    val updatedList = (currentSchedule.walk ?: emptyList()) + newScheduleItem
+                                    dogProfile = dogProfile?.copy(
+                                        schedule = currentSchedule.copy(walk = updatedList)
+                                    )
+                                    walkScheduleAdapter.updateSchedules(updatedList)
+                                }
+                                "sleep" -> {
+                                    val updatedList = (currentSchedule.sleep ?: emptyList()) + newScheduleItem
+                                    dogProfile = dogProfile?.copy(
+                                        schedule = currentSchedule.copy(sleep = updatedList)
+                                    )
+                                    sleepScheduleAdapter.updateSchedules(updatedList)
+                                }
+                            }
+                            updateEmptyState()
+                        } ?: run {
+                            // If schedule was null, create new one
+                            val newSchedule = when (scheduleType) {
+                                "eat" -> DogSchedule(eat = listOf(newScheduleItem))
+                                "walk" -> DogSchedule(walk = listOf(newScheduleItem))
+                                "sleep" -> DogSchedule(sleep = listOf(newScheduleItem))
+                                else -> DogSchedule()
+                            }
+                            dogProfile = dogProfile?.copy(schedule = newSchedule)
+                            loadScheduleData(dogProfile!!)
+                        }
+                    }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("DogProfileDetail", "❌ Failed: ${response.body()?.error}")
@@ -413,7 +461,51 @@ class DogProfileDetailActivity : AppCompatActivity() {
             override fun onResponse(call: Call<ScheduleResponse>, response: Response<ScheduleResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Toast.makeText(this@DogProfileDetailActivity, "Schedule updated!", Toast.LENGTH_SHORT).show()
-                    loadDogFromAPI(dogId)
+
+                    // ✅ Real-time update: Update schedule in local data immediately
+                    dogProfile?.schedule?.let { currentSchedule ->
+                        when (scheduleType) {
+                            "eat" -> {
+                                val updatedList = currentSchedule.eat?.map { item ->
+                                    if (item.id == scheduleItemId) {
+                                        item.copy(time = time, description = description)
+                                    } else {
+                                        item
+                                    }
+                                } ?: emptyList()
+                                dogProfile = dogProfile?.copy(
+                                    schedule = currentSchedule.copy(eat = updatedList)
+                                )
+                                eatScheduleAdapter.updateSchedules(updatedList)
+                            }
+                            "walk" -> {
+                                val updatedList = currentSchedule.walk?.map { item ->
+                                    if (item.id == scheduleItemId) {
+                                        item.copy(time = time, description = description)
+                                    } else {
+                                        item
+                                    }
+                                } ?: emptyList()
+                                dogProfile = dogProfile?.copy(
+                                    schedule = currentSchedule.copy(walk = updatedList)
+                                )
+                                walkScheduleAdapter.updateSchedules(updatedList)
+                            }
+                            "sleep" -> {
+                                val updatedList = currentSchedule.sleep?.map { item ->
+                                    if (item.id == scheduleItemId) {
+                                        item.copy(time = time, description = description)
+                                    } else {
+                                        item
+                                    }
+                                } ?: emptyList()
+                                dogProfile = dogProfile?.copy(
+                                    schedule = currentSchedule.copy(sleep = updatedList)
+                                )
+                                sleepScheduleAdapter.updateSchedules(updatedList)
+                            }
+                        }
+                    }
                 } else {
                     Toast.makeText(this@DogProfileDetailActivity, "Failed to update", Toast.LENGTH_SHORT).show()
                 }
@@ -477,46 +569,41 @@ class DogProfileDetailActivity : AppCompatActivity() {
         RetrofitClient.instance.deleteSchedule(dogId, request).enqueue(object : Callback<ScheduleResponse> {
             override fun onResponse(call: Call<ScheduleResponse>, response: Response<ScheduleResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
-                    Log.d("DogProfileDetail", "✅ Delete success, refreshing...")
+                    Log.d("DogProfileDetail", "✅ Delete success, updating UI...")
                     Toast.makeText(this@DogProfileDetailActivity, "Schedule deleted!", Toast.LENGTH_SHORT).show()
 
-                    // ✅ Manual update: Remove item dari adapter
-                    when (scheduleType) {
-                        "eat" -> {
-                            dogProfile?.schedule?.eat?.let { list ->
-                                val newList = list.filter { it.id != scheduleItemId }
-                                if (newList.isNotEmpty()) {
-                                    eatScheduleAdapter.updateSchedules(newList)
-                                } else {
-                                    // Kalau list kosong, reload dari API
-                                    loadDogFromAPI(dogId)
-                                }
+                    // ✅ Update the dogProfile object AND adapter immediately
+                    dogProfile?.schedule?.let { currentSchedule ->
+                        when (scheduleType) {
+                            "eat" -> {
+                                val newList = currentSchedule.eat?.filter { it.id != scheduleItemId } ?: emptyList()
+                                // Update dogProfile with new schedule
+                                dogProfile = dogProfile?.copy(
+                                    schedule = currentSchedule.copy(eat = newList)
+                                )
+                                // Update adapter
+                                eatScheduleAdapter.updateSchedules(newList)
+                                // Show empty state if needed
+                                updateEmptyState()
                             }
-                        }
-                        "walk" -> {
-                            dogProfile?.schedule?.walk?.let { list ->
-                                val newList = list.filter { it.id != scheduleItemId }
-                                if (newList.isNotEmpty()) {
-                                    walkScheduleAdapter.updateSchedules(newList)
-                                } else {
-                                    loadDogFromAPI(dogId)
-                                }
+                            "walk" -> {
+                                val newList = currentSchedule.walk?.filter { it.id != scheduleItemId } ?: emptyList()
+                                dogProfile = dogProfile?.copy(
+                                    schedule = currentSchedule.copy(walk = newList)
+                                )
+                                walkScheduleAdapter.updateSchedules(newList)
+                                updateEmptyState()
                             }
-                        }
-                        "sleep" -> {
-                            dogProfile?.schedule?.sleep?.let { list ->
-                                val newList = list.filter { it.id != scheduleItemId }
-                                if (newList.isNotEmpty()) {
-                                    sleepScheduleAdapter.updateSchedules(newList)
-                                } else {
-                                    loadDogFromAPI(dogId)
-                                }
+                            "sleep" -> {
+                                val newList = currentSchedule.sleep?.filter { it.id != scheduleItemId } ?: emptyList()
+                                dogProfile = dogProfile?.copy(
+                                    schedule = currentSchedule.copy(sleep = newList)
+                                )
+                                sleepScheduleAdapter.updateSchedules(newList)
+                                updateEmptyState()
                             }
                         }
                     }
-
-                    // ✅ Reload full data untuk sync
-                    loadDogFromAPI(dogId)
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("DogProfileDetail", "❌ Delete failed: ${response.body()?.error}")
@@ -532,6 +619,14 @@ class DogProfileDetailActivity : AppCompatActivity() {
         })
     }
 
+    private fun updateEmptyState() {
+        val schedule = dogProfile?.schedule
+        val hasSchedules = (schedule?.eat?.isNotEmpty() == true) ||
+                (schedule?.walk?.isNotEmpty() == true) ||
+                (schedule?.sleep?.isNotEmpty() == true)
+
+        binding.cvEmptySchedule.visibility = if (hasSchedules) View.GONE else View.VISIBLE
+    }
     private fun showScheduleSection() {
         binding.layoutScheduleSection.visibility = View.VISIBLE
         binding.layoutMedicalSection.visibility = View.GONE

@@ -4,17 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
-
-    <!-- Header Background -->
-    <View
-        android:id="@+id/headerBackground"
-        android:layout_width="0dp"
-        android:layout_height="220dp"
-        android:background="#3B82F6"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    android:background="#FFFFFF">
 
     <!-- Back Button -->
     <ImageButton
@@ -28,88 +18,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Edit Button -->
-    <ImageButton
-        android:id="@+id/btnEdit"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/bg_circle_white"
-        android:src="@drawable/ic_edit"
-        android:contentDescription="Edit"
-        app:layout_constraintEnd_toStartOf="@id/btnDelete"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Delete Button -->
-    <ImageButton
-        android:id="@+id/btnDelete"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/bg_circle_white"
-        android:src="@drawable/ic_delete"
-        android:contentDescription="Delete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Dog Photo -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvDogPhoto"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="56dp"
-        app:cardCornerRadius="50dp"
-        app:cardElevation="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/ivDogPhoto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_dog_placeholder"
-            android:contentDescription="Dog photo" />
-
-    </androidx.cardview.widget.CardView>
-
-    <!-- Dog Name -->
-    <TextView
-        android:id="@+id/tvDogName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Joseph"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cvDogPhoto" />
-
-    <!-- Breed -->
-    <TextView
-        android:id="@+id/tvBreed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pitbull"
-        android:textSize="14sp"
-        android:textColor="#E0E7FF"
-        android:layout_marginTop="4dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDogName" />
-
     <!-- ScrollView untuk konten -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerBackground"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/btnBack"
+        app:layout_constraintBottom_toTopOf="@id/bottomButtonContainer">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -117,12 +35,57 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Dog Photo -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvDogPhoto"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="60dp"
+                app:cardElevation="8dp">
+
+                <ImageView
+                    android:id="@+id/ivDogPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_dog_placeholder"
+                    android:contentDescription="Dog photo" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Dog Name -->
+            <TextView
+                android:id="@+id/tvDogName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Joseph"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginTop="16dp" />
+
+            <!-- Breed -->
+            <TextView
+                android:id="@+id/tvBreed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Pitbull"
+                android:textSize="16sp"
+                android:textColor="#666666"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="24dp" />
+
             <!-- Info Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
+                app:cardBackgroundColor="#F5F5F5"
                 android:layout_marginBottom="16dp">
 
                 <LinearLayout
@@ -143,23 +106,23 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Breed:"
-                            android:textSize="14sp"
-                            android:textColor="#666666" />
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#000000" />
 
                         <TextView
                             android:id="@+id/tvBreedValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Pitbull"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColor="#000000" />
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#EEEEEE" />
+                        android:background="#E0E0E0" />
 
                     <!-- Gender Row -->
                     <LinearLayout
@@ -173,23 +136,23 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Gender:"
-                            android:textSize="14sp"
-                            android:textColor="#666666" />
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#000000" />
 
                         <TextView
                             android:id="@+id/tvGenderValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Male"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColor="#000000" />
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#EEEEEE" />
+                        android:background="#E0E0E0" />
 
                     <!-- Age Row -->
                     <LinearLayout
@@ -203,23 +166,23 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Age:"
-                            android:textSize="14sp"
-                            android:textColor="#666666" />
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#000000" />
 
                         <TextView
                             android:id="@+id/tvAgeValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0 years"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColor="#000000" />
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#EEEEEE" />
+                        android:background="#E0E0E0" />
 
                     <!-- Birth Date Row -->
                     <LinearLayout
@@ -233,23 +196,23 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Birth Date:"
-                            android:textSize="14sp"
-                            android:textColor="#666666" />
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#000000" />
 
                         <TextView
                             android:id="@+id/tvBirthDateValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="2023-01-01"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColor="#000000" />
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#EEEEEE" />
+                        android:background="#E0E0E0" />
 
                     <!-- Weight Row -->
                     <LinearLayout
@@ -263,16 +226,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Weight:"
-                            android:textSize="14sp"
-                            android:textColor="#666666" />
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#000000" />
 
                         <TextView
                             android:id="@+id/tvWeightValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="10.0 kg"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColor="#000000" />
                     </LinearLayout>
 
@@ -588,5 +551,97 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Button Container -->
+    <LinearLayout
+        android:id="@+id/bottomButtonContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:weightSum="2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Edit Button -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnEdit"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="#3B82F6">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_edit"
+                    android:contentDescription="Edit"
+                    android:layout_marginEnd="8dp"
+                    app:tint="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Delete Button -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnDelete"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="#EF4444">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_delete"
+                    android:contentDescription="Delete"
+                    android:layout_marginEnd="8dp"
+                    app:tint="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

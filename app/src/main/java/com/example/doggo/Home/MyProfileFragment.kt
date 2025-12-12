@@ -23,9 +23,10 @@ import retrofit2.Response
 class MyProfileFragment : Fragment() {
 
     private var _binding: FragmentMyProfileBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
 
     private lateinit var sharedPreferences: SharedPreferences
+    private var userApiCall: Call<UserResponse>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +34,7 @@ class MyProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMyProfileBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,14 +61,16 @@ class MyProfileFragment : Fragment() {
         Log.d("MyProfileFragment", "📱 Loading cached data - Username: $username, Email: $email, UserId: $userId")
 
         // Display cached data first
-        if (username != null && username != "User") {
-            binding.tvUsername.text = username
-            binding.tvAvatarInitial.text = username.firstOrNull()?.uppercase() ?: "U"
-        } else {
-            binding.tvUsername.text = "User"
-            binding.tvAvatarInitial.text = "U"
+        binding?.apply {
+            if (username != null && username != "User") {
+                tvUsername.text = username
+                tvAvatarInitial.text = username.firstOrNull()?.uppercase() ?: "U"
+            } else {
+                tvUsername.text = "User"
+                tvAvatarInitial.text = "U"
+            }
+            tvEmail.text = email
         }
-        binding.tvEmail.text = email
 
         // Then fetch fresh data from API if userId exists
         if (userId != -1) {
@@ -80,17 +83,29 @@ class MyProfileFragment : Fragment() {
     private fun fetchUserFromApi(userId: Int) {
         Log.d("MyProfileFragment", "🌐 Fetching user data from API for userId: $userId")
 
-        RetrofitClient.instance.getUserById(userId).enqueue(object : Callback<UserResponse> {
+        // Cancel previous call if exists
+        userApiCall?.cancel()
+
+        userApiCall = RetrofitClient.instance.getUserById(userId)
+        userApiCall?.enqueue(object : Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                // Check if fragment is still attached and binding exists
+                if (!isAdded || _binding == null) {
+                    Log.w("MyProfileFragment", "⚠️ Fragment detached or binding null, skipping UI update")
+                    return
+                }
+
                 if (response.isSuccessful && response.body()?.success == true) {
                     val user = response.body()?.user
                     user?.let {
                         Log.d("MyProfileFragment", "✅ User data fetched - Username: ${it.username}, Email: ${it.email}")
 
-                        // Update UI
-                        binding.tvEmail.text = it.email
-                        binding.tvUsername.text = it.username ?: "No username"
-                        binding.tvAvatarInitial.text = (it.username ?: it.email).firstOrNull()?.uppercase() ?: "U"
+                        // Update UI with safe binding access
+                        binding?.apply {
+                            tvEmail.text = it.email
+                            tvUsername.text = it.username ?: "No username"
+                            tvAvatarInitial.text = (it.username ?: it.email).firstOrNull()?.uppercase() ?: "U"
+                        }
 
                         // Update SharedPreferences with fresh data
                         sharedPreferences.edit().apply {
@@ -100,70 +115,113 @@ class MyProfileFragment : Fragment() {
                         }
                     }
                 } else {
-                    Log.e("MyProfileFragment", "❌ API Error: ${response.code()} - ${response.body()?.error}")
+                    if (isAdded) {
+                        Log.e("MyProfileFragment", "❌ API Error: ${response.code()} - ${response.body()?.error}")
+                    }
                 }
+
+                // Clear the call reference
+                userApiCall = null
             }
 
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                // Silent fail - we already have cached data displayed
-                Log.e("MyProfileFragment", "❌ Network error: ${t.message}", t)
+                // Only log if fragment is still attached
+                if (isAdded) {
+                    // Check if the call was cancelled (which is normal when fragment detaches)
+                    if (!call.isCanceled) {
+                        Log.e("MyProfileFragment", "❌ Network error: ${t.message}", t)
+                    } else {
+                        Log.d("MyProfileFragment", "ℹ️ API call cancelled (normal during navigation)")
+                    }
+                }
+
+                // Clear the call reference
+                userApiCall = null
             }
         })
     }
 
     private fun setupClickListeners() {
-        // Edit Profile Button (di dalam card)
-        binding.btnEditProfile.setOnClickListener {
-            val intent = Intent(requireContext(), EditProfileActivity::class.java)
-            startActivity(intent)
-        }
+        // Use safe calls for all click listeners
+        binding?.apply {
+            // Edit Profile Button (di dalam card)
+            btnEditProfile.setOnClickListener {
+                if (isAdded) {
+                    val intent = Intent(requireContext(), EditProfileActivity::class.java)
+                    startActivity(intent)
+                }
+            }
 
-        // Account Settings - Edit Profile
-        binding.layoutEditProfile.setOnClickListener {
-            val intent = Intent(requireContext(), EditProfileActivity::class.java)
-            startActivity(intent)
-        }
+            // Account Settings - Edit Profile
+            layoutEditProfile.setOnClickListener {
+                if (isAdded) {
+                    val intent = Intent(requireContext(), EditProfileActivity::class.java)
+                    startActivity(intent)
+                }
+            }
 
-        // App Settings
-        binding.layoutPrivacyPolicy.setOnClickListener {
-            showComingSoonToast("Privacy Policy")
-        }
+            // App Settings
+            layoutPrivacyPolicy.setOnClickListener {
+                if (isAdded) {
+                    showComingSoonToast("Privacy Policy")
+                }
+            }
 
-        binding.layoutTermsConditions.setOnClickListener {
-            showComingSoonToast("Terms & Conditions")
-        }
+            layoutTermsConditions.setOnClickListener {
+                if (isAdded) {
+                    showComingSoonToast("Terms & Conditions")
+                }
+            }
 
-        binding.layoutAboutUs.setOnClickListener {
-            showComingSoonToast("About Us")
-        }
+            layoutAboutUs.setOnClickListener {
+                if (isAdded) {
+                    showComingSoonToast("About Us")
+                }
+            }
 
-        // Help & Support
-        binding.layoutHelp.setOnClickListener {
-            showComingSoonToast("Help & Support")
-        }
+            // Help & Support
+            layoutHelp.setOnClickListener {
+                if (isAdded) {
+                    showComingSoonToast("Help & Support")
+                }
+            }
 
-        // Logout
-        binding.layoutLogout.setOnClickListener {
-            showLogoutConfirmation()
+            // Logout
+            layoutLogout.setOnClickListener {
+                if (isAdded) {
+                    showLogoutConfirmation()
+                }
+            }
         }
     }
 
     private fun showComingSoonToast(feature: String) {
-        Toast.makeText(requireContext(), "$feature coming soon!", Toast.LENGTH_SHORT).show()
+        if (isAdded) {
+            Toast.makeText(requireContext(), "$feature coming soon!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showLogoutConfirmation() {
+        if (!isAdded) return
+
         AlertDialog.Builder(requireContext())
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
             .setPositiveButton("Logout") { _, _ ->
-                performLogout()
+                if (isAdded) {
+                    performLogout()
+                }
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
     private fun performLogout() {
+        if (!isAdded) return
+
+        // Cancel any pending API calls
+        userApiCall?.cancel()
+
         // Clear shared preferences
         sharedPreferences.edit().clear().apply()
 
@@ -181,6 +239,18 @@ class MyProfileFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Cancel any ongoing API calls
+        userApiCall?.cancel()
+        userApiCall = null
+
+        // Clear binding
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Final cleanup
+        userApiCall?.cancel()
+        userApiCall = null
     }
 }

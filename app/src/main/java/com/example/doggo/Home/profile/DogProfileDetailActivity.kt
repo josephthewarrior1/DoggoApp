@@ -8,23 +8,20 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.doggo.Home.details.DogDetailPagerAdapter
-import com.example.doggo.Home.profile.EditDogProfileActivity
-import com.example.doggo.Home.profile.ProfileManager
 import com.example.doggo.R
 import com.example.doggo.databinding.ActivityDogProfileDetailTabsBinding
 import com.example.doggo.network.DogResponse
 import com.example.doggo.network.RetrofitClient
-import com.google.android.material.tabs.TabLayoutMediator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class DogProfileDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDogProfileDetailTabsBinding
     private var dogProfile: DogProfile? = null
-    private var pagerAdapter: DogDetailPagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +70,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
                         )
 
                         displayDogProfile(dogProfile!!)
-                        setupViewPager(dogProfile!!)
+                        displayDogDetails(dogProfile!!)
 
                     } else {
                         Log.e("DogProfileDetail", "❌ Dog not found in API, trying local...")
@@ -98,7 +95,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
         if (dogProfile != null) {
             Log.d("DogProfileDetail", "✅ Dog found in local: ${dogProfile!!.name}")
             displayDogProfile(dogProfile!!)
-            setupViewPager(dogProfile!!)
+            displayDogDetails(dogProfile!!)
         } else {
             Log.e("DogProfileDetail", "❌ Dog not found anywhere")
             Toast.makeText(this, "Profile not found", Toast.LENGTH_SHORT).show()
@@ -131,18 +128,19 @@ class DogProfileDetailActivity : AppCompatActivity() {
         Log.d("DogProfileDetail", "📱 Displaying: ${profile.name} - ${profile.breed}")
     }
 
-    private fun setupViewPager(profile: DogProfile) {
-        pagerAdapter = DogDetailPagerAdapter(this, profile)
-        binding.viewPager.adapter = pagerAdapter
+    private fun displayDogDetails(profile: DogProfile) {
+        binding.apply {
+            // Display basic info
+            tvBreedValue.text = profile.breed
+            tvGenderValue.text = profile.gender.ifEmpty { "Unknown" }
+            tvAgeValue.text = "${profile.age} years"
 
-        // Connect TabLayout with ViewPager2 - Hanya 2 tab
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Info"
-                1 -> "Medical"
-                else -> "Tab ${position + 1}"
-            }
-        }.attach()
+            // Format birth date if available
+            // You might need to calculate this from age or get it from API
+            tvBirthDateValue.text = "N/A" // Update this with actual birth date
+
+            tvWeightValue.text = "${profile.weight} kg"
+        }
     }
 
     private fun setupUI() {
@@ -158,6 +156,18 @@ class DogProfileDetailActivity : AppCompatActivity() {
 
         binding.btnDelete.setOnClickListener {
             showDeleteConfirmationDialog()
+        }
+
+        // Setup Schedule button
+        binding.btnSchedule.setOnClickListener {
+            Toast.makeText(this, "Schedule feature coming soon!", Toast.LENGTH_SHORT).show()
+            // TODO: Navigate to schedule activity or show schedule dialog
+        }
+
+        // Setup Medical Records button
+        binding.btnMedicalRecords.setOnClickListener {
+            Toast.makeText(this, "Medical Records feature coming soon!", Toast.LENGTH_SHORT).show()
+            // TODO: Navigate to medical records activity
         }
     }
 

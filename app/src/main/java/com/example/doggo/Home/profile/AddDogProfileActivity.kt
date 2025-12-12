@@ -6,8 +6,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.LinearLayout
-import android.widget.RadioButton
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -51,6 +50,7 @@ class AddDogProfileActivity : AppCompatActivity() {
     private var selectedImageBase64: String? = null
     private var selectedImageUri: Uri? = null
     private var selectedBirthDate: String? = null
+    private var isMaleSelected = true
 
     // Image Picker Launcher
     private val imagePickerLauncher = registerForActivityResult(
@@ -80,6 +80,7 @@ class AddDogProfileActivity : AppCompatActivity() {
 
         setupUI()
         setupScheduleButtons()
+        setupGenderSelection()
         setupBirthDatePicker()
     }
 
@@ -98,9 +99,35 @@ class AddDogProfileActivity : AppCompatActivity() {
                 saveDogProfile()
             }
         }
+    }
 
-        // Set default gender selection
-        binding.rbMale.isChecked = true
+    private fun setupGenderSelection() {
+        binding.rbMale.setOnClickListener {
+            updateGenderSelection(true)
+        }
+
+        binding.rbFemale.setOnClickListener {
+            updateGenderSelection(false)
+        }
+
+        // Set default to male
+        updateGenderSelection(true)
+    }
+
+    private fun updateGenderSelection(isMale: Boolean) {
+        isMaleSelected = isMale
+
+        if (isMale) {
+            binding.rbMale.setBackgroundColor(resources.getColor(R.color.primary_500, theme))
+            binding.rbMale.setTextColor(resources.getColor(android.R.color.white, theme))
+            binding.rbFemale.setBackgroundColor(resources.getColor(android.R.color.transparent, theme))
+            binding.rbFemale.setTextColor(resources.getColor(R.color.text_primary, theme))
+        } else {
+            binding.rbFemale.setBackgroundColor(resources.getColor(R.color.primary_500, theme))
+            binding.rbFemale.setTextColor(resources.getColor(android.R.color.white, theme))
+            binding.rbMale.setBackgroundColor(resources.getColor(android.R.color.transparent, theme))
+            binding.rbMale.setTextColor(resources.getColor(R.color.text_primary, theme))
+        }
     }
 
     private fun setupScheduleButtons() {
@@ -127,7 +154,7 @@ class AddDogProfileActivity : AppCompatActivity() {
     }
 
     private fun setupBirthDatePicker() {
-        binding.btnBirthDate.setOnClickListener {
+        binding.llBirthDate.setOnClickListener {
             showDatePickerDialog()
         }
     }
@@ -147,7 +174,7 @@ class AddDogProfileActivity : AppCompatActivity() {
                 }
 
                 val formattedDate = SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(date.time)
-                binding.btnBirthDate.text = formattedDate
+                binding.tvBirthDate.text = formattedDate
                 selectedBirthDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date.time)
             },
             year,
@@ -525,7 +552,7 @@ class AddDogProfileActivity : AppCompatActivity() {
         val breed = binding.etBreed.text.toString()
         val age = binding.etAge.text.toString().toIntOrNull() ?: 0
         val weight = binding.etWeight.text.toString().toDoubleOrNull() ?: 0.0
-        val gender = if (binding.rbMale.isChecked) "Male" else "Female"
+        val gender = if (isMaleSelected) "Male" else "Female"
         val birthDate = selectedBirthDate ?: ""
 
         val schedule = if (eatSchedule.isNotEmpty() || walkSchedule.isNotEmpty() ||

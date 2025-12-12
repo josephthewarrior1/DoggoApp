@@ -149,7 +149,7 @@
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Gender - FIXED -->
+            <!-- Gender - KEMBALI KE MATERIAL BUTTON -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -166,56 +166,66 @@
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
-                <RadioButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/rbMale"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     android:text="Male"
-                    android:textSize="16sp"
-                    android:buttonTint="#2196F3" />
+                    android:textColor="#1A1A1A"
+                    app:strokeColor="#DDDDDD"
+                    app:strokeWidth="1dp" />
 
-                <RadioButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/rbFemale"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:text="Female"
-                    android:textSize="16sp"
-                    android:buttonTint="#2196F3" />
+                    android:textColor="#1A1A1A"
+                    app:strokeColor="#DDDDDD"
+                    app:strokeWidth="1dp" />
             </RadioGroup>
 
-            <!-- Birth Date - FIXED dengan Button -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Birth Date"
-                android:textColor="#1A1A1A"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btnBirthDate"
+            <!-- Birth Date - KEMBALI KE TEXTVIEW BIASA -->
+            <LinearLayout
+                android:id="@+id/llBirthDate"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
                 android:background="@drawable/bg_input_outline"
-                android:gravity="start|center_vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:text="Select Date"
-                android:textAllCaps="false"
-                android:textColor="#757575"
-                android:textSize="16sp" />
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
 
-            <!-- Age and Weight Row - FIXED spacing -->
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Birth Date"
+                    android:textColor="#1A1A1A"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tvBirthDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select date"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Age and Weight Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:orientation="horizontal">
 
                 <!-- Age -->
@@ -224,7 +234,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Age (years)"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     app:boxStrokeColor="#2196F3"
@@ -244,7 +254,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="8dp"
                     android:hint="Weight (kg)"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     app:boxStrokeColor="#2196F3"

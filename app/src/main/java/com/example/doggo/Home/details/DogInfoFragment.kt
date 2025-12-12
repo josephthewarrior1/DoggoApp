@@ -75,26 +75,16 @@ class DogInfoFragment : Fragment() {
     private fun displayDogInfo() {
         dogProfile?.let { profile ->
             binding.apply {
-                // Display breed
                 tvBreedValue.text = if (profile.breed.isNotEmpty()) profile.breed else "Not specified"
-
-                // Display gender
                 tvGenderValue.text = if (profile.gender.isNotEmpty()) profile.gender else "Not specified"
-
-                // Display age
                 tvAgeValue.text = "${profile.age} years"
-
-                // Display weight
                 tvWeightValue.text = if (profile.weight > 0) String.format("%.1f kg", profile.weight) else "N/A"
-
-                // Display birth date (if available in your DogProfile model)
-                // tvBirthDate.text = profile.birthDate ?: "Not specified"
             }
         }
     }
 
     private fun setupScheduleButtons() {
-        // Add button untuk setiap schedule type
+        // Long click untuk manage schedule yang udah ada
         binding.cvEatSchedule.setOnLongClickListener {
             showScheduleOptionsDialog("eat")
             true
@@ -131,6 +121,13 @@ class DogInfoFragment : Fragment() {
 
         Log.d("DogInfoFragment", "📅 Displaying schedule: $schedule")
 
+        // ✅ HIDE SEMUA DULU
+        binding.cvEatSchedule.isVisible = false
+        binding.cvWalkSchedule.isVisible = false
+        binding.cvSleepSchedule.isVisible = false
+        binding.cvMedicineSchedule.isVisible = false
+        binding.cvGroomSchedule.isVisible = false
+
         if (schedule == null) {
             binding.tvEmptySchedule.isVisible = true
             binding.llScheduleContainer.isVisible = false
@@ -139,52 +136,38 @@ class DogInfoFragment : Fragment() {
 
         var hasAnySchedule = false
 
-        // Display Eat Schedule
+        // ✅ CUMA SHOW YANG ADA DATA AJA
         if (!schedule.eat.isNullOrEmpty()) {
             hasAnySchedule = true
             binding.cvEatSchedule.isVisible = true
             binding.tvEatSchedule.text = formatScheduleList(schedule.eat)
-        } else {
-            binding.cvEatSchedule.isVisible = false
         }
 
-        // Display Walk Schedule
         if (!schedule.walk.isNullOrEmpty()) {
             hasAnySchedule = true
             binding.cvWalkSchedule.isVisible = true
             binding.tvWalkSchedule.text = formatScheduleList(schedule.walk)
-        } else {
-            binding.cvWalkSchedule.isVisible = false
         }
 
-        // Display Sleep Schedule
         if (!schedule.sleep.isNullOrEmpty()) {
             hasAnySchedule = true
             binding.cvSleepSchedule.isVisible = true
             binding.tvSleepSchedule.text = formatScheduleList(schedule.sleep)
-        } else {
-            binding.cvSleepSchedule.isVisible = false
         }
 
-        // Display Medicine Schedule
         if (!schedule.medicine.isNullOrEmpty()) {
             hasAnySchedule = true
             binding.cvMedicineSchedule.isVisible = true
             binding.tvMedicineSchedule.text = formatScheduleList(schedule.medicine)
-        } else {
-            binding.cvMedicineSchedule.isVisible = false
         }
 
-        // Display Groom Schedule
         if (!schedule.groom.isNullOrEmpty()) {
             hasAnySchedule = true
             binding.cvGroomSchedule.isVisible = true
             binding.tvGroomSchedule.text = formatScheduleList(schedule.groom)
-        } else {
-            binding.cvGroomSchedule.isVisible = false
         }
 
-        // Show empty message if no schedule
+        // Show empty message if no schedule at all
         binding.tvEmptySchedule.isVisible = !hasAnySchedule
         binding.llScheduleContainer.isVisible = hasAnySchedule
     }
@@ -198,59 +181,81 @@ class DogInfoFragment : Fragment() {
     }
 
     private fun showAddScheduleDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
-        val tilScheduleType = dialogView.findViewById<TextInputLayout>(R.id.tilScheduleType)
-        val actvScheduleType = dialogView.findViewById<AutoCompleteTextView>(R.id.actvScheduleType)
-        val etTime = dialogView.findViewById<TextInputEditText>(R.id.etTime)
-        val etDescription = dialogView.findViewById<TextInputEditText>(R.id.etDescription)
+        try {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
+            val tilScheduleType = dialogView.findViewById<TextInputLayout>(R.id.tilScheduleType)
+            val actvScheduleType = dialogView.findViewById<AutoCompleteTextView>(R.id.actvScheduleType)
+            val etTime = dialogView.findViewById<TextInputEditText>(R.id.etTime)
+            val etDescription = dialogView.findViewById<TextInputEditText>(R.id.etDescription)
+            val tilTime = dialogView.findViewById<TextInputLayout>(R.id.tilTime)
 
-        // Setup schedule type dropdown
-        val scheduleTypes = listOf("🍽️ Eating", "🚶 Walking", "😴 Sleeping", "💊 Medicine", "✂️ Grooming")
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            scheduleTypes
-        )
-        actvScheduleType.setAdapter(adapter)
+            // Setup schedule type dropdown
+            val scheduleTypes = listOf("🍽️ Eating", "🚶 Walking", "😴 Sleeping", "💊 Medicine", "✂️ Grooming")
+            val adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                scheduleTypes
+            )
+            actvScheduleType.setAdapter(adapter)
 
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogView)
-            .create()
+            val dialog = MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setCancelable(true)
+                .create()
 
-        dialogView.findViewById<View>(R.id.btnCancel).setOnClickListener {
-            dialog.dismiss()
+            dialogView.findViewById<View>(R.id.btnCancel)?.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialogView.findViewById<View>(R.id.btnSave)?.setOnClickListener {
+                val selectedType = actvScheduleType.text.toString()
+                val time = etTime.text?.toString()?.trim() ?: ""
+                val description = etDescription.text?.toString()?.trim() ?: ""
+
+                // Reset errors
+                tilScheduleType.error = null
+                tilTime.error = null
+
+                // Validation
+                if (selectedType.isEmpty()) {
+                    tilScheduleType.error = "Please select schedule type"
+                    return@setOnClickListener
+                }
+
+                if (time.isEmpty()) {
+                    tilTime.error = "Time is required"
+                    return@setOnClickListener
+                }
+
+                // Validate time format (HH:MM)
+                if (!time.matches(Regex("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"))) {
+                    tilTime.error = "Invalid time format (use HH:MM)"
+                    return@setOnClickListener
+                }
+
+                // Convert display name to API type
+                val scheduleType = when (selectedType) {
+                    "🍽️ Eating" -> "eat"
+                    "🚶 Walking" -> "walk"
+                    "😴 Sleeping" -> "sleep"
+                    "💊 Medicine" -> "medicine"
+                    "✂️ Grooming" -> "groom"
+                    else -> {
+                        Toast.makeText(requireContext(), "Invalid schedule type", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                }
+
+                Log.d("DogInfoFragment", "✅ Adding schedule: $scheduleType at $time")
+                addScheduleToAPI(scheduleType, time, description)
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        } catch (e: Exception) {
+            Log.e("DogInfoFragment", "❌ Error showing dialog: ${e.message}", e)
+            Toast.makeText(requireContext(), "Error opening dialog: ${e.message}", Toast.LENGTH_SHORT).show()
         }
-
-        dialogView.findViewById<View>(R.id.btnSave).setOnClickListener {
-            val selectedType = actvScheduleType.text.toString()
-            val time = etTime.text.toString().trim()
-            val description = etDescription.text.toString().trim()
-
-            if (selectedType.isEmpty()) {
-                tilScheduleType.error = "Please select schedule type"
-                return@setOnClickListener
-            }
-
-            if (time.isEmpty()) {
-                dialogView.findViewById<TextInputLayout>(R.id.tilTime).error = "Time is required"
-                return@setOnClickListener
-            }
-
-            // Convert display name to API type
-            val scheduleType = when (selectedType) {
-                "🍽️ Eating" -> "eat"
-                "🚶 Walking" -> "walk"
-                "😴 Sleeping" -> "sleep"
-                "💊 Medicine" -> "medicine"
-                "✂️ Grooming" -> "groom"
-                else -> "eat"
-            }
-
-            addScheduleToAPI(scheduleType, time, description)
-            dialog.dismiss()
-        }
-
-        dialog.show()
     }
 
     private fun showScheduleOptionsDialog(scheduleType: String) {
@@ -261,7 +266,13 @@ class DogInfoFragment : Fragment() {
             "medicine" -> dogProfile?.schedule?.medicine
             "groom" -> dogProfile?.schedule?.groom
             else -> null
-        } ?: return
+        }
+
+        if (scheduleList.isNullOrEmpty()) {
+            // Kalau kosong, langsung show add dialog
+            showAddScheduleDialogForType(scheduleType)
+            return
+        }
 
         val items = scheduleList.map { "${it.time} - ${it.description.ifEmpty { "No description" }}" }.toTypedArray()
 
@@ -292,83 +303,116 @@ class DogInfoFragment : Fragment() {
     }
 
     private fun showAddScheduleDialogForType(scheduleType: String) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
-        val tvTitle = dialogView.findViewById<View>(R.id.tvDialogTitle) as? TextView
-        val tilScheduleType = dialogView.findViewById<TextInputLayout>(R.id.tilScheduleType)
-        val etTime = dialogView.findViewById<TextInputEditText>(R.id.etTime)
-        val etDescription = dialogView.findViewById<TextInputEditText>(R.id.etDescription)
+        try {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
+            val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+            val tilScheduleType = dialogView.findViewById<TextInputLayout>(R.id.tilScheduleType)
+            val etTime = dialogView.findViewById<TextInputEditText>(R.id.etTime)
+            val etDescription = dialogView.findViewById<TextInputEditText>(R.id.etDescription)
+            val tilTime = dialogView.findViewById<TextInputLayout>(R.id.tilTime)
 
-        tvTitle?.text = "Add ${scheduleType.capitalize()} Schedule"
-        tilScheduleType.visibility = View.GONE
+            tvTitle?.text = "Add ${scheduleType.capitalize()} Schedule"
+            tilScheduleType.visibility = View.GONE
 
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogView)
-            .create()
+            val dialog = MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setCancelable(true)
+                .create()
 
-        dialogView.findViewById<View>(R.id.btnCancel).setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialogView.findViewById<View>(R.id.btnSave).setOnClickListener {
-            val time = etTime.text.toString().trim()
-            val description = etDescription.text.toString().trim()
-
-            if (time.isEmpty()) {
-                dialogView.findViewById<TextInputLayout>(R.id.tilTime).error = "Time is required"
-                return@setOnClickListener
+            dialogView.findViewById<View>(R.id.btnCancel)?.setOnClickListener {
+                dialog.dismiss()
             }
 
-            addScheduleToAPI(scheduleType, time, description)
-            dialog.dismiss()
-        }
+            dialogView.findViewById<View>(R.id.btnSave)?.setOnClickListener {
+                val time = etTime.text?.toString()?.trim() ?: ""
+                val description = etDescription.text?.toString()?.trim() ?: ""
 
-        dialog.show()
+                tilTime.error = null
+
+                if (time.isEmpty()) {
+                    tilTime.error = "Time is required"
+                    return@setOnClickListener
+                }
+
+                if (!time.matches(Regex("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"))) {
+                    tilTime.error = "Invalid time format (use HH:MM)"
+                    return@setOnClickListener
+                }
+
+                addScheduleToAPI(scheduleType, time, description)
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        } catch (e: Exception) {
+            Log.e("DogInfoFragment", "❌ Error showing dialog: ${e.message}", e)
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showEditScheduleDialog(scheduleType: String, scheduleDetail: ScheduleDetail) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
-        val tvTitle = dialogView.findViewById<View>(R.id.tvDialogTitle) as? TextView
-        val tilScheduleType = dialogView.findViewById<TextInputLayout>(R.id.tilScheduleType)
-        val etTime = dialogView.findViewById<TextInputEditText>(R.id.etTime)
-        val etDescription = dialogView.findViewById<TextInputEditText>(R.id.etDescription)
-        val btnSave = dialogView.findViewById<View>(R.id.btnSave) as? MaterialButton
+        try {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
+            val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+            val tilScheduleType = dialogView.findViewById<TextInputLayout>(R.id.tilScheduleType)
+            val etTime = dialogView.findViewById<TextInputEditText>(R.id.etTime)
+            val etDescription = dialogView.findViewById<TextInputEditText>(R.id.etDescription)
+            val btnSave = dialogView.findViewById<MaterialButton>(R.id.btnSave)
+            val tilTime = dialogView.findViewById<TextInputLayout>(R.id.tilTime)
 
-        tvTitle?.text = "Edit Schedule"
-        tilScheduleType.visibility = View.GONE
-        btnSave?.text = "Update"
+            tvTitle?.text = "Edit Schedule"
+            tilScheduleType.visibility = View.GONE
+            btnSave?.text = "Update"
 
-        // Pre-fill data
-        etTime.setText(scheduleDetail.time)
-        etDescription.setText(scheduleDetail.description)
+            // Pre-fill data
+            etTime.setText(scheduleDetail.time)
+            etDescription.setText(scheduleDetail.description)
 
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogView)
-            .create()
+            val dialog = MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setCancelable(true)
+                .create()
 
-        dialogView.findViewById<View>(R.id.btnCancel).setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialogView.findViewById<View>(R.id.btnSave).setOnClickListener {
-            val time = etTime.text.toString().trim()
-            val description = etDescription.text.toString().trim()
-
-            if (time.isEmpty()) {
-                dialogView.findViewById<TextInputLayout>(R.id.tilTime).error = "Time is required"
-                return@setOnClickListener
+            dialogView.findViewById<View>(R.id.btnCancel)?.setOnClickListener {
+                dialog.dismiss()
             }
 
-            updateScheduleInAPI(scheduleType, scheduleDetail.id ?: "", time, description)
-            dialog.dismiss()
-        }
+            dialogView.findViewById<View>(R.id.btnSave)?.setOnClickListener {
+                val time = etTime.text?.toString()?.trim() ?: ""
+                val description = etDescription.text?.toString()?.trim() ?: ""
 
-        dialog.show()
+                tilTime.error = null
+
+                if (time.isEmpty()) {
+                    tilTime.error = "Time is required"
+                    return@setOnClickListener
+                }
+
+                if (!time.matches(Regex("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"))) {
+                    tilTime.error = "Invalid time format (use HH:MM)"
+                    return@setOnClickListener
+                }
+
+                updateScheduleInAPI(scheduleType, scheduleDetail.id ?: "", time, description)
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        } catch (e: Exception) {
+            Log.e("DogInfoFragment", "❌ Error showing edit dialog: ${e.message}", e)
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun addScheduleToAPI(scheduleType: String, time: String, description: String) {
-        val dogId = dogProfile?.id ?: return
+        val dogId = dogProfile?.id
 
-        Log.d("DogInfoFragment", "📤 Adding schedule: $scheduleType at $time")
+        if (dogId.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "Invalid dog ID", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        Log.d("DogInfoFragment", "📤 Adding schedule: $scheduleType at $time for dog: $dogId")
 
         val request = ScheduleRequest(
             scheduleType = scheduleType,
@@ -379,6 +423,8 @@ class DogInfoFragment : Fragment() {
         RetrofitClient.instance.addSchedule(dogId, request).enqueue(object :
             Callback<ScheduleResponse> {
             override fun onResponse(call: Call<ScheduleResponse>, response: Response<ScheduleResponse>) {
+                Log.d("DogInfoFragment", "📡 Response: ${response.code()} - ${response.body()}")
+
                 if (response.isSuccessful && response.body()?.success == true) {
                     Log.d("DogInfoFragment", "✅ Schedule added successfully")
                     Toast.makeText(requireContext(), "Schedule added!", Toast.LENGTH_SHORT).show()
@@ -386,33 +432,49 @@ class DogInfoFragment : Fragment() {
                     // Schedule notification
                     val scheduleItem = response.body()?.scheduleItem
                     if (scheduleItem != null) {
-                        ScheduleNotificationManager.scheduleNotification(
-                            context = requireContext(),
-                            dogId = dogId,
-                            dogName = dogProfile?.name ?: "Dog",
-                            scheduleType = scheduleType,
-                            scheduleTime = time,
-                            description = description,
-                            scheduleId = scheduleItem.id
-                        )
+                        try {
+                            ScheduleNotificationManager.scheduleNotification(
+                                context = requireContext(),
+                                dogId = dogId,
+                                dogName = dogProfile?.name ?: "Dog",
+                                scheduleType = scheduleType,
+                                scheduleTime = time,
+                                description = description,
+                                scheduleId = scheduleItem.id
+                            )
+                        } catch (e: Exception) {
+                            Log.e("DogInfoFragment", "⚠️ Failed to schedule notification: ${e.message}")
+                        }
                     }
 
                     reloadDogProfile()
                 } else {
-                    Log.e("DogInfoFragment", "❌ Failed to add schedule: ${response.body()?.error}")
-                    Toast.makeText(requireContext(), "Failed to add schedule", Toast.LENGTH_SHORT).show()
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("DogInfoFragment", "❌ Failed: ${response.body()?.error}")
+                    Log.e("DogInfoFragment", "❌ Error body: $errorBody")
+                    Toast.makeText(requireContext(), "Failed: ${response.body()?.error ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ScheduleResponse>, t: Throwable) {
-                Log.e("DogInfoFragment", "❌ Network error: ${t.message}")
-                Toast.makeText(requireContext(), "Network error", Toast.LENGTH_SHORT).show()
+                Log.e("DogInfoFragment", "❌ Network error: ${t.message}", t)
+                Toast.makeText(requireContext(), "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun updateScheduleInAPI(scheduleType: String, scheduleItemId: String, time: String, description: String) {
-        val dogId = dogProfile?.id ?: return
+        val dogId = dogProfile?.id
+
+        if (dogId.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "Invalid dog ID", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (scheduleItemId.isEmpty()) {
+            Toast.makeText(requireContext(), "Invalid schedule ID", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         Log.d("DogInfoFragment", "📤 Updating schedule: $scheduleType - $scheduleItemId")
 
@@ -430,39 +492,50 @@ class DogInfoFragment : Fragment() {
                     Log.d("DogInfoFragment", "✅ Schedule updated successfully")
                     Toast.makeText(requireContext(), "Schedule updated!", Toast.LENGTH_SHORT).show()
 
-                    // Re-schedule notification dengan waktu baru
-                    ScheduleNotificationManager.cancelNotification(
-                        context = requireContext(),
-                        dogId = dogId,
-                        scheduleType = scheduleType,
-                        scheduleId = scheduleItemId
-                    )
+                    // Re-schedule notification
+                    try {
+                        ScheduleNotificationManager.cancelNotification(
+                            context = requireContext(),
+                            dogId = dogId,
+                            scheduleType = scheduleType,
+                            scheduleId = scheduleItemId
+                        )
 
-                    ScheduleNotificationManager.scheduleNotification(
-                        context = requireContext(),
-                        dogId = dogId,
-                        dogName = dogProfile?.name ?: "Dog",
-                        scheduleType = scheduleType,
-                        scheduleTime = time,
-                        description = description,
-                        scheduleId = scheduleItemId
-                    )
+                        ScheduleNotificationManager.scheduleNotification(
+                            context = requireContext(),
+                            dogId = dogId,
+                            dogName = dogProfile?.name ?: "Dog",
+                            scheduleType = scheduleType,
+                            scheduleTime = time,
+                            description = description,
+                            scheduleId = scheduleItemId
+                        )
+                    } catch (e: Exception) {
+                        Log.e("DogInfoFragment", "⚠️ Failed to reschedule notification: ${e.message}")
+                    }
 
                     reloadDogProfile()
                 } else {
-                    Log.e("DogInfoFragment", "❌ Failed to update schedule: ${response.body()?.error}")
-                    Toast.makeText(requireContext(), "Failed to update schedule", Toast.LENGTH_SHORT).show()
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("DogInfoFragment", "❌ Failed to update: ${response.body()?.error}")
+                    Log.e("DogInfoFragment", "❌ Error body: $errorBody")
+                    Toast.makeText(requireContext(), "Failed to update", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ScheduleResponse>, t: Throwable) {
-                Log.e("DogInfoFragment", "❌ Network error: ${t.message}")
+                Log.e("DogInfoFragment", "❌ Network error: ${t.message}", t)
                 Toast.makeText(requireContext(), "Network error", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun deleteSchedule(scheduleType: String, scheduleItemId: String) {
+        if (scheduleItemId.isEmpty()) {
+            Toast.makeText(requireContext(), "Invalid schedule ID", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Delete Schedule")
             .setMessage("Are you sure you want to delete this schedule?")
@@ -474,7 +547,12 @@ class DogInfoFragment : Fragment() {
     }
 
     private fun deleteScheduleFromAPI(scheduleType: String, scheduleItemId: String) {
-        val dogId = dogProfile?.id ?: return
+        val dogId = dogProfile?.id
+
+        if (dogId.isNullOrEmpty()) {
+            Toast.makeText(requireContext(), "Invalid dog ID", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         Log.d("DogInfoFragment", "📤 Deleting schedule: $scheduleType - $scheduleItemId")
 
@@ -491,29 +569,40 @@ class DogInfoFragment : Fragment() {
                     Toast.makeText(requireContext(), "Schedule deleted!", Toast.LENGTH_SHORT).show()
 
                     // Cancel notification
-                    ScheduleNotificationManager.cancelNotification(
-                        context = requireContext(),
-                        dogId = dogId,
-                        scheduleType = scheduleType,
-                        scheduleId = scheduleItemId
-                    )
+                    try {
+                        ScheduleNotificationManager.cancelNotification(
+                            context = requireContext(),
+                            dogId = dogId,
+                            scheduleType = scheduleType,
+                            scheduleId = scheduleItemId
+                        )
+                    } catch (e: Exception) {
+                        Log.e("DogInfoFragment", "⚠️ Failed to cancel notification: ${e.message}")
+                    }
 
                     reloadDogProfile()
                 } else {
-                    Log.e("DogInfoFragment", "❌ Failed to delete schedule: ${response.body()?.error}")
-                    Toast.makeText(requireContext(), "Failed to delete schedule", Toast.LENGTH_SHORT).show()
+                    Log.e("DogInfoFragment", "❌ Failed to delete: ${response.body()?.error}")
+                    Toast.makeText(requireContext(), "Failed to delete", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ScheduleResponse>, t: Throwable) {
-                Log.e("DogInfoFragment", "❌ Network error: ${t.message}")
+                Log.e("DogInfoFragment", "❌ Network error: ${t.message}", t)
                 Toast.makeText(requireContext(), "Network error", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun reloadDogProfile() {
-        val dogId = dogProfile?.id ?: return
+        val dogId = dogProfile?.id
+
+        if (dogId.isNullOrEmpty()) {
+            Log.e("DogInfoFragment", "❌ Cannot reload: invalid dog ID")
+            return
+        }
+
+        Log.d("DogInfoFragment", "🔄 Reloading dog profile: $dogId")
 
         RetrofitClient.instance.getDogById(dogId).enqueue(object : Callback<DogResponse> {
             override fun onResponse(call: Call<DogResponse>, response: Response<DogResponse>) {
@@ -533,12 +622,15 @@ class DogInfoFragment : Fragment() {
                         )
                         displayDogInfo()
                         displaySchedule()
+                        Log.d("DogInfoFragment", "✅ Dog profile reloaded")
                     }
+                } else {
+                    Log.e("DogInfoFragment", "❌ Failed to reload: ${response.body()?.error}")
                 }
             }
 
             override fun onFailure(call: Call<DogResponse>, t: Throwable) {
-                Log.e("DogInfoFragment", "❌ Failed to reload profile: ${t.message}")
+                Log.e("DogInfoFragment", "❌ Failed to reload: ${t.message}", t)
             }
         })
     }

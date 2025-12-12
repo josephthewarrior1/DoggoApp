@@ -9,13 +9,16 @@ import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.NumberPicker
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.example.doggo.R
 import com.example.doggo.databinding.ActivityAddDogProfileBinding
@@ -25,6 +28,8 @@ import com.example.doggo.network.DogResponse
 import com.example.doggo.network.DogSchedule
 import com.example.doggo.network.RetrofitClient
 import com.example.doggo.network.ScheduleDetail
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,6 +76,7 @@ class AddDogProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupUI()
+        setupGenderSelection()
     }
 
     private fun setupUI() {
@@ -83,14 +89,46 @@ class AddDogProfileActivity : AppCompatActivity() {
             showImagePickerDialog()
         }
 
+        // ✅ FIX: Setup Add Schedule Button
+        binding.btnAddSchedule.setOnClickListener {
+            showScheduleDialog()
+        }
+
         binding.btnSave.setOnClickListener {
             if (validateInputs()) {
                 saveDogProfile()
             }
         }
+    }
 
-        binding.btnAddSchedule.setOnClickListener {
-            showScheduleDialog()
+    private fun setupGenderSelection() {
+        // Setup gender button selection
+        val maleButton = binding.rbMale
+        val femaleButton = binding.rbFemale
+
+        maleButton.setOnClickListener {
+            updateGenderUI(true)
+        }
+
+        femaleButton.setOnClickListener {
+            updateGenderUI(false)
+        }
+
+        // Set default to male
+        updateGenderUI(true)
+    }
+
+    private fun updateGenderUI(isMale: Boolean) {
+        if (isMale) {
+            binding.rbMale.setBackgroundColor(getColor(R.color.primary_500))
+            binding.rbMale.setTextColor(getColor(android.R.color.white))
+            binding.rbFemale.setBackgroundColor(getColor(android.R.color.transparent))
+            binding.rbFemale.setTextColor(getColor(R.color.text_primary))
+        } else {
+            binding.rbFemale.setBackgroundColor(getColor(R.color.primary_500))
+            binding.rbFemale.setTextColor(getColor(android.R.color.white))
+            binding.rbMale.setBackgroundColor(getColor(android.R.color.transparent))
+            binding.rbMale.setTextColor(getColor(R.color.text_primary))
         }
     }
 
@@ -289,15 +327,87 @@ class AddDogProfileActivity : AppCompatActivity() {
             "Groom" -> groomSchedule.add(scheduleDetail)
         }
 
+        // Update UI dengan preview
+        updateSchedulePreview()
+    }
+
+    private fun updateSchedulePreview() {
         val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
                 medicineSchedule.size + groomSchedule.size
+
+        // Update summary text
+        if (totalItems > 0) {
+            binding.tvScheduleSummary.text = "$totalItems schedule item(s) added"
+
+            // Show schedule items container
+            binding.llScheduleItems.isVisible = true
+            binding.llScheduleItems.removeAllViews()
+
+            // Add all schedule items as chips with sections
+            addScheduleChipsSection(eatSchedule, "🍽️ Eating Schedule", R.color.schedule_eat_bg)
+            addScheduleChipsSection(walkSchedule, "🚶 Walking Schedule", R.color.schedule_walk_bg)
+            addScheduleChipsSection(sleepSchedule, "😴 Sleeping Schedule", R.color.schedule_sleep_bg)
+            addScheduleChipsSection(medicineSchedule, "💊 Medicine Schedule", R.color.schedule_medicine_bg)
+            addScheduleChipsSection(groomSchedule, "✂️ Grooming Schedule", R.color.schedule_groom_bg)
+        } else {
+            binding.tvScheduleSummary.text = "No schedules added yet"
+            binding.llScheduleItems.isVisible = false
+        }
+
+        // Untuk debug
         binding.tvScheduleCount.text = "Schedule items: $totalItems"
-
-        Toast.makeText(this, "$scheduleType schedule added at $time", Toast.LENGTH_SHORT).show()
-
-        // ✅ Log total schedules
-        Log.d("AddDogProfile", "📋 Total schedules: Eat(${eatSchedule.size}), Walk(${walkSchedule.size}), Sleep(${sleepSchedule.size}), Medicine(${medicineSchedule.size}), Groom(${groomSchedule.size})")
     }
+
+    private fun addScheduleChipsSection(
+        scheduleList: List<ScheduleDetail>,
+        sectionTitle: String,
+        chipBgColor: Int
+    ) {
+        if (scheduleList.isNotEmpty()) {
+            // Add section header
+            val sectionHeader = TextView(this).apply {
+                text = sectionTitle
+                setTextColor(getColor(R.color.text_primary))
+                textSize = 16f
+                setTypeface(typeface, android.graphics.Typeface.BOLD)
+                setPadding(0, 24.dpToPx(), 0, 8.dpToPx())
+            }
+            binding.llScheduleItems.addView(sectionHeader)
+
+            // Add chips for each schedule item in this section
+            scheduleList.forEach { schedule ->
+                val chip = Chip(this).apply {
+                    text = "${schedule.time} - ${schedule.description}"
+                    isCloseIconVisible = true
+                    chipBackgroundColor = getColorStateList(chipBgColor)
+                    setTextColor(getColor(R.color.text_primary))
+
+                    setOnCloseIconClickListener {
+                        // Remove from the correct list based on section title
+                        when (sectionTitle) {
+                            "🍽️ Eating Schedule" -> eatSchedule.removeAll { it.id == schedule.id }
+                            "🚶 Walking Schedule" -> walkSchedule.removeAll { it.id == schedule.id }
+                            "😴 Sleeping Schedule" -> sleepSchedule.removeAll { it.id == schedule.id }
+                            "💊 Medicine Schedule" -> medicineSchedule.removeAll { it.id == schedule.id }
+                            "✂️ Grooming Schedule" -> groomSchedule.removeAll { it.id == schedule.id }
+                        }
+                        updateSchedulePreview()
+                    }
+
+                    // Add margin between chips
+                    val layoutParams = ViewGroup.MarginLayoutParams(
+                        ViewGroup.MarginLayoutParams.WRAP_CONTENT,
+                        ViewGroup.MarginLayoutParams.WRAP_CONTENT
+                    )
+                    layoutParams.setMargins(0, 0, 0, 8.dpToPx())
+                    this.layoutParams = layoutParams
+                }
+                binding.llScheduleItems.addView(chip)
+            }
+        }
+    }
+
+    private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
 
     private fun validateInputs(): Boolean {
         var isValid = true
@@ -338,12 +448,12 @@ class AddDogProfileActivity : AppCompatActivity() {
         val breed = binding.etBreed.text.toString()
         val age = binding.etAge.text.toString().toIntOrNull() ?: 0
         val weight = binding.etWeight.text.toString().toDoubleOrNull() ?: 0.0
-        val gender = if (binding.rbMale.isChecked) "Male" else "Female"
+        val gender = if (binding.rbMale.isPressed) "Male" else "Female"
 
         val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
                 medicineSchedule.size + groomSchedule.size
 
-        // ✅ Log schedule items with IDs
+        // ✅ Log schedule items dengan IDs
         Log.d("AddDogProfile", "📋 Preparing to save dog with schedules:")
         Log.d("AddDogProfile", "Eat schedules: ${eatSchedule.size}")
         eatSchedule.forEachIndexed { index, item ->

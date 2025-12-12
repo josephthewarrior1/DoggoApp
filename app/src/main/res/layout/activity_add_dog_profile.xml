@@ -276,255 +276,60 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Schedule"
-                android:textColor="#1A1A1A"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium" />
-
-            <!-- Eat Schedule -->
+            <!-- Schedule Header dengan Add Button -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:text="🍽️"
-                    android:textSize="20sp"
-                    android:gravity="center" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    android:text="Eat Schedule"
+                    android:text="Schedule"
                     android:textColor="#1A1A1A"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
 
+                <!-- Add Schedule Button (VISIBLE) -->
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btnAddEatSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/btnAddSchedule"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
-                    app:elevation="2dp" />
+                    app:elevation="4dp"
+                    app:fabSize="mini" />
             </LinearLayout>
 
+            <!-- Schedule Summary -->
             <TextView
-                android:id="@+id/tvEatScheduleStatus"
+                android:id="@+id/tvScheduleSummary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="40dp"
-                android:text="No schedule added"
+                android:layout_marginTop="8dp"
+                android:text="No schedules added yet"
                 android:textColor="#9E9E9E"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
 
-            <!-- Walk Schedule -->
+            <!-- Schedule Items Container -->
             <LinearLayout
+                android:id="@+id/llScheduleItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <TextView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:text="🚶"
-                    android:textSize="20sp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    android:text="Walk Schedule"
-                    android:textColor="#1A1A1A"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btnAddWalkSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
-                    app:backgroundTint="#2196F3"
-                    app:tint="@android:color/white"
-                    app:elevation="2dp" />
+                <!-- Schedule items akan ditambahkan secara dinamis di sini -->
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvWalkScheduleStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="40dp"
-                android:text="No schedule added"
-                android:textColor="#9E9E9E"
-                android:textSize="13sp" />
-
-            <!-- Sleep Schedule -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:text="😴"
-                    android:textSize="20sp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    android:text="Sleep Schedule"
-                    android:textColor="#1A1A1A"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btnAddSleepSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
-                    app:backgroundTint="#2196F3"
-                    app:tint="@android:color/white"
-                    app:elevation="2dp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvSleepScheduleStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="40dp"
-                android:text="No schedule added"
-                android:textColor="#9E9E9E"
-                android:textSize="13sp" />
-
-            <!-- Medicine Schedule -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:text="💊"
-                    android:textSize="20sp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    android:text="Medicine Schedule"
-                    android:textColor="#1A1A1A"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btnAddMedicineSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
-                    app:backgroundTint="#2196F3"
-                    app:tint="@android:color/white"
-                    app:elevation="2dp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvMedicineScheduleStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="40dp"
-                android:text="No schedule added"
-                android:textColor="#9E9E9E"
-                android:textSize="13sp" />
-
-            <!-- Groom Schedule -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:text="✂️"
-                    android:textSize="20sp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    android:text="Groom Schedule"
-                    android:textColor="#1A1A1A"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btnAddGroomSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
-                    app:backgroundTint="#2196F3"
-                    app:tint="@android:color/white"
-                    app:elevation="2dp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvGroomScheduleStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="40dp"
-                android:text="No schedule added"
-                android:textColor="#9E9E9E"
-                android:textSize="13sp" />
-
-            <!-- Hidden Schedule Count -->
+            <!-- Hidden Schedule Count (untuk debug/logging) -->
             <TextView
                 android:id="@+id/tvScheduleCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <!-- Hidden Add Schedule Button (for backward compatibility) -->
-            <Button
-                android:id="@+id/btnAddSchedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />

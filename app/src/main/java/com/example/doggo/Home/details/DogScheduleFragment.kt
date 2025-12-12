@@ -28,6 +28,7 @@ class DogScheduleFragment : Fragment() {
 
     private var dogProfile: DogProfile? = null
     private lateinit var scheduleAdapter: ScheduleAdapter
+    private val scheduleItems = mutableListOf<ScheduleItem>()
 
     companion object {
         private const val ARG_DOG_PROFILE = "dog_profile"
@@ -66,18 +67,45 @@ class DogScheduleFragment : Fragment() {
 
     private fun setupRecyclerView() {
         scheduleAdapter = ScheduleAdapter(
-            scheduleItems = mutableListOf(),
-            onDeleteClick = { scheduleItem, position ->
-                showDeleteScheduleDialog(scheduleItem, position)
+            onItemClick = { scheduleDetail ->
+                // Konversi ScheduleDetail ke ScheduleItem
+                val scheduleItem = convertDetailToItem(scheduleDetail)
+                scheduleItem?.let {
+                    showEditScheduleDialog(it)
+                }
             },
-            onItemClick = { scheduleItem, position ->
-                showEditScheduleDialog(scheduleItem, position)
+            onDeleteClick = { scheduleDetail ->
+                // Konversi ScheduleDetail ke ScheduleItem
+                val scheduleItem = convertDetailToItem(scheduleDetail)
+                scheduleItem?.let {
+                    showDeleteScheduleDialog(it)
+                }
             }
         )
         binding.rvSchedule.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = scheduleAdapter
         }
+    }
+
+    private fun convertDetailToItem(scheduleDetail: com.example.doggo.network.ScheduleDetail): ScheduleItem? {
+        // Cari ScheduleType berdasarkan scheduleType dari ScheduleDetail
+        val scheduleType = when {
+            scheduleDetail.description.contains("eat", ignoreCase = true) -> ScheduleType.EAT
+            scheduleDetail.description.contains("walk", ignoreCase = true) -> ScheduleType.WALK
+            scheduleDetail.description.contains("sleep", ignoreCase = true) -> ScheduleType.SLEEP
+            scheduleDetail.description.contains("medicine", ignoreCase = true) -> ScheduleType.MEDICINE
+            scheduleDetail.description.contains("groom", ignoreCase = true) -> ScheduleType.GROOM
+            else -> ScheduleType.EAT // default
+        }
+
+        return ScheduleItem(
+            id = scheduleDetail.id,
+            type = scheduleType,
+            time = scheduleDetail.time,
+            description = scheduleDetail.description,
+            duration = scheduleDetail.duration
+        )
     }
 
     private fun setupButtons() {
@@ -88,104 +116,97 @@ class DogScheduleFragment : Fragment() {
 
     private fun loadSchedule() {
         val schedule = dogProfile?.schedule
+        scheduleItems.clear()
 
         if (schedule == null) {
             showEmptyState(true)
             return
         }
 
-        // Convert schedule to list of ScheduleItem
-        val scheduleItems = mutableListOf<ScheduleItem>()
+        // Convert schedule to list of ScheduleDetail untuk adapter
+        val scheduleDetails = mutableListOf<com.example.doggo.network.ScheduleDetail>()
 
         // Add eat schedules
         schedule.eat?.forEach { detail ->
-            scheduleItems.add(
-                ScheduleItem(
-                    id = detail.id,  // ← PENTING: Simpan ID dari backend
-                    type = ScheduleType.EAT,
-                    time = detail.time,
-                    description = detail.description,
-                    duration = detail.duration
-                )
-            )
+            scheduleDetails.add(detail)
+            scheduleItems.add(ScheduleItem(
+                id = detail.id,
+                type = ScheduleType.EAT,
+                time = detail.time,
+                description = detail.description,
+                duration = detail.duration
+            ))
         }
 
         // Add walk schedules
         schedule.walk?.forEach { detail ->
-            scheduleItems.add(
-                ScheduleItem(
-                    id = detail.id,  // ← PENTING
-                    type = ScheduleType.WALK,
-                    time = detail.time,
-                    description = detail.description,
-                    duration = detail.duration
-                )
-            )
+            scheduleDetails.add(detail)
+            scheduleItems.add(ScheduleItem(
+                id = detail.id,
+                type = ScheduleType.WALK,
+                time = detail.time,
+                description = detail.description,
+                duration = detail.duration
+            ))
         }
 
         // Add sleep schedules
         schedule.sleep?.forEach { detail ->
-            scheduleItems.add(
-                ScheduleItem(
-                    id = detail.id,  // ← PENTING
-                    type = ScheduleType.SLEEP,
-                    time = detail.time,
-                    description = detail.description,
-                    duration = detail.duration
-                )
-            )
+            scheduleDetails.add(detail)
+            scheduleItems.add(ScheduleItem(
+                id = detail.id,
+                type = ScheduleType.SLEEP,
+                time = detail.time,
+                description = detail.description,
+                duration = detail.duration
+            ))
         }
 
         // Add medicine schedules
         schedule.medicine?.forEach { detail ->
-            scheduleItems.add(
-                ScheduleItem(
-                    id = detail.id,  // ← PENTING
-                    type = ScheduleType.MEDICINE,
-                    time = detail.time,
-                    description = detail.description,
-                    duration = detail.duration
-                )
-            )
+            scheduleDetails.add(detail)
+            scheduleItems.add(ScheduleItem(
+                id = detail.id,
+                type = ScheduleType.MEDICINE,
+                time = detail.time,
+                description = detail.description,
+                duration = detail.duration
+            ))
         }
 
         // Add groom schedules
         schedule.groom?.forEach { detail ->
-            scheduleItems.add(
-                ScheduleItem(
-                    id = detail.id,  // ← PENTING
-                    type = ScheduleType.GROOM,
-                    time = detail.time,
-                    description = detail.description,
-                    duration = detail.duration
-                )
-            )
+            scheduleDetails.add(detail)
+            scheduleItems.add(ScheduleItem(
+                id = detail.id,
+                type = ScheduleType.GROOM,
+                time = detail.time,
+                description = detail.description,
+                duration = detail.duration
+            ))
         }
 
         // Sort by time (optional)
+        scheduleDetails.sortBy { it.time }
         scheduleItems.sortBy { it.time }
 
-        if (scheduleItems.isEmpty()) {
+        if (scheduleDetails.isEmpty()) {
             showEmptyState(true)
         } else {
             showEmptyState(false)
-            scheduleAdapter.updateSchedule(scheduleItems)
+            scheduleAdapter.updateSchedules(scheduleDetails)
         }
     }
 
     private fun showAddScheduleDialog() {
-        // TODO: Implement add schedule dialog or navigate to add screen
         Toast.makeText(requireContext(), "Add Schedule (Coming Soon)", Toast.LENGTH_SHORT).show()
     }
 
-    private fun showEditScheduleDialog(scheduleItem: ScheduleItem, position: Int) {
-        val dialogView = LayoutInflater.from(requireContext())
-            .inflate(android.R.layout.simple_list_item_2, null)
-
+    private fun showEditScheduleDialog(scheduleItem: ScheduleItem) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Edit ${scheduleItem.type.displayName} Schedule")
 
-        // Create edit text fields (simplified version)
+        // Create edit text fields
         val timeInput = android.widget.EditText(requireContext())
         timeInput.setText(scheduleItem.time)
         timeInput.hint = "Time (HH:MM)"
@@ -231,7 +252,7 @@ class DogScheduleFragment : Fragment() {
         }
 
         val updateRequest = ScheduleUpdateRequest(
-            scheduleType = scheduleItem.type.apiName,  // ← Gunakan apiName
+            scheduleType = scheduleItem.type.apiName,
             scheduleItemId = scheduleItemId,
             time = newTime,
             description = newDescription
@@ -242,8 +263,6 @@ class DogScheduleFragment : Fragment() {
                 override fun onResponse(call: Call<ScheduleResponse>, response: Response<ScheduleResponse>) {
                     if (response.isSuccessful && response.body()?.success == true) {
                         Toast.makeText(requireContext(), "Schedule updated successfully", Toast.LENGTH_SHORT).show()
-
-                        // Refresh data dari server
                         refreshDogProfile()
                     } else {
                         Toast.makeText(
@@ -260,13 +279,13 @@ class DogScheduleFragment : Fragment() {
             })
     }
 
-    private fun showDeleteScheduleDialog(scheduleItem: ScheduleItem, position: Int) {
+    private fun showDeleteScheduleDialog(scheduleItem: ScheduleItem) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Delete Schedule")
         builder.setMessage("Are you sure you want to delete this ${scheduleItem.type.displayName} schedule at ${scheduleItem.time}?")
 
         builder.setPositiveButton("Delete") { dialog, _ ->
-            deleteScheduleItem(scheduleItem, position)
+            deleteScheduleItem(scheduleItem)
             dialog.dismiss()
         }
 
@@ -277,12 +296,11 @@ class DogScheduleFragment : Fragment() {
         val alertDialog = builder.create()
         alertDialog.show()
 
-        // Make delete button red
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
             ?.setTextColor(resources.getColor(android.R.color.holo_red_dark, null))
     }
 
-    private fun deleteScheduleItem(scheduleItem: ScheduleItem, position: Int) {
+    private fun deleteScheduleItem(scheduleItem: ScheduleItem) {
         val dogId = dogProfile?.id ?: return
         val scheduleItemId = scheduleItem.id
 
@@ -292,7 +310,7 @@ class DogScheduleFragment : Fragment() {
         }
 
         val deleteRequest = ScheduleDeleteRequest(
-            scheduleType = scheduleItem.type.apiName,  // ← Gunakan apiName
+            scheduleType = scheduleItem.type.apiName,
             scheduleItemId = scheduleItemId
         )
 
@@ -300,13 +318,8 @@ class DogScheduleFragment : Fragment() {
             .enqueue(object : Callback<ScheduleResponse> {
                 override fun onResponse(call: Call<ScheduleResponse>, response: Response<ScheduleResponse>) {
                     if (response.isSuccessful && response.body()?.success == true) {
-                        scheduleAdapter.removeItem(position)
+                        refreshDogProfile()
                         Toast.makeText(requireContext(), "Schedule deleted successfully", Toast.LENGTH_SHORT).show()
-
-                        // Check if list is now empty
-                        if (scheduleAdapter.itemCount == 0) {
-                            showEmptyState(true)
-                        }
                     } else {
                         Toast.makeText(
                             requireContext(),

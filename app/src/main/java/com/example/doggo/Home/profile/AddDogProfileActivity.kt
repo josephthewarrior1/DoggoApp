@@ -1,10 +1,13 @@
 package com.example.doggo.Home.profile
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.LinearLayout
+import android.widget.RadioButton
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,7 +17,6 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.NumberPicker
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -28,13 +30,13 @@ import com.example.doggo.network.DogResponse
 import com.example.doggo.network.DogSchedule
 import com.example.doggo.network.RetrofitClient
 import com.example.doggo.network.ScheduleDetail
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -48,6 +50,7 @@ class AddDogProfileActivity : AppCompatActivity() {
     private val groomSchedule = mutableListOf<ScheduleDetail>()
     private var selectedImageBase64: String? = null
     private var selectedImageUri: Uri? = null
+    private var selectedBirthDate: String? = null
 
     // Image Picker Launcher
     private val imagePickerLauncher = registerForActivityResult(
@@ -76,7 +79,8 @@ class AddDogProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupUI()
-        setupGenderSelection()
+        setupScheduleButtons()
+        setupBirthDatePicker()
     }
 
     private fun setupUI() {
@@ -89,47 +93,69 @@ class AddDogProfileActivity : AppCompatActivity() {
             showImagePickerDialog()
         }
 
-        // ✅ FIX: Setup Add Schedule Button
-        binding.btnAddSchedule.setOnClickListener {
-            showScheduleDialog()
-        }
-
         binding.btnSave.setOnClickListener {
             if (validateInputs()) {
                 saveDogProfile()
             }
         }
+
+        // Set default gender selection
+        binding.rbMale.isChecked = true
     }
 
-    private fun setupGenderSelection() {
-        // Setup gender button selection
-        val maleButton = binding.rbMale
-        val femaleButton = binding.rbFemale
-
-        maleButton.setOnClickListener {
-            updateGenderUI(true)
+    private fun setupScheduleButtons() {
+        // Setup listener untuk tiap jenis schedule
+        binding.btnAddEatSchedule.setOnClickListener {
+            showTimePickerDialog("eat")
         }
 
-        femaleButton.setOnClickListener {
-            updateGenderUI(false)
+        binding.btnAddWalkSchedule.setOnClickListener {
+            showTimePickerDialog("walk")
         }
 
-        // Set default to male
-        updateGenderUI(true)
+        binding.btnAddSleepSchedule.setOnClickListener {
+            showTimePickerDialog("sleep")
+        }
+
+        binding.btnAddMedicineSchedule.setOnClickListener {
+            showTimePickerDialog("medicine")
+        }
+
+        binding.btnAddGroomSchedule.setOnClickListener {
+            showTimePickerDialog("groom")
+        }
     }
 
-    private fun updateGenderUI(isMale: Boolean) {
-        if (isMale) {
-            binding.rbMale.setBackgroundColor(getColor(R.color.primary_500))
-            binding.rbMale.setTextColor(getColor(android.R.color.white))
-            binding.rbFemale.setBackgroundColor(getColor(android.R.color.transparent))
-            binding.rbFemale.setTextColor(getColor(R.color.text_primary))
-        } else {
-            binding.rbFemale.setBackgroundColor(getColor(R.color.primary_500))
-            binding.rbFemale.setTextColor(getColor(android.R.color.white))
-            binding.rbMale.setBackgroundColor(getColor(android.R.color.transparent))
-            binding.rbMale.setTextColor(getColor(R.color.text_primary))
+    private fun setupBirthDatePicker() {
+        binding.btnBirthDate.setOnClickListener {
+            showDatePickerDialog()
         }
+    }
+
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                // Format tanggal: "1 Dec 2025"
+                val date = Calendar.getInstance().apply {
+                    set(selectedYear, selectedMonth, selectedDay)
+                }
+
+                val formattedDate = SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(date.time)
+                binding.btnBirthDate.text = formattedDate
+                selectedBirthDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date.time)
+            },
+            year,
+            month,
+            day
+        )
+
+        datePickerDialog.show()
     }
 
     private fun showImagePickerDialog() {
@@ -166,16 +192,13 @@ class AddDogProfileActivity : AppCompatActivity() {
     }
 
     private fun displaySelectedImage(uri: Uri) {
-        // Load image using Glide
         Glide.with(this)
             .load(uri)
             .centerCrop()
             .placeholder(R.drawable.ic_dog_placeholder)
             .into(binding.ivDogPhoto)
 
-        // Update hint text
         binding.tvAddPhoto.text = "Photo selected ✓"
-
         Log.d("AddDogProfile", "✅ Image selected from gallery")
     }
 
@@ -197,7 +220,6 @@ class AddDogProfileActivity : AppCompatActivity() {
 
     private fun convertBitmapToBase64(bitmap: Bitmap) {
         try {
-            // Resize bitmap to reduce size (max 800x800)
             val resizedBitmap = resizeBitmap(bitmap, 800, 800)
 
             val byteArrayOutputStream = ByteArrayOutputStream()
@@ -232,18 +254,12 @@ class AddDogProfileActivity : AppCompatActivity() {
         return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
     }
 
-    private fun showScheduleDialog() {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_schedule, null)
-
-        // Setup Dropdown untuk schedule type
-        val actvScheduleType = dialogView.findViewById<AutoCompleteTextView>(R.id.actvScheduleType)
-        val scheduleTypes = arrayOf("Eat", "Walk", "Sleep", "Medicine", "Groom")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, scheduleTypes)
-        actvScheduleType.setAdapter(adapter)
-        actvScheduleType.setText("Eat", false) // Set default value
+    private fun showTimePickerDialog(scheduleType: String) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_time_picker, null)
 
         val npHour = dialogView.findViewById<NumberPicker>(R.id.npHour)
         val npMinute = dialogView.findViewById<NumberPicker>(R.id.npMinute)
+        val etDescription = dialogView.findViewById<EditText>(R.id.etDescription)
 
         npHour.minValue = 0
         npHour.maxValue = 23
@@ -257,30 +273,25 @@ class AddDogProfileActivity : AppCompatActivity() {
         npMinute.setFormatter { i -> String.format("%02d", i) }
         npMinute.wrapSelectorWheel = true
 
-        val etDescription = dialogView.findViewById<EditText>(R.id.etDescription)
-
-        // Update description when schedule type changes
-        actvScheduleType.setOnItemClickListener { _, _, position, _ ->
-            val defaultDescription = when (scheduleTypes[position]) {
-                "Eat" -> "Meal time"
-                "Walk" -> "Walk time"
-                "Sleep" -> "Sleep time"
-                "Medicine" -> "Medicine time"
-                "Groom" -> "Grooming time"
-                else -> "Activity time"
-            }
-            etDescription.setText(defaultDescription)
+        // Set default description berdasarkan schedule type
+        val defaultDescription = when (scheduleType) {
+            "eat" -> "Meal time"
+            "walk" -> "Walk time"
+            "sleep" -> "Sleep time"
+            "medicine" -> "Medicine time"
+            "groom" -> "Grooming time"
+            else -> "Activity time"
         }
-
-        // Set initial description
-        etDescription.setText("Meal time")
+        etDescription.setText(defaultDescription)
 
         val dialog = AlertDialog.Builder(this)
-            .setTitle("Add Schedule Item")
+            .setTitle("Add ${scheduleType.capitalize()} Schedule")
             .setView(dialogView)
             .setPositiveButton("Add") { dialog, _ ->
-                val selectedType = actvScheduleType.text.toString()
-                addScheduleItem(selectedType, npHour.value, npMinute.value, etDescription.text.toString())
+                val time = String.format("%02d:%02d", npHour.value, npMinute.value)
+                val description = etDescription.text.toString()
+
+                addScheduleItem(scheduleType, time, description)
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -291,19 +302,9 @@ class AddDogProfileActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun addScheduleItem(scheduleType: String, hour: Int, minute: Int, description: String) {
-        val time = String.format("%02d:%02d", hour, minute)
-
-        if (description.isEmpty()) {
-            Toast.makeText(this, "Please enter description", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // ✅ Generate schedule type string (lowercase)
-        val scheduleTypeStr = scheduleType.lowercase()
-
+    private fun addScheduleItem(scheduleType: String, time: String, description: String) {
         // ✅ Generate unique ID
-        val uniqueId = "${scheduleTypeStr}_${System.currentTimeMillis()}_${(Math.random() * 1000).toInt()}"
+        val uniqueId = "${scheduleType}_${System.currentTimeMillis()}_${(Math.random() * 1000).toInt()}"
 
         // ✅ Create schedule detail with ID
         val scheduleDetail = ScheduleDetail(
@@ -315,99 +316,175 @@ class AddDogProfileActivity : AppCompatActivity() {
             updatedAt = null
         )
 
-        Log.d("AddDogProfile", "✅ Created schedule item with ID: $uniqueId")
-        Log.d("AddDogProfile", "Time: $time, Description: $description")
+        Log.d("AddDogProfile", "✅ Created schedule item: $scheduleType at $time")
 
         // Add to respective list based on schedule type
         when (scheduleType) {
-            "Eat" -> eatSchedule.add(scheduleDetail)
-            "Walk" -> walkSchedule.add(scheduleDetail)
-            "Sleep" -> sleepSchedule.add(scheduleDetail)
-            "Medicine" -> medicineSchedule.add(scheduleDetail)
-            "Groom" -> groomSchedule.add(scheduleDetail)
-        }
-
-        // Update UI dengan preview
-        updateSchedulePreview()
-    }
-
-    private fun updateSchedulePreview() {
-        val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
-                medicineSchedule.size + groomSchedule.size
-
-        // Update summary text
-        if (totalItems > 0) {
-            binding.tvScheduleSummary.text = "$totalItems schedule item(s) added"
-
-            // Show schedule items container
-            binding.llScheduleItems.isVisible = true
-            binding.llScheduleItems.removeAllViews()
-
-            // Add all schedule items as chips with sections
-            addScheduleChipsSection(eatSchedule, "🍽️ Eating Schedule", R.color.schedule_eat_bg)
-            addScheduleChipsSection(walkSchedule, "🚶 Walking Schedule", R.color.schedule_walk_bg)
-            addScheduleChipsSection(sleepSchedule, "😴 Sleeping Schedule", R.color.schedule_sleep_bg)
-            addScheduleChipsSection(medicineSchedule, "💊 Medicine Schedule", R.color.schedule_medicine_bg)
-            addScheduleChipsSection(groomSchedule, "✂️ Grooming Schedule", R.color.schedule_groom_bg)
-        } else {
-            binding.tvScheduleSummary.text = "No schedules added yet"
-            binding.llScheduleItems.isVisible = false
-        }
-
-        // Untuk debug
-        binding.tvScheduleCount.text = "Schedule items: $totalItems"
-    }
-
-    private fun addScheduleChipsSection(
-        scheduleList: List<ScheduleDetail>,
-        sectionTitle: String,
-        chipBgColor: Int
-    ) {
-        if (scheduleList.isNotEmpty()) {
-            // Add section header
-            val sectionHeader = TextView(this).apply {
-                text = sectionTitle
-                setTextColor(getColor(R.color.text_primary))
-                textSize = 16f
-                setTypeface(typeface, android.graphics.Typeface.BOLD)
-                setPadding(0, 24.dpToPx(), 0, 8.dpToPx())
+            "eat" -> {
+                eatSchedule.add(scheduleDetail)
+                updateScheduleUI("eat")
             }
-            binding.llScheduleItems.addView(sectionHeader)
+            "walk" -> {
+                walkSchedule.add(scheduleDetail)
+                updateScheduleUI("walk")
+            }
+            "sleep" -> {
+                sleepSchedule.add(scheduleDetail)
+                updateScheduleUI("sleep")
+            }
+            "medicine" -> {
+                medicineSchedule.add(scheduleDetail)
+                updateScheduleUI("medicine")
+            }
+            "groom" -> {
+                groomSchedule.add(scheduleDetail)
+                updateScheduleUI("groom")
+            }
+        }
+    }
 
-            // Add chips for each schedule item in this section
+    private fun updateScheduleUI(scheduleType: String) {
+        when (scheduleType) {
+            "eat" -> {
+                if (eatSchedule.isNotEmpty()) {
+                    binding.tvEatScheduleStatus.text = "${eatSchedule.size} schedule(s) added"
+                    showScheduleChips(binding.llEatSchedule, eatSchedule)
+                }
+            }
+            "walk" -> {
+                if (walkSchedule.isNotEmpty()) {
+                    binding.tvWalkScheduleStatus.text = "${walkSchedule.size} schedule(s) added"
+                    showScheduleChips(binding.llWalkSchedule, walkSchedule)
+                }
+            }
+            "sleep" -> {
+                if (sleepSchedule.isNotEmpty()) {
+                    binding.tvSleepScheduleStatus.text = "${sleepSchedule.size} schedule(s) added"
+                    showScheduleChips(binding.llSleepSchedule, sleepSchedule)
+                }
+            }
+            "medicine" -> {
+                if (medicineSchedule.isNotEmpty()) {
+                    binding.tvMedicineScheduleStatus.text = "${medicineSchedule.size} schedule(s) added"
+                    showScheduleChips(binding.llMedicineSchedule, medicineSchedule)
+                }
+            }
+            "groom" -> {
+                if (groomSchedule.isNotEmpty()) {
+                    binding.tvGroomScheduleStatus.text = "${groomSchedule.size} schedule(s) added"
+                    showScheduleChips(binding.llGroomSchedule, groomSchedule)
+                }
+            }
+        }
+    }
+
+    private fun showScheduleChips(container: View, scheduleList: List<ScheduleDetail>) {
+        // Pastikan container adalah ViewGroup (LinearLayout)
+        if (container !is ViewGroup) return
+
+        // Cari parent dari container (ini adalah LinearLayout yang jadi parent)
+        val parentContainer = container.parent as? ViewGroup
+        parentContainer?.let { parent ->
+            // Cari chip container lama berdasarkan tag
+            val oldChipContainer = parent.findViewWithTag<View>("chipContainer_${container.id}")
+            oldChipContainer?.let { old ->
+                parent.removeView(old)
+            }
+
+            // Buat container baru untuk chips
+            val chipContainer = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(40.dpToPx(), 4.dpToPx(), 0, 0)
+                }
+                tag = "chipContainer_${container.id}"
+            }
+
+            // Tambah chips ke container
             scheduleList.forEach { schedule ->
                 val chip = Chip(this).apply {
                     text = "${schedule.time} - ${schedule.description}"
                     isCloseIconVisible = true
-                    chipBackgroundColor = getColorStateList(chipBgColor)
-                    setTextColor(getColor(R.color.text_primary))
+                    chipBackgroundColor = getColorStateList(R.color.blue_50)
 
                     setOnCloseIconClickListener {
-                        // Remove from the correct list based on section title
-                        when (sectionTitle) {
-                            "🍽️ Eating Schedule" -> eatSchedule.removeAll { it.id == schedule.id }
-                            "🚶 Walking Schedule" -> walkSchedule.removeAll { it.id == schedule.id }
-                            "😴 Sleeping Schedule" -> sleepSchedule.removeAll { it.id == schedule.id }
-                            "💊 Medicine Schedule" -> medicineSchedule.removeAll { it.id == schedule.id }
-                            "✂️ Grooming Schedule" -> groomSchedule.removeAll { it.id == schedule.id }
+                        // Remove from list
+                        when (container.id) {
+                            R.id.llEatSchedule -> eatSchedule.remove(schedule)
+                            R.id.llWalkSchedule -> walkSchedule.remove(schedule)
+                            R.id.llSleepSchedule -> sleepSchedule.remove(schedule)
+                            R.id.llMedicineSchedule -> medicineSchedule.remove(schedule)
+                            R.id.llGroomSchedule -> groomSchedule.remove(schedule)
                         }
-                        updateSchedulePreview()
+                        // Update status text
+                        updateStatusText(container.id)
+                        // Refresh chips display
+                        showScheduleChips(container, getScheduleList(container.id))
                     }
 
-                    // Add margin between chips
-                    val layoutParams = ViewGroup.MarginLayoutParams(
-                        ViewGroup.MarginLayoutParams.WRAP_CONTENT,
-                        ViewGroup.MarginLayoutParams.WRAP_CONTENT
-                    )
-                    layoutParams.setMargins(0, 0, 0, 8.dpToPx())
+                    // Tambah margin bottom
+                    val layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        bottomMargin = 8.dpToPx()
+                    }
                     this.layoutParams = layoutParams
                 }
-                binding.llScheduleItems.addView(chip)
+                chipContainer.addView(chip)
             }
+
+            // Tambah chip container ke parent setelah container asli
+            val index = parent.indexOfChild(container) + 1
+            parent.addView(chipContainer, index)
         }
     }
 
     private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
+
+    private fun getScheduleList(containerId: Int): List<ScheduleDetail> {
+        return when (containerId) {
+            R.id.llEatSchedule -> eatSchedule
+            R.id.llWalkSchedule -> walkSchedule
+            R.id.llSleepSchedule -> sleepSchedule
+            R.id.llMedicineSchedule -> medicineSchedule
+            R.id.llGroomSchedule -> groomSchedule
+            else -> emptyList()
+        }
+    }
+
+    private fun updateStatusText(containerId: Int) {
+        when (containerId) {
+            R.id.llEatSchedule -> {
+                binding.tvEatScheduleStatus.text =
+                    if (eatSchedule.isEmpty()) "No schedule added"
+                    else "${eatSchedule.size} schedule(s) added"
+            }
+            R.id.llWalkSchedule -> {
+                binding.tvWalkScheduleStatus.text =
+                    if (walkSchedule.isEmpty()) "No schedule added"
+                    else "${walkSchedule.size} schedule(s) added"
+            }
+            R.id.llSleepSchedule -> {
+                binding.tvSleepScheduleStatus.text =
+                    if (sleepSchedule.isEmpty()) "No schedule added"
+                    else "${sleepSchedule.size} schedule(s) added"
+            }
+            R.id.llMedicineSchedule -> {
+                binding.tvMedicineScheduleStatus.text =
+                    if (medicineSchedule.isEmpty()) "No schedule added"
+                    else "${medicineSchedule.size} schedule(s) added"
+            }
+            R.id.llGroomSchedule -> {
+                binding.tvGroomScheduleStatus.text =
+                    if (groomSchedule.isEmpty()) "No schedule added"
+                    else "${groomSchedule.size} schedule(s) added"
+            }
+        }
+    }
 
     private fun validateInputs(): Boolean {
         var isValid = true
@@ -448,23 +525,11 @@ class AddDogProfileActivity : AppCompatActivity() {
         val breed = binding.etBreed.text.toString()
         val age = binding.etAge.text.toString().toIntOrNull() ?: 0
         val weight = binding.etWeight.text.toString().toDoubleOrNull() ?: 0.0
-        val gender = if (binding.rbMale.isPressed) "Male" else "Female"
+        val gender = if (binding.rbMale.isChecked) "Male" else "Female"
+        val birthDate = selectedBirthDate ?: ""
 
-        val totalItems = eatSchedule.size + walkSchedule.size + sleepSchedule.size +
-                medicineSchedule.size + groomSchedule.size
-
-        // ✅ Log schedule items dengan IDs
-        Log.d("AddDogProfile", "📋 Preparing to save dog with schedules:")
-        Log.d("AddDogProfile", "Eat schedules: ${eatSchedule.size}")
-        eatSchedule.forEachIndexed { index, item ->
-            Log.d("AddDogProfile", "  [$index] ID: ${item.id}, Time: ${item.time}, Desc: ${item.description}")
-        }
-        Log.d("AddDogProfile", "Walk schedules: ${walkSchedule.size}")
-        walkSchedule.forEachIndexed { index, item ->
-            Log.d("AddDogProfile", "  [$index] ID: ${item.id}, Time: ${item.time}, Desc: ${item.description}")
-        }
-
-        val schedule = if (totalItems > 0) {
+        val schedule = if (eatSchedule.isNotEmpty() || walkSchedule.isNotEmpty() ||
+            sleepSchedule.isNotEmpty() || medicineSchedule.isNotEmpty() || groomSchedule.isNotEmpty()) {
             DogSchedule(
                 eat = eatSchedule.takeIf { it.isNotEmpty() },
                 walk = walkSchedule.takeIf { it.isNotEmpty() },
@@ -486,21 +551,13 @@ class AddDogProfileActivity : AppCompatActivity() {
             age = age,
             weight = weight,
             gender = gender,
+            birthDate = birthDate,
             photo = selectedImageBase64 ?: "",
             schedule = schedule
         )
 
-        Log.d("AddDogProfile", "📤 Sending dog profile with photo: ${if (selectedImageBase64 != null) "Yes (${selectedImageBase64!!.length} chars)" else "No"}")
+        Log.d("AddDogProfile", "📤 Sending dog profile")
         Log.d("AddDogProfile", "📅 Schedule included: ${schedule != null}")
-
-        if (schedule != null) {
-            Log.d("AddDogProfile", "📊 Schedule breakdown:")
-            Log.d("AddDogProfile", "  - Eat: ${schedule.eat?.size ?: 0} items")
-            Log.d("AddDogProfile", "  - Walk: ${schedule.walk?.size ?: 0} items")
-            Log.d("AddDogProfile", "  - Sleep: ${schedule.sleep?.size ?: 0} items")
-            Log.d("AddDogProfile", "  - Medicine: ${schedule.medicine?.size ?: 0} items")
-            Log.d("AddDogProfile", "  - Groom: ${schedule.groom?.size ?: 0} items")
-        }
 
         RetrofitClient.instance.addDog(addDogRequest).enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
@@ -511,11 +568,6 @@ class AddDogProfileActivity : AppCompatActivity() {
                     val apiResponse = response.body()
                     if (apiResponse?.success == true) {
                         Log.d("AddDogProfile", "✅ Dog saved successfully with ID: ${apiResponse.dogId}")
-
-                        // ✅ Verify schedule was saved
-                        apiResponse.dogId?.let { dogId ->
-                            verifyScheduleSaved(dogId.toString())
-                        }
 
                         Toast.makeText(
                             this@AddDogProfileActivity,
@@ -553,46 +605,6 @@ class AddDogProfileActivity : AppCompatActivity() {
                     "Network error: ${t.message}",
                     Toast.LENGTH_SHORT
                 ).show()
-            }
-        })
-    }
-
-    // ✅ Method untuk verify schedule tersimpan dengan benar
-    private fun verifyScheduleSaved(dogId: String) {
-        RetrofitClient.instance.getDogById(dogId).enqueue(object : Callback<DogResponse> {
-            override fun onResponse(call: Call<DogResponse>, response: Response<DogResponse>) {
-                if (response.isSuccessful) {
-                    val dog = response.body()?.dog
-                    val schedule = dog?.schedule
-
-                    Log.d("AddDogProfile", "✅ Schedule verification:")
-                    Log.d("AddDogProfile", "  Eat items: ${schedule?.eat?.size ?: 0}")
-                    schedule?.eat?.forEach { item ->
-                        Log.d("AddDogProfile", "    - ID: ${item.id}, Time: ${item.time}")
-                    }
-                    Log.d("AddDogProfile", "  Walk items: ${schedule?.walk?.size ?: 0}")
-                    schedule?.walk?.forEach { item ->
-                        Log.d("AddDogProfile", "    - ID: ${item.id}, Time: ${item.time}")
-                    }
-
-                    // ✅ Check for items without ID
-                    var hasItemsWithoutId = false
-                    schedule?.eat?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
-                    schedule?.walk?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
-                    schedule?.sleep?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
-                    schedule?.medicine?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
-                    schedule?.groom?.forEach { if (it.id.isNullOrEmpty()) hasItemsWithoutId = true }
-
-                    if (hasItemsWithoutId) {
-                        Log.e("AddDogProfile", "⚠️ WARNING: Some schedule items don't have IDs!")
-                    } else {
-                        Log.d("AddDogProfile", "✅ All schedule items have valid IDs")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<DogResponse>, t: Throwable) {
-                Log.e("AddDogProfile", "❌ Failed to verify schedule: ${t.message}")
             }
         })
     }

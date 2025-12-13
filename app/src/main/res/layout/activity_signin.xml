@@ -103,7 +103,14 @@
                 android:clickable="true"
                 android:focusable="true" />
 
+
         </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchKeepLoggedIn"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:text="Keep me logged in" />
 
         <!-- Login Button -->
         <Button

@@ -21,6 +21,10 @@ import com.example.doggo.network.DogsResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.example.doggo.notifications.ScheduleNotificationManager
+import com.example.doggo.network.DogData
+import com.example.doggo.network.ScheduleDetail
+import com.bumptech.glide.Glide
 
 class HomeActivity : AppCompatActivity() {
 
@@ -33,6 +37,9 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        loadHeaderProfileImage()
+        ScheduleNotificationManager.createNotificationChannel(this)
 
         sharedPreferences = getSharedPreferences("doggo_pref", MODE_PRIVATE)
 
@@ -47,6 +54,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        loadHeaderProfileImage()
         checkProfilesAndUpdateUI()
     }
 
@@ -77,6 +85,40 @@ class HomeActivity : AppCompatActivity() {
             else -> "Good Evening!"
         }
         binding.tvSubGreeting.text = greetingText
+    }
+
+    private fun loadHeaderProfileImage() {
+        val prefs = getSharedPreferences("doggo_pref", MODE_PRIVATE)
+        val imageUrl = prefs.getString("profile_picture", "") ?: ""
+
+        if (imageUrl.isNotBlank()) {
+            Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_profile_placeholder)
+                .error(R.drawable.ic_profile_placeholder)
+                .into(binding.ivUserProfile)
+        } else {
+            binding.ivUserProfile.setImageResource(R.drawable.ic_profile_placeholder)
+        }
+    }
+
+    private fun rescheduleNotificationsForDog(dogData: DogData) {
+        val schedule = dogData.schedule ?: return
+
+        val schedulesMap: Map<String, List<ScheduleDetail>> = mapOf(
+            "eat" to (schedule.eat ?: emptyList()),
+            "walk" to (schedule.walk ?: emptyList()),
+            "sleep" to (schedule.sleep ?: emptyList()),
+            "medicine" to (schedule.medicine ?: emptyList()),
+            "groom" to (schedule.groom ?: emptyList())
+        )
+
+        ScheduleNotificationManager.rescheduleAllNotifications(
+            context = this,
+            dogId = dogData.dogId.toString(),
+            dogName = dogData.name,
+            schedules = schedulesMap
+        )
     }
 
     private fun setupRecyclerView() {
@@ -193,6 +235,8 @@ class HomeActivity : AppCompatActivity() {
                         dogProfiles.clear()
 
                         dogsList.forEach { dogData ->
+                            rescheduleNotificationsForDog(dogData)
+
                             val profile = DogProfile(
                                 id = dogData.dogId.toString(),
                                 name = dogData.name,
@@ -205,7 +249,6 @@ class HomeActivity : AppCompatActivity() {
                                 schedule = dogData.schedule
                             )
                             dogProfiles.add(profile)
-                            Log.d("HomeActivity", "🐶 Added: ${dogData.name} (${dogData.breed})")
                         }
 
                         Log.d("HomeActivity", "✅ Total dogs loaded: ${dogProfiles.size}")

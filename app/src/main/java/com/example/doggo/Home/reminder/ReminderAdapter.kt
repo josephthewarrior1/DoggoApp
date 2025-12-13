@@ -23,6 +23,29 @@ class ReminderAdapter(
         val tvStatus: TextView = itemView.findViewById(R.id.tvReminderStatus)
     }
 
+    private fun formatDueText(minutesUntil: Int?, time: String): String {
+        if (minutesUntil == null) return time
+
+        val abs = kotlin.math.abs(minutesUntil)
+        val hours = abs / 60
+        val mins = abs % 60
+
+        val relative = when {
+            minutesUntil < 0 && hours > 0 ->
+                "Overdue by $hours h"
+            minutesUntil < 0 ->
+                "Overdue by $mins min"
+            hours > 0 && mins > 0 ->
+                "In $hours h $mins min"
+            hours > 0 ->
+                "In $hours hour${if (hours > 1) "s" else ""}"
+            else ->
+                "In $mins min"
+        }
+
+        return "$relative · $time"
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReminderViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_reminder, parent, false)
@@ -35,17 +58,10 @@ class ReminderAdapter(
         holder.tvTitle.text = reminder.title
         holder.tvDescription.text = reminder.description
 
-        // Format due date display
-        val dueText = if (reminder.minutesUntil != null) {
-            when {
-                reminder.minutesUntil < 0 -> "Overdue by ${-reminder.minutesUntil} mins"
-                reminder.minutesUntil <= 30 -> "In ${reminder.minutesUntil} mins"
-                else -> "In ${reminder.minutesUntil / 60} hours"
-            }
-        } else {
-            "Due: ${reminder.dueDate}"
-        }
-        holder.tvDueDate.text = dueText
+        holder.tvDueDate.text = formatDueText(
+            reminder.minutesUntil,
+            reminder.dueDate
+        )
 
         // Set status text and color
         holder.tvStatus.text = reminder.status.name

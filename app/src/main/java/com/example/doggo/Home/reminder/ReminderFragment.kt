@@ -235,26 +235,29 @@ class ReminderFragment : Fragment() {
     }
 
     private fun addScheduleReminder(dog: DogData, activityType: String, detail: ScheduleDetail, now: Calendar) {
-        val scheduleTime = parseScheduleTime(detail.time) ?: return
-        val diffMinutes = getTimeDifferenceInMinutes(now, scheduleTime)
+        val target = parseScheduleTime(detail.time) ?: return
 
-        if (diffMinutes in -30..120) {
-            val status = if (diffMinutes < 0) ReminderStatus.OVERDUE else ReminderStatus.UPCOMING
-            allReminders.add(
-                ReminderItem(
-                    id = "schedule_${dog.dogId}_${detail.id}",
-                    dogId = dog.dogId,
-                    dogName = dog.name,
-                    title = "${dog.name} - $activityType",
-                    description = detail.description.ifEmpty { "Scheduled activity" },
-                    dueDate = detail.time,
-                    type = ReminderType.SCHEDULE,
-                    status = status,
-                    scheduleDetail = detail,
-                    minutesUntil = diffMinutes
-                )
-            )
+        // If time already passed today, treat as tomorrow (daily schedule)
+        if (target.timeInMillis <= now.timeInMillis) {
+            target.add(Calendar.DAY_OF_YEAR, 1)
         }
+
+        val diffMinutes = getTimeDifferenceInMinutes(now, target)
+
+        allReminders.add(
+            ReminderItem(
+                id = "schedule_${dog.dogId}_${detail.id}",
+                dogId = dog.dogId,
+                dogName = dog.name,
+                title = "${dog.name} - $activityType",
+                description = detail.description.ifEmpty { "Scheduled activity" },
+                dueDate = detail.time, // keep original time string (HH:mm)
+                type = ReminderType.SCHEDULE,
+                status = ReminderStatus.UPCOMING, // daily schedule: next time is always upcoming
+                scheduleDetail = detail,
+                minutesUntil = diffMinutes
+            )
+        )
     }
 
     private fun parseScheduleTime(timeStr: String): Calendar? {
@@ -294,17 +297,39 @@ class ReminderFragment : Fragment() {
     }
 
     private fun filterReminders() {
-        // ✅ NULL CHECK
         if (_binding == null) return
 
         val filtered = when (currentFilter) {
             ReminderFilter.ALL -> allReminders
             ReminderFilter.OVERDUE -> allReminders.filter { it.status == ReminderStatus.OVERDUE }
-            ReminderFilter.UPCOMING -> allReminders.filter { it.status == ReminderStatus.UPCOMING && !isToday(it.dueDate) }
+            ReminderFilter.UPCOMING -> allReminders.filter {
+                it.status == ReminderStatus.UPCOMING && !isToday(it.dueDate)
+            }
             ReminderFilter.TODAY -> allReminders.filter { isToday(it.dueDate) }
         }
-        reminderAdapter.updateReminders(filtered)
-        if (filtered.isEmpty()) showEmptyState() else showReminders()
+
+        val sorted = filtered.sortedBy { it.minutesUntil ?: Int.MAX_VALUE }
+
+        reminderAdapter.updateReminders(sorted)
+
+        if (sorted.isEmpty()) showEmptyState() else showReminders()
+    }
+
+    private fun formatTimeLabel(minutesUntil: Int?, time: String): String {
+        if (minutesUntil == null) return time
+
+        val absMin = kotlin.math.abs(minutesUntil)
+        val hours = absMin / 60
+        val minutes = absMin % 60
+
+        val relative = when {
+            minutesUntil < 0 -> "Overdue"
+            hours > 0 && minutes > 0 -> "In $hours h $minutes min"
+            hours > 0 -> "In $hours hour${if (hours > 1) "s" else ""}"
+            else -> "In $minutes min"
+        }
+
+        return "$relative · $time"
     }
 
     private fun isToday(dateStr: String): Boolean {

@@ -7,15 +7,27 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.example.doggo.Home.HomeActivity
+import com.example.doggo.network.ApiResponse
 import com.example.doggo.network.RetrofitClient
 import com.example.doggo.network.SignInRequest
-import com.example.doggo.network.ApiResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class SignInActivity : AppCompatActivity() {
+
+    companion object {
+        private const val PREFS = "doggo_pref"
+        private const val KEY_TOKEN = "user_token"
+        private const val KEY_USER_DB_ID = "user_db_id"
+        private const val KEY_USER_ID = "user_id"
+        private const val KEY_UID = "user_uid"
+        private const val KEY_USERNAME = "username"
+        private const val KEY_EMAIL = "email"
+        private const val KEY_KEEP_LOGGED_IN = "keep_logged_in"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +38,14 @@ class SignInActivity : AppCompatActivity() {
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val btnToSignUp = findViewById<Button>(R.id.btnToSignUp)
 
-        // Login
+        // ✅ must exist in XML
+        val switchKeep = findViewById<SwitchCompat>(R.id.switchKeepLoggedIn)
+
+        val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
+
+        // Restore last switch state
+        switchKeep.isChecked = prefs.getBoolean(KEY_KEEP_LOGGED_IN, false)
+
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
@@ -38,52 +57,60 @@ class SignInActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Logging in...", Toast.LENGTH_SHORT).show()
 
-            val signInRequest = SignInRequest(email, password)
+            val request = SignInRequest(email, password)
 
-            RetrofitClient.instance.signIn(signInRequest).enqueue(object : Callback<ApiResponse> {
+            RetrofitClient.instance.signIn(request).enqueue(object : Callback<ApiResponse> {
+
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                    if (response.isSuccessful) {
-                        val apiResponse = response.body()
-                        if (apiResponse?.success == true) {
-
-                            // ✅ PENTING: SIMPAN TOKEN KE SHAREDPREFERENCES
-                            val sharedPref = getSharedPreferences("doggo_pref", MODE_PRIVATE)
-                            sharedPref.edit().apply {
-                                putString("user_token", apiResponse.token)
-                                putInt("user_id", apiResponse.userId ?: 0)
-                                putString("user_uid", apiResponse.uid)
-                                apply() // ✅ WAJIB PANGGIL apply() atau commit()
-                            }
-
-                            Log.d("SignIn", "✅ Token saved: ${apiResponse.token}")
-                            Log.d("SignIn", "✅ User ID: ${apiResponse.userId}")
-
-                            // Verifikasi token tersimpan
-                            val savedToken = sharedPref.getString("user_token", null)
-                            Log.d("SignIn", "🔍 Verify token: ${if (savedToken != null) "EXISTS" else "NULL"}")
-
-                            Toast.makeText(
-                                this@SignInActivity,
-                                "Welcome back! User #${apiResponse.userId}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                            startActivity(Intent(this@SignInActivity, HomeActivity::class.java))
-                            finish()
-                        } else {
-                            Toast.makeText(
-                                this@SignInActivity,
-                                apiResponse?.error ?: "Login failed",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else {
+                    if (!response.isSuccessful) {
+                        Log.e("SignIn", "❌ HTTP Error: ${response.code()} - ${response.message()}")
                         Toast.makeText(
                             this@SignInActivity,
                             "Login failed: ${response.message()}",
                             Toast.LENGTH_SHORT
                         ).show()
+                        return
                     }
+
+                    val api = response.body()
+                    if (api?.success != true) {
+                        val msg = api?.error ?: "Login failed"
+                        Log.e("SignIn", "❌ API Error: $msg")
+                        Toast.makeText(this@SignInActivity, msg, Toast.LENGTH_SHORT).show()
+                        return
+                    }
+
+                    val keepLoggedIn = switchKeep.isChecked
+
+                    // ✅ Save user data
+                    prefs.edit().apply {
+                        putString(KEY_TOKEN, api.token)
+                        putInt(KEY_USER_DB_ID, api.userDbId ?: 0)
+                        putString(KEY_USER_ID, api.userId?.toString() ?: "0")
+                        putString(KEY_UID, api.uid)
+                        putString(KEY_USERNAME, api.username ?: "User")
+                        putString(KEY_EMAIL, email)
+
+                        // ✅ Save keep logged in flag
+                        putBoolean(KEY_KEEP_LOGGED_IN, keepLoggedIn)
+
+                        apply()
+                    }
+
+                    Log.d("SignIn", "✅ Login successful!")
+                    Log.d("SignIn", "   - keep_logged_in: $keepLoggedIn")
+                    Log.d("SignIn", "   - Username: ${api.username}")
+                    Log.d("SignIn", "   - UserDbId: ${api.userDbId}")
+                    Log.d("SignIn", "   - Token: ${api.token?.take(20)}...")
+
+                    Toast.makeText(
+                        this@SignInActivity,
+                        "Welcome back, ${api.username}! 🐶",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    startActivity(Intent(this@SignInActivity, HomeActivity::class.java))
+                    finish()
                 }
 
                 override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
@@ -97,7 +124,6 @@ class SignInActivity : AppCompatActivity() {
             })
         }
 
-        // Pindah ke Sign Up
         btnToSignUp.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }

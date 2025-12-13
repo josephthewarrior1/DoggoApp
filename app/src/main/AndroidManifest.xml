@@ -2,7 +2,31 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.doggo">
 
+    <!-- ✅ Existing permission -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- ✅ Camera permission -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- ✅ Read external storage (for gallery access on Android 12 and below) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <!-- ✅ For Android 13+ (API 33+) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- Notification Permissions -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Android 13+ -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> <!-- Android 12+ -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- ✅ Camera feature (optional, not all devices have camera) -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:name=".DoggoApplication"
@@ -43,9 +67,57 @@
             android:exported="false" />
 
         <activity
-            android:name=".Home.AddDogProfileActivity"
+            android:name=".Home.profile.AddDogProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.example.doggo.Home.profile.DogProfileDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Home.profile.EditDogProfileActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name=".Home.medical.AddMedicalRecordActivity"
+            android:label="Add Medical Record"
+            android:theme="@style/Theme.Doggo" />
+
+        <activity
+            android:name=".Home.EditProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Doggo" />
+
+        <!-- ✅ Notification Receivers -->
+        <receiver
+            android:name=".notifications.ScheduleNotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.doggo.SCHEDULE_REMINDER"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".notifications.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- ✅ Medical Reminder Receiver -->
+        <receiver
+            android:name=".Home.medical.MedicalReminderReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.doggo.MEDICAL_REMINDER"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

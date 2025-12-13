@@ -2,14 +2,16 @@ package com.example.doggo
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.doggo.Home.HomeActivity
 import com.example.doggo.network.RetrofitClient
-import com.example.doggo.network.SignUpRequest  // ← IMPORT INI
-import com.example.doggo.network.ApiResponse    // ← IMPORT INI
+import com.example.doggo.network.SignUpRequest
+import com.example.doggo.network.ApiResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,41 +22,108 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
+        val etUsername = findViewById<EditText>(R.id.etUsername)
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
+        val etConfirmPassword = findViewById<EditText>(R.id.etConfirmPassword)
+        val cbTerms = findViewById<CheckBox>(R.id.cbTerms)
         val btnSignUp = findViewById<Button>(R.id.btnSignUp)
+        val tvLogin = findViewById<TextView>(R.id.tvLogin)
+
+        // Ke halaman login
+        tvLogin.setOnClickListener {
+            startActivity(Intent(this, SignInActivity::class.java))
+            finish()
+        }
 
         btnSignUp.setOnClickListener {
+            val username = etUsername.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
+            val confirmPassword = etConfirmPassword.text.toString().trim()
 
-            if (email.isEmpty() || password.isEmpty()) {
+            // Validasi semua field
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validasi username
+            if (username.length < 3) {
+                Toast.makeText(this, "Username should be at least 3 characters", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validasi email
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validasi password
+            if (password.length < 6) {
+                Toast.makeText(this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validasi confirm password
+            if (password != confirmPassword) {
+                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validasi checkbox
+            if (!cbTerms.isChecked) {
+                Toast.makeText(this, "Please agree to Terms & Conditions", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             Toast.makeText(this, "Creating account...", Toast.LENGTH_SHORT).show()
 
-            val signUpRequest = SignUpRequest(email, password)
+            val signUpRequest = SignUpRequest(email, password, username)
 
             RetrofitClient.instance.signUp(signUpRequest).enqueue(object : Callback<ApiResponse> {
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                     if (response.isSuccessful) {
                         val apiResponse = response.body()
                         if (apiResponse?.success == true) {
-                            Toast.makeText(this@SignUpActivity, "Account created! Your ID: ${apiResponse.userId}", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this@SignUpActivity, HomeActivity::class.java))
+
+                            Log.d("SignUp", "✅ Account created successfully")
+
+                            Toast.makeText(
+                                this@SignUpActivity,
+                                "Account created! Please sign in 🐶",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            // Redirect ke SignIn activity
+                            val intent = Intent(this@SignUpActivity, SignInActivity::class.java)
+                            intent.putExtra("email", email)
+                            startActivity(intent)
                             finish()
+
                         } else {
-                            Toast.makeText(this@SignUpActivity, apiResponse?.error ?: "Sign up failed", Toast.LENGTH_SHORT).show()
+                            val errorMsg = apiResponse?.error ?: "Sign up failed"
+                            Log.e("SignUp", "❌ API Error: $errorMsg")
+                            Toast.makeText(this@SignUpActivity, errorMsg, Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(this@SignUpActivity, "Sign up failed: ${response.message()}", Toast.LENGTH_SHORT).show()
+                        Log.e("SignUp", "❌ HTTP Error: ${response.code()} - ${response.message()}")
+                        Toast.makeText(
+                            this@SignUpActivity,
+                            "Sign up failed: ${response.message()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
                 override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                    Toast.makeText(this@SignUpActivity, "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("SignUp", "❌ Network Error: ${t.message}", t)
+                    Toast.makeText(
+                        this@SignUpActivity,
+                        "Network error: ${t.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }

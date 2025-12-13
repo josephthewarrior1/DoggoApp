@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // Android UI Components
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -60,6 +61,24 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // ✅ Glide for image loading
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
+    // ✅ CircleImageView untuk profile photo
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    // ✅ ICONICS - Icon Library (Support banyak icon pack!)
+    implementation("com.mikepenz:iconics-core:5.4.0")
+    implementation("com.mikepenz:iconics-views:5.4.0")
+
+    // ✅ Icon Packs - Pilih yang kamu suka (bisa pakai semua atau beberapa aja)
+    implementation("com.mikepenz:fontawesome-typeface:5.9.0.2-kotlin@aar")
+    implementation("com.mikepenz:material-design-iconic-typeface:2.2.0.7-kotlin@aar")
+    implementation("com.mikepenz:google-material-typeface:4.0.0.2-kotlin@aar")
+    implementation("com.mikepenz:ionicons-typeface:2.0.1.7-kotlin@aar")
+    implementation("com.mikepenz:community-material-typeface:7.0.96.1-kotlin@aar")
 
     // Retrofit untuk API calls ke backend Node.js
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

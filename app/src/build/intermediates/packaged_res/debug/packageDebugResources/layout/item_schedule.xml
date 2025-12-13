@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="12dp"
+    android:paddingEnd="16dp">
+
+    <TextView
+        android:id="@+id/tvScheduleTime"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="08:00"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#2D2D2D"
+        android:gravity="center_vertical" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp"
+        android:background="#E5E7EB"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:id="@+id/tvScheduleDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Morning walk"
+        android:textSize="14sp"
+        android:textColor="#4B5563"
+        android:gravity="center_vertical" />
+
+</LinearLayout>

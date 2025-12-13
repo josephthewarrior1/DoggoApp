@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Warna dasar yang sudah ada -->
+    <color name="blue_50">#E3F2FD</color>
+    <color name="gray_50">#F5F5F5</color>
+
+    <!-- Warna primary dan text -->
+    <color name="primary_500">#2196F3</color>
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#757575</color>
+
+    <!-- Warna untuk schedule chips -->
+    <color name="schedule_eat_bg">#E8F5E9</color>    <!-- Hijau muda -->
+    <color name="schedule_walk_bg">#E3F2FD</color>   <!-- Biru muda -->
+    <color name="schedule_sleep_bg">#F3E5F5</color>  <!-- Ungu muda -->
+    <color name="schedule_medicine_bg">#FFEBEE</color> <!-- Merah muda -->
+    <color name="schedule_groom_bg">#FFF3E0</color>   <!-- Oranye muda -->
+
+    <!-- Warna tambahan -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="green_500">#4CAF50</color>
+    <color name="red_500">#F44336</color>
 </resources>

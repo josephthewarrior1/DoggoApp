@@ -319,14 +319,14 @@ class DogProfileDetailActivity : AppCompatActivity() {
                                     )
                                     sleepScheduleAdapter.updateSchedules(updatedList)
                                 }
-                                "medicine" -> {  // ✅ NEW
+                                "medicine" -> {
                                     val updatedList = (currentSchedule.medicine ?: emptyList()) + newScheduleItem
                                     dogProfile = dogProfile?.copy(
                                         schedule = currentSchedule.copy(medicine = updatedList)
                                     )
                                     medicineScheduleAdapter.updateSchedules(updatedList)
                                 }
-                                "groom" -> {  // ✅ NEW
+                                "groom" -> {
                                     val updatedList = (currentSchedule.groom ?: emptyList()) + newScheduleItem
                                     dogProfile = dogProfile?.copy(
                                         schedule = currentSchedule.copy(groom = updatedList)
@@ -334,7 +334,8 @@ class DogProfileDetailActivity : AppCompatActivity() {
                                     groomScheduleAdapter.updateSchedules(updatedList)
                                 }
                             }
-                            updateEmptyState()
+                            // ✅ UPDATE VISIBILITY AFTER ADDING
+                            updateScheduleSectionVisibility()
                         } ?: run {
                             val newSchedule = when (scheduleType) {
                                 "eat" -> DogSchedule(eat = listOf(newScheduleItem))
@@ -584,22 +585,53 @@ class DogProfileDetailActivity : AppCompatActivity() {
         })
     }
 
+    // ✅ UPDATED: Load schedule data WITH section visibility
     private fun loadScheduleData(profile: DogProfile) {
         val schedule = profile.schedule
 
         if (schedule == null) {
             binding.cvEmptySchedule.visibility = View.VISIBLE
+            // Hide all sections when no schedule
+            binding.layoutEatSection.visibility = View.GONE
+            binding.layoutWalkSection.visibility = View.GONE
+            binding.layoutSleepSection.visibility = View.GONE
+            binding.layoutMedicineSection.visibility = View.GONE
+            binding.layoutGroomSection.visibility = View.GONE
             return
         }
 
-        binding.cvEmptySchedule.visibility = View.GONE
-
-        // Load all 5 schedule types
+        // Load data to adapters
         schedule.eat?.let { if (it.isNotEmpty()) eatScheduleAdapter.updateSchedules(it) }
         schedule.walk?.let { if (it.isNotEmpty()) walkScheduleAdapter.updateSchedules(it) }
         schedule.sleep?.let { if (it.isNotEmpty()) sleepScheduleAdapter.updateSchedules(it) }
-        schedule.medicine?.let { if (it.isNotEmpty()) medicineScheduleAdapter.updateSchedules(it) }  // ✅ NEW
-        schedule.groom?.let { if (it.isNotEmpty()) groomScheduleAdapter.updateSchedules(it) }        // ✅ NEW
+        schedule.medicine?.let { if (it.isNotEmpty()) medicineScheduleAdapter.updateSchedules(it) }
+        schedule.groom?.let { if (it.isNotEmpty()) groomScheduleAdapter.updateSchedules(it) }
+
+        // ✅ UPDATE SECTION VISIBILITY
+        updateScheduleSectionVisibility()
+    }
+
+    // ✅ NEW: Update visibility of each schedule section
+    private fun updateScheduleSectionVisibility() {
+        val schedule = dogProfile?.schedule
+
+        // Check each category and show/hide accordingly
+        val hasEat = !schedule?.eat.isNullOrEmpty()
+        val hasWalk = !schedule?.walk.isNullOrEmpty()
+        val hasSleep = !schedule?.sleep.isNullOrEmpty()
+        val hasMedicine = !schedule?.medicine.isNullOrEmpty()
+        val hasGroom = !schedule?.groom.isNullOrEmpty()
+
+        // ✅ Show section ONLY if it has data
+        binding.layoutEatSection.visibility = if (hasEat) View.VISIBLE else View.GONE
+        binding.layoutWalkSection.visibility = if (hasWalk) View.VISIBLE else View.GONE
+        binding.layoutSleepSection.visibility = if (hasSleep) View.VISIBLE else View.GONE
+        binding.layoutMedicineSection.visibility = if (hasMedicine) View.VISIBLE else View.GONE
+        binding.layoutGroomSection.visibility = if (hasGroom) View.VISIBLE else View.GONE
+
+        // Show empty state only if ALL are empty
+        val hasAnySchedule = hasEat || hasWalk || hasSleep || hasMedicine || hasGroom
+        binding.cvEmptySchedule.visibility = if (hasAnySchedule) View.GONE else View.VISIBLE
     }
 
     private fun showDeleteScheduleDialog(schedule: ScheduleDetail, scheduleType: String) {
@@ -678,7 +710,8 @@ class DogProfileDetailActivity : AppCompatActivity() {
                                 groomScheduleAdapter.updateSchedules(newList)
                             }
                         }
-                        updateEmptyState()
+                        // ✅ UPDATE VISIBILITY AFTER DELETING
+                        updateScheduleSectionVisibility()
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
@@ -705,6 +738,7 @@ class DogProfileDetailActivity : AppCompatActivity() {
 
         binding.cvEmptySchedule.visibility = if (hasSchedules) View.GONE else View.VISIBLE
     }
+
     private fun showScheduleSection() {
         binding.layoutScheduleSection.visibility = View.VISIBLE
         binding.layoutMedicalSection.visibility = View.GONE

@@ -397,95 +397,135 @@
 
                 </LinearLayout>
 
-                <!-- Eat Schedule -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🍽️ Eat Schedule"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"
-                    android:layout_marginBottom="12dp" />
-
-                <!-- Eat Schedule RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvEatSchedule"
+                <!-- ✅ Eat Schedule Section (WRAPPED) -->
+                <LinearLayout
+                    android:id="@+id/layoutEatSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:layout_marginBottom="16dp" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <!-- Walk Schedule -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🚶 Walk Schedule"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"
-                    android:layout_marginBottom="12dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🍽️ Eat Schedule"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:layout_marginBottom="12dp" />
 
-                <!-- Walk Schedule RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvWalkSchedule"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvEatSchedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:layout_marginBottom="16dp" />
+
+                </LinearLayout>
+
+                <!-- ✅ Walk Schedule Section (WRAPPED) -->
+                <LinearLayout
+                    android:id="@+id/layoutWalkSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:layout_marginBottom="16dp" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <!-- Sleep Schedule -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="😴 Sleep Schedule"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"
-                    android:layout_marginBottom="12dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚶 Walk Schedule"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:layout_marginBottom="12dp" />
 
-                <!-- Sleep Schedule RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvSleepSchedule"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvWalkSchedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:layout_marginBottom="16dp" />
+
+                </LinearLayout>
+
+                <!-- ✅ Sleep Schedule Section (WRAPPED) -->
+                <LinearLayout
+                    android:id="@+id/layoutSleepSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:layout_marginBottom="16dp" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <!-- Medicine Schedule -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="💊 Medicine Schedule"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"
-                    android:layout_marginBottom="12dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="😴 Sleep Schedule"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:layout_marginBottom="12dp" />
 
-                <!-- Medicine Schedule RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvMedicineSchedule"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvSleepSchedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:layout_marginBottom="16dp" />
+
+                </LinearLayout>
+
+                <!-- ✅ Medicine Schedule Section (WRAPPED) -->
+                <LinearLayout
+                    android:id="@+id/layoutMedicineSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:layout_marginBottom="16dp" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <!-- Grooming Schedule -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="✂️ Grooming Schedule"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"
-                    android:layout_marginBottom="12dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💊 Medicine Schedule"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:layout_marginBottom="12dp" />
 
-                <!-- Grooming Schedule RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvGroomSchedule"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvMedicineSchedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:layout_marginBottom="16dp" />
+
+                </LinearLayout>
+
+                <!-- ✅ Grooming Schedule Section (WRAPPED) -->
+                <LinearLayout
+                    android:id="@+id/layoutGroomSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:layout_marginBottom="24dp" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✂️ Grooming Schedule"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        android:layout_marginBottom="12dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvGroomSchedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:layout_marginBottom="24dp" />
+
+                </LinearLayout>
 
                 <!-- Empty State for Schedule -->
                 <androidx.cardview.widget.CardView

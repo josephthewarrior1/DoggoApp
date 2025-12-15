@@ -56,16 +56,18 @@
         </LinearLayout>
 
         <!-- Delete Icon -->
-        <TextView
+        <ImageView
             android:id="@+id/btnDeleteSchedule"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:text="🗑️"
-            android:textSize="20sp"
-            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="Delete"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            app:tint="#EF4444" />
 
     </LinearLayout>
 

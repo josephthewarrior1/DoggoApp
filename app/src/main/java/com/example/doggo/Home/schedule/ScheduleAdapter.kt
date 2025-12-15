@@ -3,6 +3,7 @@ package com.example.doggo.Home.schedule
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.doggo.R
@@ -21,7 +22,7 @@ class ScheduleAdapter(
         val tvTime: TextView = itemView.findViewById(R.id.tvScheduleTime)
         val tvDescription: TextView = itemView.findViewById(R.id.tvScheduleDescription)
         val tvDuration: TextView = itemView.findViewById(R.id.tvScheduleDuration)
-        val btnDelete: TextView = itemView.findViewById(R.id.btnDeleteSchedule)
+        val btnDelete: ImageView = itemView.findViewById(R.id.btnDeleteSchedule)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {

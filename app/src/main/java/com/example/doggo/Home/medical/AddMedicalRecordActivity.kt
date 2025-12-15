@@ -1,13 +1,14 @@
 package com.example.doggo.Home.medical
 
-import android.R
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.example.doggo.R
 import com.example.doggo.databinding.ActivityAddMedicalRecordBinding
 import com.example.doggo.network.AddMedicalRecordRequest
 import com.example.doggo.network.MedicalRecordResponse
@@ -23,7 +24,12 @@ class AddMedicalRecordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddMedicalRecordBinding
     private var dogId: Int = -1
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+    private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private var selectedType = "vaccine"
+    private var selectedStatus = "completed"
+    private var selectedDate: Calendar = Calendar.getInstance()
+    private var selectedNextDueDate: Calendar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,12 +45,13 @@ class AddMedicalRecordActivity : AppCompatActivity() {
         }
 
         setupUI()
-        setupTypeDropdown()
+        setupTypeButtons()
         setupDatePickers()
+        updateDateDisplay()
     }
 
     private fun setupUI() {
-        binding.btnBack.setOnClickListener {
+        binding.btnCancel.setOnClickListener {
             finish()
         }
 
@@ -52,77 +59,100 @@ class AddMedicalRecordActivity : AppCompatActivity() {
             saveMedicalRecord()
         }
 
-        // Toggle next due date field based on checkbox
-        binding.switchReminder.setOnCheckedChangeListener { _, isChecked ->
-            binding.tilNextDueDate.visibility = if (isChecked) View.VISIBLE else View.GONE
+        // Toggle next due date visibility
+        binding.switchNextDueDate.setOnCheckedChangeListener { _, isChecked ->
+            // You can add logic here if needed
+        }
+
+        // Status dropdown
+        binding.tvStatus.setOnClickListener {
+            showStatusDialog()
         }
     }
 
-    private fun setupTypeDropdown() {
-        val types = listOf("Vaccine", "Checkup", "Treatment", "Surgery", "Medication")
-        val adapter = ArrayAdapter(this, R.layout.simple_dropdown_item_1line, types)
-        binding.actvType.setAdapter(adapter)
+    private fun setupTypeButtons() {
+        // Set initial selected type (Vaccine)
+        selectType("vaccine", binding.btnTypeVaccine)
+
+        binding.btnTypeVaccine.setOnClickListener {
+            selectType("vaccine", binding.btnTypeVaccine)
+        }
+
+        binding.btnTypeSurgery.setOnClickListener {
+            selectType("surgery", binding.btnTypeSurgery)
+        }
+
+        binding.btnTypeMedication.setOnClickListener {
+            selectType("medication", binding.btnTypeMedication)
+        }
+    }
+
+    private fun selectType(type: String, selectedCard: androidx.cardview.widget.CardView) {
+        selectedType = type
+
+        // Reset all cards to unselected state
+        listOf(binding.btnTypeVaccine, binding.btnTypeSurgery, binding.btnTypeMedication).forEach { card ->
+            card.setCardBackgroundColor(ContextCompat.getColor(this, android.R.color.white))
+        }
+
+        // Highlight selected card with light blue background
+        selectedCard.setCardBackgroundColor(android.graphics.Color.parseColor("#E3F2FD"))
     }
 
     private fun setupDatePickers() {
-        val calendar = Calendar.getInstance()
-
-        binding.etDate.setOnClickListener {
+        binding.tvDate.setOnClickListener {
             DatePickerDialog(
                 this,
                 { _, year, month, day ->
-                    calendar.set(year, month, day)
-                    binding.etDate.setText(dateFormat.format(calendar.time))
+                    selectedDate.set(year, month, day)
+                    updateDateDisplay()
                 },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
-        }
-
-        binding.etNextDueDate.setOnClickListener {
-            DatePickerDialog(
-                this,
-                { _, year, month, day ->
-                    calendar.set(year, month, day)
-                    binding.etNextDueDate.setText(dateFormat.format(calendar.time))
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                selectedDate.get(Calendar.YEAR),
+                selectedDate.get(Calendar.MONTH),
+                selectedDate.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
     }
 
+    private fun updateDateDisplay() {
+        binding.tvDate.text = dateFormat.format(selectedDate.time)
+    }
+
+    private fun showStatusDialog() {
+        val statuses = arrayOf("Completed", "Pending", "Scheduled")
+        val currentIndex = when (selectedStatus) {
+            "completed" -> 0
+            "pending" -> 1
+            "scheduled" -> 2
+            else -> 0
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Select Status")
+            .setSingleChoiceItems(statuses, currentIndex) { dialog, which ->
+                selectedStatus = when (which) {
+                    0 -> "completed"
+                    1 -> "pending"
+                    2 -> "scheduled"
+                    else -> "completed"
+                }
+                binding.tvStatus.text = "${statuses[which]} ▼"
+                dialog.dismiss()
+            }
+            .show()
+    }
+
     private fun saveMedicalRecord() {
-        val type = binding.actvType.text.toString().trim().lowercase()
         val name = binding.etName.text.toString().trim()
-        val date = binding.etDate.text.toString().trim()
         val veterinarian = binding.etVeterinarian.text.toString().trim()
         val clinic = binding.etClinic.text.toString().trim()
         val notes = binding.etNotes.text.toString().trim()
-        val nextDueDate = if (binding.switchReminder.isChecked) {
-            binding.etNextDueDate.text.toString().trim()
-        } else null
+        val date = apiDateFormat.format(selectedDate.time)
+        val hasNextDueDate = binding.switchNextDueDate.isChecked
 
         // Validation
-        if (type.isEmpty()) {
-            binding.tilType.error = "Type is required"
-            return
-        }
-
         if (name.isEmpty()) {
             binding.tilName.error = "Name is required"
-            return
-        }
-
-        if (date.isEmpty()) {
-            binding.tilDate.error = "Date is required"
-            return
-        }
-
-        if (binding.switchReminder.isChecked && nextDueDate.isNullOrEmpty()) {
-            binding.tilNextDueDate.error = "Next due date is required"
             return
         }
 
@@ -132,14 +162,16 @@ class AddMedicalRecordActivity : AppCompatActivity() {
 
         val request = AddMedicalRecordRequest(
             dogId = dogId,
-            type = type,
+            type = selectedType,
             name = name,
             date = date,
-            nextDueDate = nextDueDate,
+            nextDueDate = if (hasNextDueDate && selectedNextDueDate != null) {
+                apiDateFormat.format(selectedNextDueDate!!.time)
+            } else null,
             veterinarian = veterinarian.ifEmpty { null },
             clinic = clinic.ifEmpty { null },
             notes = notes.ifEmpty { null },
-            reminderEnabled = binding.switchReminder.isChecked
+            reminderEnabled = hasNextDueDate
         )
 
         Log.d("AddMedicalRecord", "📤 Saving medical record: $request")

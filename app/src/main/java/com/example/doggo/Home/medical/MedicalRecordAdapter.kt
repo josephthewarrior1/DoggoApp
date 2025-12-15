@@ -3,6 +3,7 @@ package com.example.doggo.Home.medical
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.doggo.R
@@ -23,7 +24,7 @@ class MedicalRecordAdapter(
         val tvNextDue: TextView = itemView.findViewById(R.id.tvNextDue)
         val tvClinic: TextView = itemView.findViewById(R.id.tvMedicalClinic)
         val tvStatus: TextView = itemView.findViewById(R.id.tvMedicalStatus)
-        val btnDelete: TextView = itemView.findViewById(R.id.btnDeleteMedical)
+        val btnDelete: ImageView = itemView.findViewById(R.id.btnDeleteMedical)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MedicalRecordViewHolder {

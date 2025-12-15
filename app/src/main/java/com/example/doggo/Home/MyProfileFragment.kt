@@ -152,21 +152,28 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
-        binding.btnEditProfile.setOnClickListener {
-            if (!isAdded) return@setOnClickListener
-            startActivity(Intent(requireContext(), EditProfileActivity::class.java))
-        }
-
+        // Edit Profile - only one click listener needed now
         binding.layoutEditProfile.setOnClickListener {
             if (!isAdded) return@setOnClickListener
             startActivity(Intent(requireContext(), EditProfileActivity::class.java))
         }
 
+        // Change Password
+        binding.layoutChangePassword.setOnClickListener {
+            showComingSoonToast("Change Password")
+        }
+
+        // Notifications
+        binding.layoutNotifications.setOnClickListener {
+            showComingSoonToast("Notifications")
+        }
+
+        // App Settings
         binding.layoutPrivacyPolicy.setOnClickListener { showComingSoonToast("Privacy Policy") }
         binding.layoutTermsConditions.setOnClickListener { showComingSoonToast("Terms & Conditions") }
         binding.layoutAboutUs.setOnClickListener { showComingSoonToast("About Us") }
-        binding.layoutHelp.setOnClickListener { showComingSoonToast("Help & Support") }
 
+        // Logout
         binding.layoutLogout.setOnClickListener { showLogoutConfirmation() }
     }
 

@@ -159,6 +159,7 @@ class HomeActivity : AppCompatActivity() {
     private fun showHomeContent() {
         binding.mainContentLayout.visibility = View.VISIBLE
         binding.fragmentContainer.visibility = View.GONE
+        binding.topBar.visibility = View.VISIBLE
         hideFragment()
         Log.d("HomeActivity", "🏠 Showing Home content")
     }
@@ -166,6 +167,7 @@ class HomeActivity : AppCompatActivity() {
     private fun showReminderFragment() {
         binding.mainContentLayout.visibility = View.GONE
         binding.fragmentContainer.visibility = View.VISIBLE
+        binding.topBar.visibility = View.GONE
 
         val existingFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
         if (existingFragment !is ReminderFragment) {
@@ -180,6 +182,7 @@ class HomeActivity : AppCompatActivity() {
     private fun showProfileFragment() {
         binding.mainContentLayout.visibility = View.GONE
         binding.fragmentContainer.visibility = View.VISIBLE
+        binding.topBar.visibility = View.GONE
 
         val existingFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
         if (existingFragment !is MyProfileFragment) {
@@ -212,7 +215,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun loadDogsFromAPI() {
-        Log.d("HomeActivity", "📄 Loading dogs from API...")
+        Log.d("HomeActivity", "🔄 Loading dogs from API...")
 
         binding.mainContentLayout.visibility = View.VISIBLE
         binding.emptyStateLayout.visibility = View.GONE
@@ -277,7 +280,7 @@ class HomeActivity : AppCompatActivity() {
         dogProfiles.clear()
         val allProfiles = ProfileManager.getAllProfiles()
         dogProfiles.addAll(allProfiles)
-        Log.d("HomeActivity", "📄 Loaded ${dogProfiles.size} profiles from local ProfileManager")
+        Log.d("HomeActivity", "🔄 Loaded ${dogProfiles.size} profiles from local ProfileManager")
         updateUI()
     }
 

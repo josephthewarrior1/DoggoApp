@@ -26,7 +26,7 @@
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_arrow_back"
-                android:tint="#1A1A1A"
+                app:tint="#1A1A1A"
                 android:contentDescription="Back" />
 
             <TextView
@@ -87,7 +87,7 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@android:drawable/ic_menu_camera"
-                            android:tint="@android:color/white" />
+                            app:tint="@android:color/white" />
 
                     </LinearLayout>
                 </RelativeLayout>
@@ -149,7 +149,7 @@
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Gender - KEMBALI KE MATERIAL BUTTON -->
+            <!-- Gender - Using MaterialButtonToggleGroup -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -159,39 +159,38 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <RadioGroup
-                android:id="@+id/rgGender"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggleGender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                app:singleSelection="true"
+                app:selectionRequired="false">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/rbMale"
+                    android:id="@+id/btnMale"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
                     android:text="Male"
                     android:textColor="#1A1A1A"
                     app:strokeColor="#DDDDDD"
                     app:strokeWidth="1dp" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/rbFemale"
+                    android:id="@+id/btnFemale"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
                     android:text="Female"
                     android:textColor="#1A1A1A"
                     app:strokeColor="#DDDDDD"
                     app:strokeWidth="1dp" />
-            </RadioGroup>
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <!-- Birth Date - KEMBALI KE TEXTVIEW BIASA -->
+            <!-- Birth Date -->
             <LinearLayout
                 android:id="@+id/llBirthDate"
                 android:layout_width="match_parent"
@@ -221,53 +220,24 @@
                     android:textSize="16sp" />
             </LinearLayout>
 
-            <!-- Age and Weight Row -->
-            <LinearLayout
+            <!-- Weight -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilWeight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
+                android:hint="Weight (kg)"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                app:boxStrokeColor="#2196F3"
+                app:hintTextColor="#757575">
 
-                <!-- Age -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilAge"
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etWeight"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:hint="Age (years)"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                    app:boxStrokeColor="#2196F3"
-                    app:hintTextColor="#757575">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etAge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:textSize="16sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Weight -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilWeight"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:hint="Weight (kg)"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                    app:boxStrokeColor="#2196F3"
-                    app:hintTextColor="#757575">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etWeight"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textSize="16sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                    android:inputType="numberDecimal"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <!-- Schedule Section -->
@@ -316,11 +286,10 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddEatSchedule"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabCustomSize="32dp"
-                    app:fabSize="custom"
+                    app:fabSize="mini"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />
@@ -364,11 +333,10 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddWalkSchedule"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabCustomSize="32dp"
-                    app:fabSize="custom"
+                    app:fabSize="mini"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />
@@ -412,11 +380,10 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddSleepSchedule"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabCustomSize="32dp"
-                    app:fabSize="custom"
+                    app:fabSize="mini"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />
@@ -460,11 +427,10 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddMedicineSchedule"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabCustomSize="32dp"
-                    app:fabSize="custom"
+                    app:fabSize="mini"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />
@@ -508,11 +474,10 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddGroomSchedule"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabCustomSize="32dp"
-                    app:fabSize="custom"
+                    app:fabSize="mini"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />

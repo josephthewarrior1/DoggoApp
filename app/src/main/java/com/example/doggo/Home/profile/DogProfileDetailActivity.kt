@@ -846,9 +846,35 @@ class DogProfileDetailActivity : AppCompatActivity() {
 
     private fun deleteProfile() {
         dogProfile?.let { profile ->
-            ProfileManager.removeProfile(profile.id)
-            Toast.makeText(this, "${profile.name}'s profile deleted", Toast.LENGTH_SHORT).show()
-            finish()
+            val dogId = profile.id.toIntOrNull()
+
+            if (dogId == null) {
+                Toast.makeText(this, "Invalid dog ID", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            Log.d("DogProfileDetail", "🗑️ Deleting dog with ID: $dogId")
+
+            RetrofitClient.instance.deleteDog(dogId).enqueue(object : Callback<ApiResponse> {
+                override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                    if (response.isSuccessful && response.body()?.success == true) {
+                        Log.d("DogProfileDetail", "✅ Dog deleted from API successfully")
+                        ProfileManager.removeProfile(profile.id)
+                        Toast.makeText(this@DogProfileDetailActivity, "${profile.name}'s profile deleted", Toast.LENGTH_SHORT).show()
+                        finish()
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("DogProfileDetail", "❌ Failed to delete dog: ${response.body()?.error}")
+                        Log.e("DogProfileDetail", "❌ Error body: $errorBody")
+                        Toast.makeText(this@DogProfileDetailActivity, "Failed to delete profile: ${response.body()?.error ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                    Log.e("DogProfileDetail", "❌ Network error while deleting: ${t.message}", t)
+                    Toast.makeText(this@DogProfileDetailActivity, "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 

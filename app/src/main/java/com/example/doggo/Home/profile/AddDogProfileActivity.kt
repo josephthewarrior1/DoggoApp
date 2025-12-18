@@ -102,15 +102,18 @@ class AddDogProfileActivity : AppCompatActivity() {
     }
 
     private fun setupGenderSelection() {
-        binding.rbMale.setOnClickListener {
-            updateGenderSelection(true)
-        }
-
-        binding.rbFemale.setOnClickListener {
-            updateGenderSelection(false)
+        // Using MaterialButtonToggleGroup listener
+        binding.toggleGender.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.btnMale -> updateGenderSelection(true)
+                    R.id.btnFemale -> updateGenderSelection(false)
+                }
+            }
         }
 
         // Set default to male
+        binding.btnMale.isChecked = true
         updateGenderSelection(true)
     }
 
@@ -118,15 +121,15 @@ class AddDogProfileActivity : AppCompatActivity() {
         isMaleSelected = isMale
 
         if (isMale) {
-            binding.rbMale.setBackgroundColor(resources.getColor(R.color.primary_500, theme))
-            binding.rbMale.setTextColor(resources.getColor(android.R.color.white, theme))
-            binding.rbFemale.setBackgroundColor(resources.getColor(android.R.color.transparent, theme))
-            binding.rbFemale.setTextColor(resources.getColor(R.color.text_primary, theme))
+            binding.btnMale.setBackgroundColor(resources.getColor(R.color.primary_500, theme))
+            binding.btnMale.setTextColor(resources.getColor(android.R.color.white, theme))
+            binding.btnFemale.setBackgroundColor(resources.getColor(android.R.color.transparent, theme))
+            binding.btnFemale.setTextColor(resources.getColor(R.color.text_primary, theme))
         } else {
-            binding.rbFemale.setBackgroundColor(resources.getColor(R.color.primary_500, theme))
-            binding.rbFemale.setTextColor(resources.getColor(android.R.color.white, theme))
-            binding.rbMale.setBackgroundColor(resources.getColor(android.R.color.transparent, theme))
-            binding.rbMale.setTextColor(resources.getColor(R.color.text_primary, theme))
+            binding.btnFemale.setBackgroundColor(resources.getColor(R.color.primary_500, theme))
+            binding.btnFemale.setTextColor(resources.getColor(android.R.color.white, theme))
+            binding.btnMale.setBackgroundColor(resources.getColor(android.R.color.transparent, theme))
+            binding.btnMale.setTextColor(resources.getColor(R.color.text_primary, theme))
         }
     }
 
@@ -530,11 +533,9 @@ class AddDogProfileActivity : AppCompatActivity() {
             binding.tilBreed.error = null
         }
 
-        if (binding.etAge.text.isNullOrBlank()) {
-            binding.tilAge.error = "Please enter age"
+        if (selectedBirthDate.isNullOrBlank()) {
+            Toast.makeText(this, "Please select birth date", Toast.LENGTH_SHORT).show()
             isValid = false
-        } else {
-            binding.tilAge.error = null
         }
 
         if (binding.etWeight.text.isNullOrBlank()) {
@@ -547,13 +548,38 @@ class AddDogProfileActivity : AppCompatActivity() {
         return isValid
     }
 
+    private fun calculateAgeFromBirthDate(birthDate: String): Int {
+        return try {
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val birthDateObj = sdf.parse(birthDate)
+
+            if (birthDateObj != null) {
+                val birthCalendar = Calendar.getInstance().apply { time = birthDateObj }
+                val today = Calendar.getInstance()
+
+                var age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+
+                if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+                    age--
+                }
+
+                age.coerceAtLeast(0)
+            } else {
+                0
+            }
+        } catch (e: Exception) {
+            Log.e("AddDogProfile", "Error calculating age: ${e.message}")
+            0
+        }
+    }
+
     private fun saveDogProfile() {
         val name = binding.etDogName.text.toString()
         val breed = binding.etBreed.text.toString()
-        val age = binding.etAge.text.toString().toIntOrNull() ?: 0
+        val birthDate = selectedBirthDate ?: ""
+        val age = calculateAgeFromBirthDate(birthDate)
         val weight = binding.etWeight.text.toString().toDoubleOrNull() ?: 0.0
         val gender = if (isMaleSelected) "Male" else "Female"
-        val birthDate = selectedBirthDate ?: ""
 
         val schedule = if (eatSchedule.isNotEmpty() || walkSchedule.isNotEmpty() ||
             sleepSchedule.isNotEmpty() || medicineSchedule.isNotEmpty() || groomSchedule.isNotEmpty()) {

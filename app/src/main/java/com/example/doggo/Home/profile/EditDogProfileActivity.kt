@@ -1,5 +1,6 @@
 package com.example.doggo.Home.profile
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -22,6 +23,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class EditDogProfileActivity : AppCompatActivity() {
 
@@ -30,6 +34,7 @@ class EditDogProfileActivity : AppCompatActivity() {
     private var selectedImageUri: Uri? = null
     private var base64Image: String = ""
     private var currentPhotoUrl: String = ""
+    private var selectedBirthDate: String? = null
 
     private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -74,9 +79,50 @@ class EditDogProfileActivity : AppCompatActivity() {
             openImagePicker()
         }
 
+        binding.llBirthDate.setOnClickListener {
+            showDatePickerDialog()
+        }
+
         binding.btnSave.setOnClickListener {
             updateDogProfile()
         }
+    }
+
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+
+        // If birthdate is already selected, parse and use it
+        selectedBirthDate?.let { dateStr ->
+            try {
+                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val date = sdf.parse(dateStr)
+                date?.let { calendar.time = it }
+            } catch (e: Exception) {
+                Log.e("EditDogProfile", "Error parsing date: ${e.message}")
+            }
+        }
+
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val date = Calendar.getInstance().apply {
+                    set(selectedYear, selectedMonth, selectedDay)
+                }
+
+                val formattedDate = SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(date.time)
+                binding.tvBirthDate.text = formattedDate
+                selectedBirthDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date.time)
+            },
+            year,
+            month,
+            day
+        )
+
+        datePickerDialog.show()
     }
 
     private fun loadDogData() {
@@ -95,8 +141,25 @@ class EditDogProfileActivity : AppCompatActivity() {
                         // Populate fields
                         binding.etDogName.setText(dog.name)
                         binding.etBreed.setText(dog.breed)
-                        binding.etAge.setText(dog.age.toString())
                         binding.etWeight.setText(dog.weight?.toString() ?: "")
+
+                        // Load and display birthdate
+                        dog.birthDate?.let { birthDate ->
+                            if (birthDate.isNotEmpty()) {
+                                selectedBirthDate = birthDate
+                                try {
+                                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                    val date = sdf.parse(birthDate)
+                                    if (date != null) {
+                                        val displayFormat = SimpleDateFormat("d MMM yyyy", Locale.getDefault())
+                                        binding.tvBirthDate.text = displayFormat.format(date)
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("EditDogProfile", "Error parsing birthdate: ${e.message}")
+                                    binding.tvBirthDate.text = "Select date"
+                                }
+                            }
+                        }
 
                         // Set gender
                         when (dog.gender?.lowercase()) {
@@ -195,13 +258,38 @@ class EditDogProfileActivity : AppCompatActivity() {
         return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
     }
 
+    private fun calculateAgeFromBirthDate(birthDate: String): Int {
+        return try {
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val birthDateObj = sdf.parse(birthDate)
+
+            if (birthDateObj != null) {
+                val birthCalendar = Calendar.getInstance().apply { time = birthDateObj }
+                val today = Calendar.getInstance()
+
+                var age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+
+                if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+                    age--
+                }
+
+                age.coerceAtLeast(0)
+            } else {
+                0
+            }
+        } catch (e: Exception) {
+            Log.e("EditDogProfile", "Error calculating age: ${e.message}")
+            0
+        }
+    }
+
     private fun updateDogProfile() {
         val name = binding.etDogName.text.toString().trim()
         val breed = binding.etBreed.text.toString().trim()
-        val ageStr = binding.etAge.text.toString().trim()
         val weightStr = binding.etWeight.text.toString().trim()
         val gender = if (binding.rbMale.isChecked) "Male" else "Female"
         val additionalInfo = binding.etAdditionalInfo.text.toString().trim()
+        val birthDate = selectedBirthDate ?: ""
 
         // Validation
         if (name.isEmpty()) {
@@ -209,7 +297,11 @@ class EditDogProfileActivity : AppCompatActivity() {
             return
         }
 
-        val age = ageStr.toIntOrNull() ?: 0
+        val age = if (birthDate.isNotEmpty()) {
+            calculateAgeFromBirthDate(birthDate)
+        } else {
+            0
+        }
         val weight = weightStr.toDoubleOrNull() ?: 0.0
 
         // Use new photo if selected, otherwise keep existing photo URL
@@ -226,7 +318,7 @@ class EditDogProfileActivity : AppCompatActivity() {
             weight = weight,
             gender = gender,
             photo = photoToUpload,
-            birthDate = "",
+            birthDate = birthDate,
             schedule = null // Keep existing schedule
         )
 

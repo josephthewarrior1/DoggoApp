@@ -230,6 +230,9 @@ interface ApiService {
         @Body request: AddDogRequest
     ): Call<ApiResponse>
 
+    @DELETE("api/dogs/{id}")
+    fun deleteDog(@Path("id") dogId: Int): Call<ApiResponse>
+
     // Schedule endpoints
     @Headers("Content-Type: application/json")
     @POST("api/dogs/{id}/schedule")

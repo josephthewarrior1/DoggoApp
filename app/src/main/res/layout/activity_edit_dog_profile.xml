@@ -160,47 +160,54 @@
 
         </RadioGroup>
 
-        <!-- Age Input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilAge"
+        <!-- Birth Date -->
+        <LinearLayout
+            android:id="@+id/llBirthDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Age (years)"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_input_outline"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tilWeight"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rgGender">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etAge"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLines="1" />
+                android:layout_weight="1"
+                android:text="Birth Date"
+                android:textColor="#2D2D2D"
+                android:textSize="16sp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/tvBirthDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select date"
+                android:textColor="#757575"
+                android:textSize="16sp" />
+        </LinearLayout>
 
         <!-- Weight Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilWeight"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
             android:hint="Weight (kg)"
             app:boxBackgroundMode="outline"
             app:boxCornerRadiusTopStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusBottomEnd="12dp"
-            app:layout_constraintStart_toEndOf="@id/tilAge"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tilAge"
-            app:layout_constraintBottom_toBottomOf="@id/tilAge">
+            app:layout_constraintTop_toBottomOf="@id/llBirthDate">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etWeight"
@@ -225,7 +232,7 @@
             app:boxCornerRadiusBottomEnd="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilAge">
+            app:layout_constraintTop_toBottomOf="@id/tilWeight">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAdditionalInfo"

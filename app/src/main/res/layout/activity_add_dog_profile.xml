@@ -316,10 +316,11 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddEatSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
+                    app:fabCustomSize="32dp"
+                    app:fabSize="custom"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />
@@ -363,10 +364,11 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddWalkSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
+                    app:fabCustomSize="32dp"
+                    app:fabSize="custom"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />
@@ -410,10 +412,11 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddSleepSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
+                    app:fabCustomSize="32dp"
+                    app:fabSize="custom"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />
@@ -457,10 +460,11 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddMedicineSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
+                    app:fabCustomSize="32dp"
+                    app:fabSize="custom"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />
@@ -504,10 +508,11 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btnAddGroomSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
+                    app:fabCustomSize="32dp"
+                    app:fabSize="custom"
                     app:backgroundTint="#2196F3"
                     app:tint="@android:color/white"
                     app:elevation="2dp" />

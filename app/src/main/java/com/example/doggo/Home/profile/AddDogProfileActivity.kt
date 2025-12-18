@@ -82,6 +82,9 @@ class AddDogProfileActivity : AppCompatActivity() {
         setupScheduleButtons()
         setupGenderSelection()
         setupBirthDatePicker()
+        binding.tvCancel.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setupUI() {

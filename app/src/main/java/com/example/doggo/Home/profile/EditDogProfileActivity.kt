@@ -53,9 +53,7 @@ class EditDogProfileActivity : AppCompatActivity() {
         binding = ActivityEditDogProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Get dog ID from intent
         dogId = intent.getIntExtra("DOG_ID", -1)
-
         if (dogId == -1) {
             Toast.makeText(this, "Invalid dog ID", Toast.LENGTH_SHORT).show()
             finish()
@@ -91,7 +89,6 @@ class EditDogProfileActivity : AppCompatActivity() {
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
 
-        // If birthdate is already selected, parse and use it
         selectedBirthDate?.let { dateStr ->
             try {
                 val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -113,9 +110,15 @@ class EditDogProfileActivity : AppCompatActivity() {
                     set(selectedYear, selectedMonth, selectedDay)
                 }
 
-                val formattedDate = SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(date.time)
+                val formattedDate = SimpleDateFormat(
+                    "d MMM yyyy",
+                    Locale.getDefault()
+                ).format(date.time)
                 binding.tvBirthDate.text = formattedDate
-                selectedBirthDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date.time)
+                selectedBirthDate = SimpleDateFormat(
+                    "yyyy-MM-dd",
+                    Locale.getDefault()
+                ).format(date.time)
             },
             year,
             month,
@@ -128,94 +131,110 @@ class EditDogProfileActivity : AppCompatActivity() {
     private fun loadDogData() {
         Log.d("EditDogProfile", "📡 Loading dog data for ID: $dogId")
 
-        RetrofitClient.instance.getDogById(dogId.toString()).enqueue(object :
-            Callback<DogResponse> {
-            override fun onResponse(call: Call<DogResponse>, response: Response<DogResponse>) {
-                if (response.isSuccessful) {
-                    val dogResponse = response.body()
+        RetrofitClient.instance.getDogById(dogId.toString())
+            .enqueue(object : Callback<DogResponse> {
+                override fun onResponse(
+                    call: Call<DogResponse>,
+                    response: Response<DogResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val dogResponse = response.body()
 
-                    if (dogResponse?.success == true && dogResponse.dog != null) {
-                        val dog = dogResponse.dog
-                        Log.d("EditDogProfile", "✅ Dog loaded: ${dog.name}")
+                        if (dogResponse?.success == true && dogResponse.dog != null) {
+                            val dog = dogResponse.dog
+                            Log.d("EditDogProfile", "✅ Dog loaded: ${dog.name}")
 
-                        // Populate fields
-                        binding.etDogName.setText(dog.name)
-                        binding.etBreed.setText(dog.breed)
-                        binding.etWeight.setText(dog.weight?.toString() ?: "")
+                            binding.etDogName.setText(dog.name)
+                            binding.etBreed.setText(dog.breed)
+                            binding.etWeight.setText(dog.weight?.toString() ?: "")
 
-                        // Load and display birthdate
-                        dog.birthDate?.let { birthDate ->
-                            if (birthDate.isNotEmpty()) {
-                                selectedBirthDate = birthDate
-                                try {
-                                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                    val date = sdf.parse(birthDate)
-                                    if (date != null) {
-                                        val displayFormat = SimpleDateFormat("d MMM yyyy", Locale.getDefault())
-                                        binding.tvBirthDate.text = displayFormat.format(date)
+                            dog.birthDate?.let { birthDate ->
+                                if (birthDate.isNotEmpty()) {
+                                    selectedBirthDate = birthDate
+                                    try {
+                                        val sdf = SimpleDateFormat(
+                                            "yyyy-MM-dd",
+                                            Locale.getDefault()
+                                        )
+                                        val date = sdf.parse(birthDate)
+                                        if (date != null) {
+                                            val displayFormat = SimpleDateFormat(
+                                                "d MMM yyyy",
+                                                Locale.getDefault()
+                                            )
+                                            binding.tvBirthDate.text =
+                                                displayFormat.format(date)
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e(
+                                            "EditDogProfile",
+                                            "Error parsing birthdate: ${e.message}"
+                                        )
+                                        binding.tvBirthDate.text = "Select date"
                                     }
-                                } catch (e: Exception) {
-                                    Log.e("EditDogProfile", "Error parsing birthdate: ${e.message}")
-                                    binding.tvBirthDate.text = "Select date"
                                 }
                             }
+
+                            when (dog.gender?.lowercase()) {
+                                "male" -> binding.rbMale.isChecked = true
+                                "female" -> binding.rbFemale.isChecked = true
+                                else -> binding.rbMale.isChecked = true
+                            }
+
+                            currentPhotoUrl = dog.photo ?: ""
+                            if (currentPhotoUrl.isNotEmpty()) {
+                                Glide.with(this@EditDogProfileActivity)
+                                    .load(currentPhotoUrl)
+                                    .centerCrop()
+                                    .placeholder(R.drawable.ic_dog_placeholder)
+                                    .error(R.drawable.ic_dog_placeholder)
+                                    .into(binding.ivDogPhoto)
+                            } else {
+                                binding.ivDogPhoto.setImageResource(
+                                    R.drawable.ic_dog_placeholder
+                                )
+                            }
+
+                        } else {
+                            Log.e("EditDogProfile", "❌ Dog not found")
+                            Toast.makeText(
+                                this@EditDogProfileActivity,
+                                "Dog not found",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            finish()
                         }
-
-                        // Set gender
-                        when (dog.gender?.lowercase()) {
-                            "male" -> binding.rbMale.isChecked = true
-                            "female" -> binding.rbFemale.isChecked = true
-                            else -> binding.rbMale.isChecked = true
-                        }
-
-                        // Set additional info (jika ada di model lo)
-                        // binding.etAdditionalInfo.setText(dog.additionalInfo)
-
-                        // Load photo
-                        currentPhotoUrl = dog.photo ?: ""
-                        if (currentPhotoUrl.isNotEmpty()) {
-                            Glide.with(this@EditDogProfileActivity)
-                                .load(currentPhotoUrl)
-                                .centerCrop()
-                                .placeholder(R.drawable.ic_dog_placeholder)
-                                .error(R.drawable.ic_dog_placeholder)
-                                .into(binding.ivDogPhoto)
-                        }
-
                     } else {
-                        Log.e("EditDogProfile", "❌ Dog not found")
+                        Log.e(
+                            "EditDogProfile",
+                            "❌ HTTP error: ${response.code()}"
+                        )
                         Toast.makeText(
                             this@EditDogProfileActivity,
-                            "Dog not found",
+                            "Failed to load dog data",
                             Toast.LENGTH_SHORT
                         ).show()
                         finish()
                     }
-                } else {
-                    Log.e("EditDogProfile", "❌ HTTP error: ${response.code()}")
+                }
+
+                override fun onFailure(call: Call<DogResponse>, t: Throwable) {
+                    Log.e("EditDogProfile", "❌ Network error: ${t.message}")
                     Toast.makeText(
                         this@EditDogProfileActivity,
-                        "Failed to load dog data",
+                        "Network error: ${t.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                     finish()
                 }
-            }
-
-            override fun onFailure(call: Call<DogResponse>, t: Throwable) {
-                Log.e("EditDogProfile", "❌ Network error: ${t.message}")
-                Toast.makeText(
-                    this@EditDogProfileActivity,
-                    "Network error: ${t.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
-            }
-        })
+            })
     }
 
     private fun openImagePicker() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val intent = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
         imagePickerLauncher.launch(intent)
     }
 
@@ -223,14 +242,14 @@ class EditDogProfileActivity : AppCompatActivity() {
         try {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
 
-            // Resize bitmap to reduce size
             val resizedBitmap = resizeBitmap(bitmap, 800, 800)
 
             val byteArrayOutputStream = ByteArrayOutputStream()
             resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
 
-            base64Image = "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.DEFAULT)
+            base64Image =
+                "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.DEFAULT)
 
             Log.d("EditDogProfile", "✅ Image converted to base64")
         } catch (e: IOException) {
@@ -291,10 +310,11 @@ class EditDogProfileActivity : AppCompatActivity() {
         val additionalInfo = binding.etAdditionalInfo.text.toString().trim()
         val birthDate = selectedBirthDate ?: ""
 
-        // Validation
         if (name.isEmpty()) {
             binding.tilDogName.error = "Name is required"
             return
+        } else {
+            binding.tilDogName.error = null
         }
 
         val age = if (birthDate.isNotEmpty()) {
@@ -304,7 +324,7 @@ class EditDogProfileActivity : AppCompatActivity() {
         }
         val weight = weightStr.toDoubleOrNull() ?: 0.0
 
-        // Use new photo if selected, otherwise keep existing photo URL
+        // Prefer new base64 image, otherwise keep old URL
         val photoToUpload = if (base64Image.isNotEmpty()) base64Image else currentPhotoUrl
 
         Log.d("EditDogProfile", "📤 Updating dog profile...")
@@ -319,62 +339,68 @@ class EditDogProfileActivity : AppCompatActivity() {
             gender = gender,
             photo = photoToUpload,
             birthDate = birthDate,
-            schedule = null // Keep existing schedule
+            schedule = null
         )
 
-        // Disable button to prevent multiple clicks
         binding.btnSave.isEnabled = false
         binding.btnSave.text = "Updating..."
 
-        RetrofitClient.instance.updateDog(dogId, updateRequest).enqueue(object :
-            Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                binding.btnSave.isEnabled = true
-                binding.btnSave.text = "Update Profile"
+        RetrofitClient.instance.updateDog(dogId, updateRequest)
+            .enqueue(object : Callback<ApiResponse> {
+                override fun onResponse(
+                    call: Call<ApiResponse>,
+                    response: Response<ApiResponse>
+                ) {
+                    binding.btnSave.isEnabled = true
+                    binding.btnSave.text = "Save Changes"
 
-                if (response.isSuccessful) {
-                    val apiResponse = response.body()
+                    if (response.isSuccessful) {
+                        val apiResponse = response.body()
 
-                    if (apiResponse?.success == true) {
-                        Log.d("EditDogProfile", "✅ Dog updated successfully!")
-                        Toast.makeText(
-                            this@EditDogProfileActivity,
-                            "Profile updated successfully!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        // Return to detail screen
-                        setResult(RESULT_OK)
-                        finish()
+                        if (apiResponse?.success == true) {
+                            Log.d("EditDogProfile", "✅ Dog updated successfully!")
+                            Toast.makeText(
+                                this@EditDogProfileActivity,
+                                "Profile updated successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            setResult(RESULT_OK)
+                            finish()
+                        } else {
+                            Log.e(
+                                "EditDogProfile",
+                                "❌ Update failed: ${apiResponse?.error}"
+                            )
+                            Toast.makeText(
+                                this@EditDogProfileActivity,
+                                "Update failed: ${apiResponse?.error ?: "Unknown error"}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
-                        Log.e("EditDogProfile", "❌ Update failed: ${apiResponse?.error}")
+                        Log.e(
+                            "EditDogProfile",
+                            "❌ HTTP error: ${response.code()}"
+                        )
                         Toast.makeText(
                             this@EditDogProfileActivity,
-                            "Update failed: ${apiResponse?.error ?: "Unknown error"}",
+                            "Update failed: ${response.message()}",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                } else {
-                    Log.e("EditDogProfile", "❌ HTTP error: ${response.code()}")
+                }
+
+                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                    binding.btnSave.isEnabled = true
+                    binding.btnSave.text = "Save Changes"
+
+                    Log.e("EditDogProfile", "❌ Network error: ${t.message}")
                     Toast.makeText(
                         this@EditDogProfileActivity,
-                        "Update failed: ${response.message()}",
+                        "Network error: ${t.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
-
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                binding.btnSave.isEnabled = true
-                binding.btnSave.text = "Update Profile"
-
-                Log.e("EditDogProfile", "❌ Network error: ${t.message}")
-                Toast.makeText(
-                    this@EditDogProfileActivity,
-                    "Network error: ${t.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
+            })
     }
 }

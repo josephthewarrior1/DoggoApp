@@ -52,7 +52,6 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_dog_placeholder"
                     android:contentDescription="Dog photo" />
-
             </androidx.cardview.widget.CardView>
 
             <!-- Dog Name -->
@@ -243,22 +242,22 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Schedule & Medical Records Buttons -->
+            <!-- Schedule & Medical Records – combined like one control -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="16dp"
-                android:weightSum="2">
+                android:background="@drawable/bg_tabs_container"
+                android:padding="4dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/btnSchedule"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground">
 
@@ -266,26 +265,25 @@
                         android:id="@+id/layoutScheduleButton"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
+                        android:background="#E3F2FD"
                         android:gravity="center"
-                        android:background="#E3F2FD">
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
+                            android:gravity="center"
                             android:text="📅"
-                            android:textSize="24sp"
-                            android:gravity="center" />
+                            android:textSize="24sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
                             android:text="Schedule"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
                             android:textColor="#3B82F6"
-                            android:layout_marginTop="4dp" />
-
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -295,9 +293,8 @@
                     android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground">
 
@@ -323,7 +320,6 @@
                             android:textSize="14sp"
                             android:textColor="#999999"
                             android:layout_marginTop="4dp" />
-
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -381,7 +377,6 @@
                                 android:textStyle="bold"
                                 android:textColor="#FFFFFF"
                                 android:gravity="center" />
-
                         </androidx.cardview.widget.CardView>
 
                         <TextView
@@ -392,12 +387,11 @@
                             android:textStyle="bold"
                             android:textColor="#3B82F6"
                             android:layout_marginStart="6dp" />
-
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <!-- ✅ Eat Schedule Section (WRAPPED) -->
+                <!-- Eat Schedule Section -->
                 <LinearLayout
                     android:id="@+id/layoutEatSection"
                     android:layout_width="match_parent"
@@ -420,10 +414,9 @@
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
                         android:layout_marginBottom="16dp" />
-
                 </LinearLayout>
 
-                <!-- ✅ Walk Schedule Section (WRAPPED) -->
+                <!-- Walk Schedule Section -->
                 <LinearLayout
                     android:id="@+id/layoutWalkSection"
                     android:layout_width="match_parent"
@@ -446,10 +439,9 @@
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
                         android:layout_marginBottom="16dp" />
-
                 </LinearLayout>
 
-                <!-- ✅ Sleep Schedule Section (WRAPPED) -->
+                <!-- Sleep Schedule Section -->
                 <LinearLayout
                     android:id="@+id/layoutSleepSection"
                     android:layout_width="match_parent"
@@ -472,10 +464,9 @@
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
                         android:layout_marginBottom="16dp" />
-
                 </LinearLayout>
 
-                <!-- ✅ Medicine Schedule Section (WRAPPED) -->
+                <!-- Medicine Schedule Section -->
                 <LinearLayout
                     android:id="@+id/layoutMedicineSection"
                     android:layout_width="match_parent"
@@ -498,10 +489,9 @@
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
                         android:layout_marginBottom="16dp" />
-
                 </LinearLayout>
 
-                <!-- ✅ Grooming Schedule Section (WRAPPED) -->
+                <!-- Grooming Schedule Section -->
                 <LinearLayout
                     android:id="@+id/layoutGroomSection"
                     android:layout_width="match_parent"
@@ -524,7 +514,6 @@
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
                         android:layout_marginBottom="24dp" />
-
                 </LinearLayout>
 
                 <!-- Empty State for Schedule -->
@@ -558,7 +547,6 @@
                             android:textSize="14sp"
                             android:textColor="#999999"
                             android:layout_marginTop="8dp" />
-
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -616,7 +604,6 @@
                                 android:textStyle="bold"
                                 android:textColor="#FFFFFF"
                                 android:gravity="center" />
-
                         </androidx.cardview.widget.CardView>
 
                         <TextView
@@ -627,7 +614,6 @@
                             android:textStyle="bold"
                             android:textColor="#3B82F6"
                             android:layout_marginStart="6dp" />
-
                     </LinearLayout>
 
                 </LinearLayout>
@@ -671,7 +657,6 @@
                             android:textSize="14sp"
                             android:textColor="#999999"
                             android:layout_marginTop="8dp" />
-
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>

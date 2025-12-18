@@ -163,10 +163,6 @@ class MyProfileFragment : Fragment() {
             showComingSoonToast("Change Password")
         }
 
-        // Notifications
-        binding.layoutNotifications.setOnClickListener {
-            showComingSoonToast("Notifications")
-        }
 
         // App Settings
         binding.layoutPrivacyPolicy.setOnClickListener { showComingSoonToast("Privacy Policy") }

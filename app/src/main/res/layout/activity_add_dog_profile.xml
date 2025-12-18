@@ -271,28 +271,37 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:text="🍽️"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:gravity="center" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="8dp"
                     android:text="Eat Schedule"
                     android:textColor="#1A1A1A"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <!-- small blue + -->
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnAddEatSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
-                    app:backgroundTint="#2196F3"
-                    app:tint="@android:color/white"
-                    app:elevation="2dp" />
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#2196F3"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:src="@android:drawable/ic_input_add"
+                        app:tint="@android:color/white" />
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <TextView
@@ -318,28 +327,36 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:text="🚶"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:gravity="center" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="8dp"
                     android:text="Walk Schedule"
                     android:textColor="#1A1A1A"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnAddWalkSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
-                    app:backgroundTint="#2196F3"
-                    app:tint="@android:color/white"
-                    app:elevation="2dp" />
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#2196F3"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:src="@android:drawable/ic_input_add"
+                        app:tint="@android:color/white" />
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <TextView
@@ -365,28 +382,36 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:text="😴"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:gravity="center" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="8dp"
                     android:text="Sleep Schedule"
                     android:textColor="#1A1A1A"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnAddSleepSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
-                    app:backgroundTint="#2196F3"
-                    app:tint="@android:color/white"
-                    app:elevation="2dp" />
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#2196F3"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:src="@android:drawable/ic_input_add"
+                        app:tint="@android:color/white" />
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <TextView
@@ -412,28 +437,36 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:text="💊"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:gravity="center" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="8dp"
                     android:text="Medicine Schedule"
                     android:textColor="#1A1A1A"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnAddMedicineSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
-                    app:backgroundTint="#2196F3"
-                    app:tint="@android:color/white"
-                    app:elevation="2dp" />
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#2196F3"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:src="@android:drawable/ic_input_add"
+                        app:tint="@android:color/white" />
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <TextView
@@ -459,28 +492,36 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:text="✂️"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:gravity="center" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="8dp"
                     android:text="Groom Schedule"
                     android:textColor="#1A1A1A"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnAddGroomSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_input_add"
-                    app:fabSize="mini"
-                    app:backgroundTint="#2196F3"
-                    app:tint="@android:color/white"
-                    app:elevation="2dp" />
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#2196F3"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:src="@android:drawable/ic_input_add"
+                        app:tint="@android:color/white" />
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <TextView
@@ -492,21 +533,99 @@
                 android:text="No schedule added"
                 android:textColor="#9E9E9E"
                 android:textSize="13sp" />
+
+            <!-- Medical Records section like iOS -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Medical Records"
+                android:textColor="#1A1A1A"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium" />
+
+            <LinearLayout
+                android:id="@+id/llMedicalRecords"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:text="🧪"
+                    android:textSize="18sp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Medical Records"
+                    android:textColor="#1A1A1A"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnAddMedicalRecord"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#2196F3"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:src="@android:drawable/ic_input_add"
+                        app:tint="@android:color/white" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvMedicalRecordsStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="40dp"
+                android:text="No medical records added"
+                android:textColor="#9E9E9E"
+                android:textSize="13sp" />
+
         </LinearLayout>
 
-        <!-- Save Button -->
+        <!-- Save & Cancel like iOS -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_margin="20dp"
-            android:text="Save Profile"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="8dp"
+            android:text="Save Dog"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:backgroundTint="#4CAF50"
-            app:cornerRadius="28dp"
-            app:elevation="4dp" />
+            app:backgroundTint="#1976D2"
+            app:cornerRadius="12dp"
+            app:elevation="0dp" />
 
+        <TextView
+            android:id="@+id/tvCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="24dp"
+            android:text="Cancel"
+            android:textColor="#F44336"
+            android:textSize="16sp" />
     </LinearLayout>
 </ScrollView>

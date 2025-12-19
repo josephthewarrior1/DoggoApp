@@ -27,7 +27,7 @@
             android:id="@+id/tvWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome to Doggo 🐾"
+            android:text="Welcome to Doggo"
             android:textSize="24sp"
             android:textColor="#1C1C1E"
             android:textStyle="bold"
@@ -121,7 +121,7 @@
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textAllCaps="false"
-            android:background="#D1D1D6"
+            android:backgroundTint="#007AFF"
             android:layout_marginBottom="16dp" />
 
         <!-- Sign Up Button -->

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA">
+    android:background="#F8F9FA"
+    android:fitsSystemWindows="true">
 
     <!-- Top Bar -->
     <LinearLayout
@@ -181,14 +183,12 @@
             android:padding="24dp"
             android:visibility="gone">
 
-            <!-- Dog Illustration -->
             <ImageView
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:src="@drawable/ic_empty_state"
                 android:contentDescription="No profiles" />
 
-            <!-- Empty State Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -198,7 +198,6 @@
                 android:textColor="#2D2D2D"
                 android:layout_marginTop="24dp" />
 
-            <!-- Empty State Message -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -209,7 +208,6 @@
                 android:layout_marginTop="12dp"
                 android:lineSpacingExtra="4dp" />
 
-            <!-- Add Pet Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddPet"
                 android:layout_width="wrap_content"
@@ -230,7 +228,6 @@
 
         </LinearLayout>
 
-        <!-- Fragment Container View -->
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
